@@ -13,6 +13,7 @@ import { Fragment, useMemo, useState } from "react";
 import Tabs from "../ui/Tabs";
 import { Tab } from "@nextui-org/react";
 import useChiTietMaCK from "@/hooks/useChiTietMaCK";
+import { TransferHorizontal } from "solar-icon-set";
 
 const topBienDong = [
   { key: "bungnokl", name: "Bùng nổ KL" },
@@ -28,17 +29,28 @@ export default function TopDotBienKhoiLuongTable({
 }) {
   const { data, isLoading } = useMarketOverviewData();
   const [selectedTab, setSelectedTab] = useState("bungnokl");
+  const [selectedTime, setSelectedTime] = useState("1d");
+  const [isShowPercents, setIsShowPercents] = useState(true);
+
   const { setChiTietMaCK } = useChiTietMaCK();
+
+  const volumeFieldName = selectedTime === "1d" ? "dayVolume" : "avgDay5Vol";
+  const bungNoKlThreshold = selectedTime === "1d" ? 1.5 : 1;
+  const cancungKLThreshold = selectedTime === "1d" ? 0.35 : 0.7;
+
   const filteredData = useMemo(() => {
     const newData = data
       ?.filter(
-        (item) => item.dayVolume && item.dayVolume > 0 && item.sectors?.length,
+        (item) =>
+          item[volumeFieldName] &&
+          item[volumeFieldName] > 0 &&
+          item.sectors?.length,
       )
       .map((item) => ({
         ...item,
-        percentChangeVsLast20Days:
-          item.dayVolume && item.avgDay20Vol
-            ? item.dayVolume / item.avgDay20Vol
+        volPercentChangeVsLast20Days:
+          item[volumeFieldName] && item.avgDay20Vol
+            ? item[volumeFieldName] / item.avgDay20Vol
             : 0,
         pricePercentvsHigh52Week:
           item.price && item.highWeek52Price
@@ -53,25 +65,27 @@ export default function TopDotBienKhoiLuongTable({
     if (selectedTab === "bungnokl") {
       return newData
         ?.sort(
-          (a, b) => b.percentChangeVsLast20Days - a.percentChangeVsLast20Days,
+          (a, b) =>
+            b.volPercentChangeVsLast20Days - a.volPercentChangeVsLast20Days,
         )
         .filter(
           (item) =>
             item.avgDay20Vol &&
             item.avgDay20Vol > 1000 &&
-            item.percentChangeVsLast20Days > 1.5,
+            item.volPercentChangeVsLast20Days > bungNoKlThreshold,
         );
     }
     if (selectedTab === "cancung") {
       return newData
         ?.sort(
-          (a, b) => a.percentChangeVsLast20Days - b.percentChangeVsLast20Days,
+          (a, b) =>
+            a.volPercentChangeVsLast20Days - b.volPercentChangeVsLast20Days,
         )
         .filter(
           (item) =>
             item.avgDay20Vol &&
-            item.percentChangeVsLast20Days > 0 &&
-            item.percentChangeVsLast20Days < 0.35,
+            item.volPercentChangeVsLast20Days > 0 &&
+            item.volPercentChangeVsLast20Days < cancungKLThreshold,
         );
     }
     if (selectedTab === "phaday") {
@@ -86,7 +100,7 @@ export default function TopDotBienKhoiLuongTable({
         )
         .filter((item) => item.pricePercentvsHigh52Week >= 0.95);
     }
-  }, [data, selectedTab]);
+  }, [data, selectedTab, selectedTime]);
 
   return (
     <>
@@ -132,6 +146,17 @@ export default function TopDotBienKhoiLuongTable({
               )}
             </Fragment>
           ))}
+        </div>
+      )}
+      {["bungnokl", "cancung"].includes(selectedTab) && (
+        <div className="flex justify-end">
+          <Tabs
+            selectedKey={selectedTime}
+            onSelectionChange={(key) => setSelectedTime(key as string)}
+          >
+            <Tab key="1d" title="1D"></Tab>
+            <Tab key="5d" title="5D"></Tab>
+          </Tabs>
         </div>
       )}
       <Table
@@ -180,48 +205,139 @@ export default function TopDotBienKhoiLuongTable({
               </div>
             ),
           },
-          {
-            title: "% Hôm nay",
-            key: "homnay",
-            className: "text-end",
-            render: (item: TSymbolOverviewData) =>
-              item.dayChangePercent && (
-                <div
-                  className={cn(
-                    "flex items-center justify-end font-semibold text-green",
-                    item.dayChangePercent && item.dayChangePercent > 0
-                      ? "text-green"
-                      : item.dayChangePercent
-                        ? "text-red"
-                        : "text-yellow",
-                  )}
-                >
-                  {item.dayChangePercent > 0 && "+"}
-                  {item.dayChangePercent.toFixed(2)}%
-                </div>
-              ),
-            sortFn: (a: TSymbolOverviewData, b: TSymbolOverviewData) =>
-              b.dayChangePercent !== null && a.dayChangePercent !== null
-                ? a.dayChangePercent - b.dayChangePercent
-                : 0,
-          },
-          {
-            title: "KL Hôm nay",
-            key: "klhomnay",
-            className: "text-end",
-            render: (item: TSymbolOverviewData) =>
-              item.dayVolume && (
-                <div
-                  className={cn("flex items-center justify-end font-semibold")}
-                >
-                  {formatNumber(item.dayVolume)}
-                </div>
-              ),
-            sortFn: (a: TSymbolOverviewData, b: TSymbolOverviewData) =>
-              b.dayVolume !== null && a.dayVolume !== null
-                ? a.dayVolume - b.dayVolume
-                : 0,
-          },
+          selectedTime === "1d"
+            ? {
+                title: (
+                  <div className="inline-flex items-center justify-end gap-2">
+                    <div
+                      className="h-4 text-neutral-600 hover:text-muted"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setIsShowPercents((prev) => !prev);
+                      }}
+                    >
+                      <TransferHorizontal size={14} />
+                    </div>
+                    {isShowPercents ? "%" : "Thay đổi"}
+                  </div>
+                ),
+                key: "homnay",
+                className: "text-end",
+                render: (item: TSymbolOverviewData) =>
+                  item.dayChangePercent && (
+                    <div
+                      className={cn(
+                        "flex items-center justify-end font-semibold text-green",
+                        item.dayChangePercent && item.dayChangePercent > 0
+                          ? "text-green"
+                          : item.dayChangePercent
+                            ? "text-red"
+                            : "text-yellow",
+                      )}
+                    >
+                      {item.dayChangePercent > 0 && "+"}
+                      {isShowPercents
+                        ? item.dayChangePercent.toFixed(2) + "%"
+                        : formatPrice(item.dayChange)}
+                    </div>
+                  ),
+                sortFn: isShowPercents
+                  ? (a: TSymbolOverviewData, b: TSymbolOverviewData) =>
+                      b.dayChangePercent !== null && a.dayChangePercent !== null
+                        ? a.dayChangePercent - b.dayChangePercent
+                        : 0
+                  : (a: TSymbolOverviewData, b: TSymbolOverviewData) =>
+                      a.dayChange !== null && b.dayChange !== null
+                        ? a.dayChange - b.dayChange
+                        : 0,
+              }
+            : {
+                title: (
+                  <div className="inline-flex items-center justify-end gap-2">
+                    <div
+                      className="h-4 text-neutral-600 hover:text-muted"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setIsShowPercents((prev) => !prev);
+                      }}
+                    >
+                      <TransferHorizontal size={14} />
+                    </div>
+                    {isShowPercents ? "%" : "Thay đổi"}
+                  </div>
+                ),
+                key: "homnay",
+                className: "text-end",
+                render: (item: TSymbolOverviewData) =>
+                  item.weekChangePercent && (
+                    <div
+                      className={cn(
+                        "flex items-center justify-end font-semibold text-green",
+                        item.weekChangePercent && item.weekChangePercent > 0
+                          ? "text-green"
+                          : item.weekChangePercent
+                            ? "text-red"
+                            : "text-yellow",
+                      )}
+                    >
+                      {item.weekChangePercent > 0 && "+"}
+                      {isShowPercents
+                        ? item.weekChangePercent.toFixed(2) + "%"
+                        : formatPrice(item.weekChange)}
+                    </div>
+                  ),
+                sortFn: isShowPercents
+                  ? (a: TSymbolOverviewData, b: TSymbolOverviewData) =>
+                      b.weekChangePercent !== null &&
+                      a.weekChangePercent !== null
+                        ? a.weekChangePercent - b.weekChangePercent
+                        : 0
+                  : (a: TSymbolOverviewData, b: TSymbolOverviewData) =>
+                      a.weekChange !== null && b.weekChange !== null
+                        ? a.weekChange - b.weekChange
+                        : 0,
+              },
+          selectedTime === "1d"
+            ? {
+                title: "KLGD",
+                key: "klhomnay",
+                className: "text-end",
+                render: (item: TSymbolOverviewData) =>
+                  item.dayVolume && (
+                    <div
+                      className={cn(
+                        "flex items-center justify-end font-semibold",
+                      )}
+                    >
+                      {formatNumber(item.dayVolume)}
+                    </div>
+                  ),
+                sortFn: (a: TSymbolOverviewData, b: TSymbolOverviewData) =>
+                  b.dayVolume !== null && a.dayVolume !== null
+                    ? a.dayVolume - b.dayVolume
+                    : 0,
+              }
+            : {
+                title: "KLGD",
+                key: "klhomnay",
+                className: "text-end",
+                render: (item: TSymbolOverviewData) =>
+                  item.weekVolume && (
+                    <div
+                      className={cn(
+                        "flex items-center justify-end font-semibold",
+                      )}
+                    >
+                      {formatNumber(item.weekVolume)}
+                    </div>
+                  ),
+                sortFn: (a: TSymbolOverviewData, b: TSymbolOverviewData) =>
+                  b.weekVolume !== null && a.weekVolume !== null
+                    ? a.weekVolume - b.weekVolume
+                    : 0,
+              },
         ].filter(Boolean)}
         data={filteredData}
         isLoading={isLoading}

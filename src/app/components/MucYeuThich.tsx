@@ -1,17 +1,16 @@
 "use client";
 import Divider from "@/components/ui/Divider";
 import useChiTietMaCK from "@/hooks/useChiTietMaCK";
-import useCurrentSymbol from "@/hooks/useCurrentSymbol";
+import useCompiledOverviewData from "@/hooks/useCompiledOverviewData";
 import useFavorites from "@/hooks/useFavorites";
-import useMarketOverviewData from "@/hooks/useMarketOverview";
 import DoubleArrow from "@/icons/DoubleArrow";
-import { cn, formatPrice, getPriceColor } from "@/lib/utils";
+import { cn, formatPriceWithType, getPriceColor } from "@/lib/utils";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 
 export default function MucYeuThich() {
   const { favorites } = useFavorites();
   const { setChiTietMaCK } = useChiTietMaCK();
-  const { data, isLoading } = useMarketOverviewData();
+  const { data, isLoading } = useCompiledOverviewData();
   const favoriteData = useMemo(
     () =>
       favorites && data
@@ -91,7 +90,7 @@ export default function MucYeuThich() {
                           getPriceColor(item.dayChange),
                         )}
                       >
-                        {formatPrice(item.price)}
+                        {formatPriceWithType(item.price, item.secType)}
                         {item.dayChange ? (
                           item.dayChange > 0 ? (
                             <DoubleArrow size={14} />

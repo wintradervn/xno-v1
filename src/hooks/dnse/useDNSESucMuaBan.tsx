@@ -1,6 +1,6 @@
 import useSWR from "swr";
 import useTaiKhoanChungKhoan from "../useTaiKhoanChungKhoan";
-import { getSucMuaSucBan } from "@/lib/dnse-api";
+import { getPhaiSinhSucMuaSucBan, getSucMuaSucBan } from "@/lib/dnse-api";
 import useDNSEAccounts from "./useDNSEAccounts";
 
 export interface ISucMuaSucBan {
@@ -20,10 +20,12 @@ export interface ISucMuaSucBan {
 
 export default function useDNSESucMuaBan({
   symbol,
+  isPhaiSinh,
   price,
   loanPackageId,
 }: {
   symbol: string;
+  isPhaiSinh: boolean;
   price: string;
   loanPackageId: string;
 }) {
@@ -41,14 +43,22 @@ export default function useDNSESucMuaBan({
         ]
       : null,
     ([, token, accountId, symbol, price, loanPackageId]) =>
-      getSucMuaSucBan(
-        token as string,
-        accountId as string,
-        symbol as string,
-        price as string,
-        loanPackageId as string,
-      ),
-    { refreshInterval: 5000 },
+      isPhaiSinh
+        ? getPhaiSinhSucMuaSucBan(
+            token as string,
+            accountId as string,
+            symbol as string,
+            price as string,
+            "1306", // TODO
+          )
+        : getSucMuaSucBan(
+            token as string,
+            accountId as string,
+            symbol as string,
+            price as string,
+            loanPackageId as string,
+          ),
+    { refreshInterval: 10000 },
   );
   return { data, isLoading };
 }

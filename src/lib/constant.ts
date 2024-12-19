@@ -28,3 +28,6 @@ export const INDEXES_INFO: Record<
     apiCode: "HNX30",
   },
 };
+
+export const ROOT_API_URL =
+  process.env.NODE_ENV === "development" ? "/api/v2" : "https://api.xno.vn/v2";

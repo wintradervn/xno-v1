@@ -1,3 +1,4 @@
+import { ROOT_API_URL } from "@/lib/constant";
 import useSWR from "swr";
 
 export interface IKetQuaKinhDoanhItem {
@@ -35,7 +36,7 @@ export default function useKetQuaKinhDoanhData(
     symbol ? ["ketquakinhdoanh", symbol, yearly] : null,
     async ([, symbol, yearly]) => {
       const res = await fetch(
-        `/api/v2/incomestatement?symbol=${symbol}&yearly=${yearly ? "1" : "0"}`,
+        `${ROOT_API_URL}/incomestatement?symbol=${symbol}&yearly=${yearly ? "1" : "0"}`,
       );
       const data = await res.json();
       return data.data || [];

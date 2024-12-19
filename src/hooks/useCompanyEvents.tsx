@@ -1,3 +1,4 @@
+import { ROOT_API_URL } from "@/lib/constant";
 import useSWR from "swr";
 
 export interface ICompanyEvent {
@@ -15,7 +16,7 @@ export interface ICompanyEvent {
 
 export default function useCompanyEvents(symbol?: string) {
   const { data, isLoading } = useSWR<ICompanyEvent[]>(
-    symbol ? ["/api/v2/companyevents", symbol] : null,
+    symbol ? [`${ROOT_API_URL}/companyevents`, symbol] : null,
     async ([url, symbol]) => {
       const res = await fetch(url + "/" + symbol);
       const data = await res.json();

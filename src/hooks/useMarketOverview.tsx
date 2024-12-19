@@ -1,3 +1,4 @@
+import { ROOT_API_URL } from "@/lib/constant";
 import useSWR from "swr";
 
 // {
@@ -137,14 +138,14 @@ export type TSymbolOverviewData = {
 
 export default function useMarketOverviewData() {
   const { data, isLoading } = useSWR<TSymbolOverviewData[]>(
-    "/api/marketOverview",
+    `${ROOT_API_URL}/overview`,
     async (url: string) => {
       const res = await fetch(url);
       const data = await res.json();
       return data?.data || [];
     },
     {
-      refreshInterval: 20000,
+      refreshInterval: 5000,
     },
   );
 

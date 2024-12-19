@@ -1,3 +1,4 @@
+import { ROOT_API_URL } from "@/lib/constant";
 import { format } from "date-fns";
 import useSWR from "swr";
 
@@ -68,7 +69,7 @@ export default function useChiSoTaiChinhData(
 ) {
   const { data } = useSWR<IChiSoTaiChinh[]>(
     symbol
-      ? `/api/v2/financialratio?symbol=${symbol}&yearly=${yearly ? "1" : "0"}`
+      ? `${ROOT_API_URL}/financialratio?symbol=${symbol}&yearly=${yearly ? "1" : "0"}`
       : null,
     async (url: string) => {
       const res = await fetch(url);

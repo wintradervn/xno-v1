@@ -134,7 +134,7 @@ export const placeOrder = async (
   order: any,
 ) => {
   const res = await fetch(`${URL}/dnse-order-service/v2/orders`, {
-    method: "GET",
+    method: "POST",
     headers: {
       Authorization: "Bearer " + jwtToken,
       "Trading-Token": tradingToken,
@@ -215,4 +215,145 @@ export const postPlaceOrder = async (
     return data;
   }
   throw new Error(data.message);
+};
+
+// 5.1
+export const getPhaiSinhLoanPackages = async (
+  jwtToken: string,
+  accountId: string,
+) => {
+  const res = await fetch(
+    `${URL}/dnse-order-service/accounts/${accountId}/derivative-loan-packages`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + jwtToken,
+      },
+    },
+  );
+  const data = await res.json();
+  return data.loanPackages;
+};
+
+// 5.2
+export const getPhaiSinhSucMuaSucBan = async (
+  jwtToken: string,
+  accountId: string,
+  symbol: string,
+  price: string,
+  loanPackageId: string,
+) => {
+  const res = await fetch(
+    `${URL}/dnse-order-service/accounts/${accountId}/derivative-ppse?symbol=${symbol}&price=${price}&loanPackageId=${loanPackageId}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + jwtToken,
+      },
+    },
+  );
+  const data = await res.json();
+  return data;
+};
+
+// 5.3
+export const placeOrderPhaiSinh = async (
+  jwtToken: string,
+  tradingToken: string,
+  order: any,
+) => {
+  const res = await fetch(`${URL}/dnse-order-service/derivative/orders`, {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + jwtToken,
+      "Trading-Token": tradingToken,
+    },
+    body: JSON.stringify(order),
+  });
+  const data = await res.json();
+  return data;
+};
+
+// 5.4
+export const getOrdersPhaiSinh = async (
+  jwtToken: string,
+  accountNo: string,
+) => {
+  const res = await fetch(
+    `${URL}/dnse-order-service/derivative/orders?accountNo=${accountNo}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + jwtToken,
+      },
+    },
+  );
+  if (res.ok) {
+    const data = await res.json();
+    return data.orders;
+  }
+};
+
+// 5.6
+export const deleteOrderPhaiSinh = async (
+  jwtToken: string,
+  tradingToken: string,
+  accountNo: string,
+  orderId: any,
+) => {
+  const res = await fetch(
+    `${URL}/dnse-order-service/derivative/orders/${orderId}?accountNo=${accountNo}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: "Bearer " + jwtToken,
+        "Trading-Token": tradingToken,
+      },
+    },
+  );
+  if (res.ok) {
+    const data = await res.json();
+    return data;
+  }
+};
+
+// 5.7
+export const getDealsPhaiSinh = async (jwtToken: string, accountNo: string) => {
+  const res = await fetch(
+    `${URL}/dnse-derivative-core/deals?accountNo=${accountNo}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + jwtToken,
+      },
+    },
+  );
+  if (res.ok) {
+    const data = await res.json();
+    return data.orders;
+  }
+};
+
+// 5.8
+export const setupStopLossByDealPhaiSinh = async (
+  jwtToken: string,
+  tradingToken: string,
+  dealId: string,
+  data: any,
+) => {
+  const res = await fetch(
+    `${URL}/dnse-derivative-deal-risk/pnl-configs/${dealId}`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + jwtToken,
+        "Trading-Token": tradingToken,
+      },
+      body: JSON.stringify(data),
+    },
+  );
+  if (res.ok) {
+    const data = await res.json();
+    return data;
+  }
 };

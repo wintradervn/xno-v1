@@ -100,7 +100,17 @@ const tieuChiList = [
   },
 ];
 
-export default function Vimo() {
+export default function ViMo() {
+  return (
+    <div className="flex w-full justify-center">
+      <div>
+        <img src="/image/unfinished-feature.png" />
+      </div>
+    </div>
+  );
+}
+
+function VimoUndone() {
   const [selectedChart, setSelectedChart] = useState(["1", "2"]);
   const count = selectedChart.length;
   return (

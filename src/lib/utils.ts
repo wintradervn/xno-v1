@@ -94,3 +94,13 @@ export function getPriceColorFromOverviewData(item?: TSymbolOverviewData) {
   if (item.price === item.floor) return "text-cyan";
   return item.dayChange > 0 ? "text-green" : "text-red";
 }
+
+export function formatPriceWithType(
+  price?: number | null,
+  type?: string | null, // "Index" | "S" | "FU" | "W" | "D",
+) {
+  if (type === "S" || type === null) {
+    return formatPrice(price);
+  }
+  return formatNumber(price, 2);
+}

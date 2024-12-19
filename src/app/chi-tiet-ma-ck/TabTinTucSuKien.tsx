@@ -12,11 +12,10 @@ import useCurrentSymbol from "@/hooks/useCurrentSymbol";
 import useCompanyEvents from "@/hooks/useCompanyEvents";
 
 const SubTabTinTuc = React.memo(function SubTabTinTuc() {
-  const searchParams = useSearchParams();
-  const symbol = searchParams.get("chiTietMaCK");
+  const { currentSymbol } = useCurrentSymbol();
 
   const { data: news, isLoading } = useSWR(
-    `https://protrade.finsc.vn/api/news?symbol=${symbol}`,
+    `https://protrade.finsc.vn/api/news?symbol=${currentSymbol}`,
     async (url) => {
       const res = await fetch(url);
       const data = await res.json();

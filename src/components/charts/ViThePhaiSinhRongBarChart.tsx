@@ -5,6 +5,7 @@ import {
   TitleComponent,
   TooltipComponent,
   GridComponent,
+  LegendComponent,
 } from "echarts/components";
 import * as echarts from "echarts/core";
 echarts.use([
@@ -13,6 +14,7 @@ echarts.use([
   TitleComponent,
   TooltipComponent,
   GridComponent,
+  LegendComponent,
 ]);
 
 const label = {
@@ -115,6 +117,28 @@ const series = [
     },
     barWidth: "26px",
     symbol: "none",
+  },
+  {
+    data: [
+      10, 20, 25, 40, 40, 40, 35, 30, 25, 20, 15, 10, 5, 0, -5, -10, -15, 10,
+      -25,
+    ],
+    type: "line",
+    name: "VN30F1M",
+    color: {
+      type: "radial",
+      x: 0,
+      y: 0,
+      r: 1,
+      colorStops: [
+        { offset: 0, color: "#FBE5FF" }, // Start color (red)
+        { offset: 1, color: "#EC75FF" }, // End color (blue)
+      ],
+      global: false, // false by default
+    },
+    barWidth: "26px",
+    symbol: "circle",
+    symbolSize: 8,
   },
 ];
 

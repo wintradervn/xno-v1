@@ -1,3 +1,4 @@
+import { ROOT_API_URL } from "@/lib/constant";
 import { format } from "date-fns";
 import useSWR from "swr";
 
@@ -22,7 +23,7 @@ export default function useRRGData(symbols?: string[], dayCount = 10) {
       const res = await Promise.all(
         symbols.map((symbol: string) =>
           fetch(
-            `/api/v2/rrg?symbol=${symbol}&fromday=${fromDay}&today=${toDay}`,
+            `${ROOT_API_URL}/rrg?symbol=${symbol}&fromday=${fromDay}&today=${toDay}`,
           )
             .then((r) => r.json())
             .then((r) => r.data),

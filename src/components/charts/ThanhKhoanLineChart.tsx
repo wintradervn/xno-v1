@@ -159,7 +159,6 @@ export default function ThanhKhoanLineChart({
           tooltip: {
             trigger: "axis",
             formatter: function (params: any) {
-              console.log("🚀 ~ params", params);
               return `<div class="text-left text-[12px] flex flex-col gap-[1px] text-white">${format(new Date(+params[0].name), "HH:mm dd/MM/yyyy")}<br/><div>GTGD hôm nay: <span class="text-green font-semibold">${formatNumber(params[0].value)} tỷ</span></div></div>
               <div class="${params[0].data.lastDayValueChange > 0 ? "text-green" : params[0].data.lastDayValueChange < 0 ? "text-red" : "text-white"}"><span class="text-white">So với phiên hôm qua: </span><span class="font-semibold">${formatVeryLargeNumber(params[0].data.lastDayValueChange)}</span> (<span>${formatNumber(params[0].data.lastDayChangePercent, 2)}%</span>)</div></div>`;
             },

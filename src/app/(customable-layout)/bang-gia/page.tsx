@@ -88,6 +88,10 @@ const DragItem = React.memo(function DragItem({ item }: { item: any }) {
       return 0;
     });
   }, [item, sortField, sortDirection]);
+  console.log(
+    "stock",
+    sortedItems.find((x) => x.code === "HDB"),
+  );
 
   return (
     <Reorder.Item

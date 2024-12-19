@@ -1,10 +1,8 @@
-import PhanTichTaiChinhBarChart from "@/components/charts/PhanTichTaiChinhBarChart";
+import PhanTichTaiChinhBarChart from "@/components/charts/ChiSoTaiChinhComplexChart";
 import Button from "@/components/ui/Button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import Tabs from "@/components/ui/Tabs";
-import Documents from "@/icons/Documents";
 import { Accordion, AccordionItem, Tab } from "@nextui-org/react";
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import {
   Chart,
@@ -15,8 +13,7 @@ import {
 } from "solar-icon-set";
 
 export default function SubTabChiSoTaiChinh() {
-  const [selectedTab, setSelectedTab] = useState("chart");
-
+  const [selectedTab, setSelectedTab] = useState<string>("hangquy");
   return (
     <div className="flex h-full flex-col gap-4">
       <div className="flex flex-shrink-0 justify-between">
@@ -32,11 +29,13 @@ export default function SubTabChiSoTaiChinh() {
               tab: "h-[26px] rounded-[4px] text-sm",
               cursor: "rounded-[4px]",
             }}
+            selectedKey={selectedTab}
+            onSelectionChange={(k) => setSelectedTab(k as string)}
           >
-            <Tab title="Hàng quý"></Tab>
-            <Tab title="Hàng năm"></Tab>
+            <Tab key="hangquy" title="Hàng quý"></Tab>
+            <Tab key="hangnam" title="Hàng năm"></Tab>
           </Tabs>
-          <Tabs
+          {/* <Tabs
             color="primary"
             classNames={{
               tabList: "p-0.5 rounded-[6px]",
@@ -48,11 +47,11 @@ export default function SubTabChiSoTaiChinh() {
           >
             <Tab key="chart" title={<Chart />}></Tab>
             <Tab key="data" title={<Documents />}></Tab>
-          </Tabs>
+          </Tabs> */}
         </div>
       </div>
       <div className="flex-1">
-        {selectedTab === "data" ? <SubTabData /> : <SubTabChart />}
+        <SubTabChart selectedTime={selectedTab} />
       </div>
     </div>
   );
@@ -183,7 +182,53 @@ function SubTabData() {
   );
 }
 
-function SubTabChart() {
+const chartConfig = [
+  {
+    key: "tangtruongketquakinhdoanh",
+    name: "Tăng trưởng kết quả kinh doanh",
+    children: [
+      "Doanh thu thuần",
+      "Lợi nhuận gộp",
+      "Lợi nhuận sau thuế",
+      "Tăng trưởng Doanh thu YoY",
+      "Tăng trưởng LNST YoY",
+      "Biên lợi nhuận gộp",
+      "Biên lợi nhuận ròng",
+    ],
+  },
+  {
+    key: "phantichnguonvon",
+    name: "Phân tích nguồn vốn",
+    children: [
+      "Nợ vay",
+      "Vốn góp",
+      "LN chưa phân phối",
+      "Nợ chiếm dụng",
+      "LN cổ đông không kiểm soát",
+      "Nợ vay/Tổng nguồn vốn",
+    ],
+  },
+  {
+    key: "phantichtaisan",
+    name: "Phân tích tài sản",
+    children: [
+      "Tiền + Gửi bank",
+      "Phải thu ngắn hạn",
+      "Tồn kho",
+      "Tài sản cố định",
+      "Tài sản dài hạn",
+      "Đầu tư chứng khoán",
+      "Tài sản khác",
+      "Tiền/Tổng tài sản",
+    ],
+  },
+];
+
+function SubTabChart({ selectedTime }: { selectedTime: string }) {
+  const [selectedChart, setSelectedChart] = useState<Set<string>>(
+    new Set(["tangtruongketquakinhdoanh"]),
+  );
+
   const renderContent = () => {
     return (
       <div className="flex flex-col gap-6">
@@ -216,7 +261,7 @@ function SubTabChart() {
         </div>
         <div>
           <Button
-            className="rounded-[4px] text-sm font-semibold"
+            className="h-[28px] rounded-[4px] text-sm font-semibold"
             color="secondary"
             size="sm"
           >
@@ -224,10 +269,13 @@ function SubTabChart() {
           </Button>
         </div>
         <div className="flex flex-1">
-          <PhanTichTaiChinhBarChart />
+          <PhanTichTaiChinhBarChart
+            yearly={selectedTime !== "hangquy"}
+            selectedChart={Array.from(selectedChart)[0]}
+          />
         </div>
       </div>
-      <div className="flex max-w-[320px] flex-1 flex-col gap-2 rounded-[8px] border border-neutral-800 p-2">
+      <div className="no-scrollbar flex max-w-[320px] flex-1 flex-col gap-2 overflow-auto rounded-[8px] border border-neutral-800 p-2">
         <div className="text-caption">Chỉ số tài chính</div>
         <div className="px-2 py-5">
           <Accordion
@@ -238,27 +286,34 @@ function SubTabChart() {
                 "data-[open=true]:bg-content1 px-2 rounded-[12px] border-l-2 border-transparent data-[open=true]:border-[#67E1C0] transition-all",
               content: "p-4",
             }}
+            selectionMode="single"
+            selectedKeys={selectedChart}
+            onSelectionChange={(keys) => setSelectedChart(keys as Set<string>)}
           >
-            {[
-              "Chỉ số giá",
-              // "Khả năng thanh toán",
-              // "Chỉ số thanh toán",
-              // "Chỉ số định giá",
-              // "Cơ cấu tài sản",
-            ].map((item) => (
+            {chartConfig.map((item) => (
               <AccordionItem
                 title={
                   <div className="flex items-center gap-2 text-md font-medium">
                     <GraphNew iconStyle="Bold" size={24} />
-                    {item}
+                    {item.name}
                   </div>
                 }
                 indicator={
                   <ChevronDown style={{ transform: "rotate(90deg)" }} />
                 }
-                key={item}
+                key={item.key}
               >
-                {renderContent()}
+                <div className="flex flex-col gap-6">
+                  {item.children.map((child, index: number) => (
+                    <div
+                      className="text-lineargreen flex items-center gap-2 text-sm font-medium"
+                      key={child + index}
+                    >
+                      <div className="bg-lineargreen h-2 w-2 rounded-full"></div>
+                      <div>{child}</div>
+                    </div>
+                  ))}
+                </div>
               </AccordionItem>
             ))}
           </Accordion>

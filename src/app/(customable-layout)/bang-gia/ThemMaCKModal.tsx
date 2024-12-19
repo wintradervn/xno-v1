@@ -43,6 +43,25 @@ export default function ThemMaCKModal({
             ? item.code.toLowerCase().includes(nameString.toLocaleLowerCase())
             : true && item.secType === "S",
         )
+        .sort((a: any, b: any) => (a.volume > b.volume ? -1 : 1))
+        .sort((a, b) => {
+          const startsWithA = a.code
+            .toLowerCase()
+            .startsWith(nameString.toLowerCase());
+          const startsWithB = b.code
+            .toLowerCase()
+            .startsWith(nameString.toLowerCase());
+
+          // If both start with the search string, maintain original order
+          if (startsWithA && startsWithB) return 0;
+          // If only 'a' starts with the search string, it ranks higher
+          if (startsWithA) return -1;
+          // If only 'b' starts with the search string, it ranks higher
+          if (startsWithB) return 1;
+
+          // If neither starts with the search string, sort alphabetically
+          return a.code.localeCompare(b.code);
+        })
         .slice(0, 20) || [],
     [data, nameString],
   );

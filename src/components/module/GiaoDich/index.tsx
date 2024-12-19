@@ -12,7 +12,7 @@ import useTaiKhoanChungKhoan from "@/hooks/useTaiKhoanChungKhoan";
 import useLienKetTKCKModal from "@/hooks/useLienKetTKCK";
 import Input from "../../ui/Input";
 import { cn, formatNumber } from "@/lib/utils";
-import { Calendar, RoundedMagnifer } from "solar-icon-set";
+import { Calendar } from "solar-icon-set";
 import Button from "../../ui/Button";
 import {
   ChevronDown,
@@ -30,7 +30,7 @@ import * as Yup from "yup";
 import useMarketOverviewData from "@/hooks/useMarketOverview";
 import useDNSELoanPackages from "@/hooks/dnse/useDNSELoanPackages";
 import useDNSEUserInfo from "@/hooks/dnse/useDNSEUserInfo";
-import { postPlaceOrder } from "@/lib/dnse-api";
+import { placeOrderPhaiSinh, postPlaceOrder } from "@/lib/dnse-api";
 import { toast } from "react-toastify";
 import useDNSESucMuaBan from "@/hooks/dnse/useDNSESucMuaBan";
 import useModalsState, { MODALS } from "@/hooks/useModalsState";
@@ -38,21 +38,20 @@ import ConfirmationModal from "../../ui/ConfirmationModal";
 import ChonGoiVay from "./ChonGoiVay";
 import useSelectedGoiVay from "@/hooks/useSelectedGoiVay";
 import SearchSymbolInput from "@/components/ui/SearchSymbolInput";
+import useDNSEPhaiSinhLoanPackages from "@/hooks/dnse/useDNSEPhaiSinhLoanPackages";
 
 export default function GiaoDich() {
   const [isOpenXacNhanSmartOTP, setIsOpenXacNhanSmartOTP] = useState(false);
-  const [typingValue, setTypingValue] = useState<string>("");
   const [isOpenTKDaLienKetModal, setIsOpenTKDaLienKetModal] = useState(false);
   const [selectedSymbol, setSelectedSymbol] = useState<string>("");
   const [selectedTab, setSelectedTab] = useState<"lenhThuong" | "lenhDieuKien">(
     "lenhThuong",
   );
-  const { currentSymbol, isIndex, setCurrentSymbol } = useCurrentSymbol();
+  const { currentSymbol, isIndex } = useCurrentSymbol();
   const { jwtToken } = useTaiKhoanChungKhoan();
   const { toggle } = useLienKetTKCKModal();
   const { data: userInfo } = useDNSEUserInfo();
 
-  const { openModal: openTimKiemModal } = useModalsState(MODALS.TIM_KIEM);
   const isNotConnected = !jwtToken;
 
   const handleRequestOTP = useCallback(() => {
@@ -159,17 +158,21 @@ function TabLenhThuong({
   const { data } = useDNSEAccounts();
   const { jwtToken, tradingToken } = useTaiKhoanChungKhoan();
   const accountNo = data?.default.id;
-  const { data: loanPackages } = useDNSELoanPackages();
   const { data: marketOverviewData } = useMarketOverviewData();
   const symbolData = useMemo(
     () => marketOverviewData?.find((value) => value.code === symbol),
     [marketOverviewData, symbol],
   );
+  const isPhaiSinh = symbolData?.secType === "FU";
+
+  const { data: loanPackages } = useDNSELoanPackages();
+  const { data: phaiSinhLoanPackages } = useDNSEPhaiSinhLoanPackages();
 
   const { selectedGoiVay } = useSelectedGoiVay();
 
   const { data: sucmuasucban } = useDNSESucMuaBan({
     symbol: symbol,
+    isPhaiSinh: isPhaiSinh,
     price: symbolData?.price ? symbolData.price.toString() : "",
     loanPackageId: selectedGoiVay,
   });
@@ -255,18 +258,36 @@ function TabLenhThuong({
       accountNo,
       loanPackageId: loanPackages?.[0].id,
     };
-    postPlaceOrder(jwtToken, tradingToken, orderData)
-      .then((res) => {
-        toast.success("Đặt lệnh thành công!");
-      })
-      .catch((err) => {
-        toast.error("Đã có lỗi xảy ra: \n" + err.message);
-      })
-      .finally(() => {
-        setIsSubmittingBuy(false);
-        setIsSubmittingSell(false);
-      });
+    if (isPhaiSinh) {
+      placeOrderPhaiSinh(jwtToken, tradingToken, orderData)
+        .then((res) => {
+          toast.success("Đặt lệnh thành công!");
+        })
+        .catch((err) => {
+          toast.error("Đã có lỗi xảy ra: \n" + err.message);
+        })
+        .finally(() => {
+          setIsSubmittingBuy(false);
+          setIsSubmittingSell(false);
+        });
+    } else {
+      postPlaceOrder(jwtToken, tradingToken, orderData)
+        .then((res) => {
+          toast.success("Đặt lệnh thành công!");
+        })
+        .catch((err) => {
+          toast.error("Đã có lỗi xảy ra: \n" + err.message);
+        })
+        .finally(() => {
+          setIsSubmittingBuy(false);
+          setIsSubmittingSell(false);
+        });
+    }
   };
+
+  useEffect(() => {
+    formik.setFieldValue("price", 0);
+  }, [symbol]);
 
   return (
     <div className="flex flex-col gap-3">
@@ -353,8 +374,8 @@ function TabLenhThuong({
           name="price"
           value={formik.values.price.toString()}
           onChange={(e) => {
-            formik.handleChange(e);
             formik.setFieldTouched("price", true);
+            formik.handleChange(e);
           }}
           errorMessage={formik.touched.price && formik.errors.price}
           isInvalid={formik.touched.price && !!formik.errors.price}
@@ -369,8 +390,8 @@ function TabLenhThuong({
           name="quantity"
           value={formik.values.quantity.toString()}
           onChange={(e) => {
-            formik.handleChange(e);
             formik.setFieldTouched("quantity", true);
+            formik.handleChange(e);
           }}
           className="w-[200px]"
           min={0}
@@ -384,13 +405,14 @@ function TabLenhThuong({
               className="text-lg text-muted"
               onClick={() => {
                 let newQuantity = formik.values.quantity || 0;
+                formik.setFieldTouched("quantity", true);
+
                 if (!newQuantity || newQuantity > 100) {
                   newQuantity = (Math.floor(newQuantity / 100) - 1) * 100;
                 } else {
                   newQuantity -= 1;
                 }
-                formik.setFieldValue("quantity", newQuantity);
-                formik.setFieldTouched("quantity", true);
+                formik.setFieldValue("quantity", Math.max(0, newQuantity));
               }}
             >
               <Minus size={16} />
@@ -400,6 +422,7 @@ function TabLenhThuong({
             <button
               className="text-lg text-muted"
               onClick={() => {
+                formik.setFieldTouched("quantity", true);
                 let newQuantity = formik.values.quantity || 0;
                 if (!newQuantity || newQuantity >= 100) {
                   newQuantity = (Math.floor(newQuantity / 100) + 1) * 100;
@@ -407,7 +430,6 @@ function TabLenhThuong({
                   newQuantity += 1;
                 }
                 formik.setFieldValue("quantity", newQuantity);
-                formik.setFieldTouched("quantity", true);
               }}
             >
               <Plus size={16} />

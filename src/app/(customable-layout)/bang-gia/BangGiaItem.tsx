@@ -1,5 +1,5 @@
 import useChiTietMaCK from "@/hooks/useChiTietMaCK";
-import { formatPrice } from "@/lib/utils";
+import { cn, formatPrice, formatPriceWithType } from "@/lib/utils";
 import React from "react";
 
 const getColor = (change: number) => {
@@ -21,6 +21,14 @@ const getColor = (change: number) => {
   if (change > -6.7) return "#0FDEE6";
 };
 
+const getAnimationClass = (change: number) => {
+  if (change > 6) return "animate-changeBackgroundPurple";
+  if (change > 0) return "animate-changeBackgroundGreen";
+  if (change === 0) return "";
+  if (change > -6) return "animate-changeBackgroundRed";
+  return "animate-changeBackgroundCyan";
+};
+
 function formatVolume(num: number) {
   if (num >= 1000000) {
     return (num / 1000000).toFixed(1) + "m"; // Convert to millions
@@ -32,17 +40,29 @@ function formatVolume(num: number) {
 }
 function BangGiaItem({ stock }: { stock: any }) {
   const { setChiTietMaCK } = useChiTietMaCK();
+  if (stock.code === "HDB") {
+    console.log("stock2", stock);
+  }
   return (
     <div
-      key={stock.symbol}
-      className="flex h-[24px] cursor-pointer select-none items-center justify-between gap-2 rounded-[6px] px-2 py-1 text-xs font-semibold text-black hover:brightness-110"
+      className="rounded-[6px]"
       style={{ backgroundColor: getColor(stock.dayChangePercent) }}
       onClick={() => setChiTietMaCK(stock.code)}
     >
-      <div className="min-w-fit flex-1">{stock.code}</div>
-      <div className="flex-1">{formatPrice(stock.price)}</div>
-      <div className="flex-1">{stock.dayChangePercent?.toFixed(2)}%</div>
-      <div className="flex-1 text-end">{formatVolume(stock.dayVolume)}</div>
+      <div
+        key={stock.symbol + stock.price}
+        className={cn(
+          "flex h-[24px] cursor-pointer select-none items-center justify-between gap-2 px-2 py-1 text-xs font-semibold text-black hover:brightness-110",
+          getAnimationClass(stock.dayChangePercent),
+        )}
+      >
+        <div className="min-w-fit flex-1">{stock.code}</div>
+        <div className="flex-1">
+          {formatPriceWithType(stock.price, stock.secType)}
+        </div>
+        <div className="flex-1">{stock.dayChangePercent?.toFixed(2)}%</div>
+        <div className="flex-1 text-end">{formatVolume(stock.dayVolume)}</div>
+      </div>
     </div>
   );
 }
@@ -50,5 +70,6 @@ function BangGiaItem({ stock }: { stock: any }) {
 export default React.memo(
   BangGiaItem,
   ({ stock: prevStock }, { stock: nextStock }) =>
-    prevStock.symbol === nextStock.symbol,
+    prevStock.symbol === nextStock.symbol &&
+    prevStock.price === nextStock.price,
 );

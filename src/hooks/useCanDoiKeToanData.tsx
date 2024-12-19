@@ -1,3 +1,4 @@
+import { ROOT_API_URL } from "@/lib/constant";
 import useSWR from "swr";
 
 export interface ICanDoiKeToanItem {
@@ -48,7 +49,7 @@ export default function useCanDoiKeToanData(
     symbol ? ["candoiketoan", symbol, yearly] : null,
     async ([, symbol, yearly]) => {
       const res = await fetch(
-        `/api/v2/balancesheet?symbol=${symbol}&yearly=${yearly ? "1" : "0"}`,
+        `${ROOT_API_URL}/balancesheet?symbol=${symbol}&yearly=${yearly ? "1" : "0"}`,
       );
       const data = await res.json();
       return data.data || [];

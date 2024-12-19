@@ -6,7 +6,9 @@ import { Pen2, TrashBinTrash } from "solar-icon-set";
 import ThemDanhMucModal from "./ThemDanhMucModal";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import useFavorites from "@/hooks/useFavorites";
-import useMarketOverviewData from "@/hooks/useMarketOverview";
+import useMarketOverviewData, {
+  TSymbolOverviewData,
+} from "@/hooks/useMarketOverview";
 import BangGiaItem from "./BangGiaItem";
 import Button from "@/components/ui/Button";
 import ThemMaCKModal from "./ThemMaCKModal";
@@ -78,7 +80,7 @@ export default function MucQuanTam() {
   return (
     <div
       className={cn(
-        "flex h-full w-[200px] flex-shrink-0 flex-col items-center gap-3 rounded-[8px] bg-content1 p-2",
+        "flex h-full w-[240px] flex-shrink-0 flex-col items-center gap-3 rounded-[8px] bg-content1 p-2",
       )}
     >
       <div className="text-lineargreen relative w-full flex-shrink-0 text-center text-md font-bold">
@@ -156,26 +158,24 @@ export default function MucQuanTam() {
         <ScrollArea className="flex-1">
           <div className="flex flex-col gap-1">
             {listQuanTamData?.length ? (
-              listQuanTamData.map((item: any) => (
-                <Fragment key={item.symbol}>
+              listQuanTamData.map((item: TSymbolOverviewData) => (
+                <Fragment key={item.code}>
                   {selectedDanhMuc !== "Mục yêu thích" ? (
                     <ContextMenu>
                       <ContextMenuTrigger>
-                        <BangGiaItem key={item.symbol} stock={item} />
+                        <BangGiaItem key={item.code} stock={item} />
                       </ContextMenuTrigger>
                       <ContextMenuContent>
                         <ContextMenuItem
                           className="text-red"
-                          onClick={() =>
-                            removeMaCK(selectedDanhMuc, item.symbol)
-                          }
+                          onClick={() => removeMaCK(selectedDanhMuc, item.code)}
                         >
                           <TrashBinTrash /> Xóa khỏi danh mục
                         </ContextMenuItem>
                       </ContextMenuContent>
                     </ContextMenu>
                   ) : (
-                    <BangGiaItem key={item.symbol} stock={item} />
+                    <BangGiaItem key={item.code} stock={item} />
                   )}
                 </Fragment>
               ))

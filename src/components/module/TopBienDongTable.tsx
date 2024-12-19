@@ -5,17 +5,9 @@ import useMarketOverviewData, {
   TSymbolOverviewData,
 } from "@/hooks/useMarketOverview";
 import { useMemo, useState } from "react";
-import { Mulish } from "next/font/google";
 import Tabs from "../ui/Tabs";
 import { Tab } from "@nextui-org/react";
 import useChiTietMaCK from "@/hooks/useChiTietMaCK";
-
-const data = {
-  symbol: "VCB",
-  price: "140,415",
-  changeDay: 2.9412,
-  changeWeek: 4.9213,
-};
 
 export default function TopBienDongTable() {
   const { data } = useMarketOverviewData();

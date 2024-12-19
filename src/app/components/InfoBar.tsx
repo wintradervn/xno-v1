@@ -99,6 +99,18 @@ function IndexInfo() {
                   {formatNumber(symbolInfo?.referPrice, 2)}
                 </div>
               </div>
+              <div className="flex flex-col items-start gap-0.5">
+                <div className="text-xs text-muted">Giá thấp nhất</div>
+                <div className="text-md font-semibold text-red">
+                  {formatNumber(symbolInfo?.lowPrice, 2)}
+                </div>
+              </div>
+              <div className="flex flex-col items-start gap-0.5">
+                <div className="text-xs text-muted">Giá cao nhất</div>
+                <div className="text-md font-semibold text-green">
+                  {formatNumber(symbolInfo?.highPrice, 2)}
+                </div>
+              </div>
               {/* <div className="flex flex-col items-start gap-0.5">
                 <div className="text-xs text-muted">Giá trần</div>
                 <div className="text-md font-semibold text-purple">
@@ -249,6 +261,18 @@ function StockInfo() {
                 <div className="text-xs text-muted">Giá trần</div>
                 <div className="text-md font-semibold text-purple">
                   {formatPrice(symbolInfo?.ceiling)}
+                </div>
+              </div>
+              <div className="flex flex-col items-start gap-0.5">
+                <div className="text-xs text-muted">Giá thấp nhất</div>
+                <div className="text-md font-semibold text-red">
+                  {formatPrice(symbolInfo?.low)}
+                </div>
+              </div>
+              <div className="flex flex-col items-start gap-0.5">
+                <div className="text-xs text-muted">Giá cao nhất</div>
+                <div className="text-md font-semibold text-green">
+                  {formatPrice(symbolInfo?.high)}
                 </div>
               </div>
               <Divider />

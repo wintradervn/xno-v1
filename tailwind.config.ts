@@ -97,6 +97,18 @@ export default {
             color: "white",
           },
         },
+        changeBackgroundPurple: {
+          "0%": { backgroundColor: "hsl(var(--purple))" },
+          "100%": {
+            backgroundColor: "transparent",
+          },
+        },
+        changeBackgroundCyan: {
+          "0%": { backgroundColor: "hsl(var(--cyan))" },
+          "100%": {
+            backgroundColor: "transparent",
+          },
+        },
         changeBackgroundGreen: {
           "0%": { backgroundColor: "hsl(var(--green-bg))" },
           "100%": {
@@ -120,6 +132,8 @@ export default {
       },
       animation: {
         changeColorCyan: "changeColorCyan 1s forwards",
+        changeBackgroundPurple: "changeBackgroundPurple 1s forwards",
+        changeBackgroundCyan: "changeBackgroundCyan 1s forwards",
         changeBackgroundGreen: "changeBackgroundGreen 1s forwards",
         changeBackgroundRed: "changeBackgroundRed 1s forwards",
         "infinite-scroll": "infinite-scroll 50s linear infinite",

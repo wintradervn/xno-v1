@@ -1,3 +1,4 @@
+import { ROOT_API_URL } from "@/lib/constant";
 import { format } from "date-fns";
 import useSWR from "swr";
 
@@ -13,7 +14,7 @@ const fromDay = format(thirtyDaysAgo, "dd-MM-yyyy");
 
 export default function useIndexChartData() {
   const { data } = useSWR<IIndexChartData[]>(
-    `/api/v2/indexchart`,
+    `${ROOT_API_URL}/indexchart`,
     async (url: string) => {
       const res = await fetch(url);
       const data = await res.json();

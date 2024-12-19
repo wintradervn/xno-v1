@@ -1,3 +1,4 @@
+import { ROOT_API_URL } from "@/lib/constant";
 import useSWR from "swr";
 
 export interface IVNIndexThanhKhoanData {
@@ -16,7 +17,7 @@ export interface IVNIndexThanhKhoanData {
 
 export default function useVNIndexThanhKhoanData(type?: string) {
   const { data } = useSWR<IVNIndexThanhKhoanData[]>(
-    `/api/v2/getVnindex?type=${type || "intra"}`,
+    `${ROOT_API_URL}/getVnindex?type=${type || "intra"}`,
     async (url: string) => {
       const res = await fetch(url);
       const data = await res.json();

@@ -18,12 +18,12 @@ import useCurrentSymbol from "@/hooks/useCurrentSymbol";
 import useRightPanelState from "@/hooks/useRightPanelState";
 
 const filterData = [
-  { key: "OPEN", name: "Đang mở" },
+  { key: "OPEN, ODD_LOT", name: "Đang mở" },
   { key: "PENDING_CLOSE", name: "Chờ đóng" },
 ];
 
 export default function DanhMucSoHuu() {
-  const [filter, setFilter] = useState<string[]>(["OPEN"]);
+  const [filter, setFilter] = useState<string[]>([filterData[0].key]);
   const [symbolSearch, setSymbolSearch] = useState("");
   const [onlyBuy, setOnlyBuy] = useState(false);
   const [onlySell, setOnlySell] = useState(false);
@@ -41,7 +41,7 @@ export default function DanhMucSoHuu() {
           ((onlyBuy && item.side === "NB") ||
             (onlySell && item.side === "NS") ||
             (!onlyBuy && !onlySell)) &&
-          (!filter.length || filter.includes(item.status)),
+          (!filter.length || filter.some((f) => f.includes(item.status))),
       ) || []
     );
   }, [deals, symbolSearch, onlySell, onlyBuy, filter]);

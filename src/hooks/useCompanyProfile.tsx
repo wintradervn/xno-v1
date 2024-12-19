@@ -1,3 +1,4 @@
+import { ROOT_API_URL } from "@/lib/constant";
 import useSWR from "swr";
 
 export interface ICompanyProfile {
@@ -16,7 +17,7 @@ export interface ICompanyProfile {
 
 export default function useCompanyProfile(symbol?: string) {
   const { data, isLoading } = useSWR<ICompanyProfile>(
-    symbol ? ["/api/v2/companyprofile", symbol] : null,
+    symbol ? [`${ROOT_API_URL}/companyprofile`, symbol] : null,
     async ([url, symbol]) => {
       const res = await fetch(url + "/" + symbol);
       const data = await res.json();

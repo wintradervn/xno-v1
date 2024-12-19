@@ -1,3 +1,4 @@
+import { ROOT_API_URL } from "@/lib/constant";
 import useSWR from "swr";
 
 export interface ILuuChuyenTienTeData {
@@ -19,7 +20,7 @@ export default function useLuuChuyenTienTeData(
     symbol ? ["luuchuyentiente", symbol, yearly] : null,
     async ([, symbol, yearly]) => {
       const res = await fetch(
-        `/api/v2/cashflow?symbol=${symbol}&yearly=${yearly ? "1" : "0"}`,
+        `${ROOT_API_URL}/cashflow?symbol=${symbol}&yearly=${yearly ? "1" : "0"}`,
       );
       const data = await res.json();
       return data.data || [];
