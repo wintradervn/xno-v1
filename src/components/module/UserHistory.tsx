@@ -11,6 +11,7 @@ import useDNSEUserInfo from "@/hooks/dnse/useDNSEUserInfo";
 import DanhMucSoHuu from "./DanhMucSoHuu";
 import SoLenhThuong from "./SoLenhThuong";
 import SoLenhDieuKien from "./SoLenhDieuKien";
+import UnfinishedFeature from "../ui/UnfinishedFeature";
 
 function UserHistory() {
   const [selectedTab, setSelectedTab] = useState("solenhthuong");
@@ -43,7 +44,7 @@ function UserHistory() {
             {selectedTab === "solenhthuong" && <SoLenhThuong />}
             {selectedTab === "solenhdieukien" && <SoLenhDieuKien />}
             {selectedTab === "danhmucsohuu" && <DanhMucSoHuu />}
-            {selectedTab === "giaodichbot" && "Giao dịch bot"}
+            {selectedTab === "giaodichbot" && <UnfinishedFeature />}
           </div>
         </>
       ) : (

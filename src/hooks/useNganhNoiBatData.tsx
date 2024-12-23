@@ -1,3 +1,4 @@
+import { ROOT_API_URL } from "@/lib/constant";
 import useSWR from "swr";
 
 interface Stock {
@@ -36,7 +37,7 @@ export default function useNganhNoiBatData() {
   const { data, isLoading } = useSWR<INganhNoiBatData[]>(
     "nganh-noi-bat",
     async () => {
-      const res = await fetch("/api/nganh-noi-bat");
+      const res = await fetch(`${ROOT_API_URL}/sectorstrading`);
       const data = await res.json();
       return data?.data || [];
     },

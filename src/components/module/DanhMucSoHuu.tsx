@@ -15,7 +15,6 @@ import { useMemo, useState } from "react";
 import Input from "../ui/Input";
 import useMarketOverviewData from "@/hooks/useMarketOverview";
 import useCurrentSymbol from "@/hooks/useCurrentSymbol";
-import useRightPanelState from "@/hooks/useRightPanelState";
 
 const filterData = [
   { key: "OPEN, ODD_LOT", name: "Đang mở" },
@@ -23,7 +22,7 @@ const filterData = [
 ];
 
 export default function DanhMucSoHuu() {
-  const [filter, setFilter] = useState<string[]>([filterData[0].key]);
+  const [filter, setFilter] = useState<string[]>([]);
   const [symbolSearch, setSymbolSearch] = useState("");
   const [onlyBuy, setOnlyBuy] = useState(false);
   const [onlySell, setOnlySell] = useState(false);

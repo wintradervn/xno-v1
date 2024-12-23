@@ -39,7 +39,11 @@ export default function useKetQuaKinhDoanhData(
         `${ROOT_API_URL}/incomestatement?symbol=${symbol}&yearly=${yearly ? "1" : "0"}`,
       );
       const data = await res.json();
-      return data.data || [];
+      return (
+        data.data.sort((a: IKetQuaKinhDoanhItem, b: IKetQuaKinhDoanhItem) =>
+          a.year !== b.year ? a.year - b.year : a.quarter - b.quarter,
+        ) || []
+      );
     },
     {
       revalidateOnFocus: false,

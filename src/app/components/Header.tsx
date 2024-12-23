@@ -2,7 +2,7 @@
 
 import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -20,10 +20,17 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  PopoverContent,
+  PopoverTrigger,
 } from "@nextui-org/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Dropdown from "@/components/ui/Dropdown";
 import useModalsState, { MODALS } from "@/hooks/useModalsState";
+import Popover from "@/components/ui/Popover";
+import Input from "@/components/ui/Input";
+import { X } from "lucide-react";
+import SearchResultUI from "@/components/SearchSymbol/SearchResultUI";
+import useChiTietMaCK from "@/hooks/useChiTietMaCK";
 
 const menuItems = [
   { title: "Giao dịch", url: "/giao-dich" },
@@ -38,7 +45,14 @@ export default function Header() {
   const searchParams = useSearchParams();
   const { data } = useSession();
   const [showSignInModal, setShowSignInModal] = useState(false);
-  const { openModal: openTimKiemModal } = useModalsState(MODALS.TIM_KIEM);
+  const [searchSymbol, setSearchSymbol] = useState("");
+  const [isOpenSearch, setIsOpenSearch] = useState(false);
+  const { setChiTietMaCK } = useChiTietMaCK();
+
+  useEffect(() => {
+    setSearchSymbol("");
+  }, [isOpenSearch]);
+
   return (
     <header className="card flex h-16 items-center justify-between px-5 py-0">
       <Link href="/">
@@ -66,27 +80,58 @@ export default function Header() {
           </Link>
         ))}
       </div>
-      <div>
-        {/* <Input
-          classNames={{
-            inputWrapper: "w-[320px] h-[32px]",
-          }}
-          startContent={<RoundedMagnifer size={20} />}
-          placeholder="Tìm kiếm"
-        /> */}
-      </div>
       <div className="flex gap-2">
         <div className="mr-6 flex items-center gap-2">
-          <Button
-            isIconOnly
-            variant="light"
-            size="sm"
-            radius="full"
-            className="mr-3 !bg-transparent text-white hover:text-white"
-            onClick={openTimKiemModal}
-          >
-            <RoundedMagnifer size={20} />
-          </Button>
+          <Popover isOpen={isOpenSearch} onClose={() => setIsOpenSearch(false)}>
+            <PopoverTrigger>
+              <Button
+                isIconOnly
+                variant="light"
+                size="sm"
+                radius="full"
+                className="mr-3 !bg-transparent text-white hover:text-white"
+                onClick={() => setIsOpenSearch(true)}
+              >
+                <RoundedMagnifer size={20} />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <div className="flex max-w-[500px] flex-col gap-2">
+                <Input
+                  autoFocus
+                  placeholder="Tìm mã CK"
+                  value={searchSymbol}
+                  onValueChange={setSearchSymbol}
+                  endContent={
+                    searchSymbol && (
+                      <button
+                        className="transition-all hover:bg-neutral-800 hover:text-white/80 active:bg-neutral-700"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setSearchSymbol("");
+                        }}
+                      >
+                        <X size={20} />
+                      </button>
+                    )
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Escape") {
+                      setSearchSymbol("");
+                    }
+                  }}
+                />
+                <SearchResultUI
+                  search={searchSymbol}
+                  onSearch={(s) => {
+                    setChiTietMaCK(s);
+                    setIsOpenSearch(false);
+                  }}
+                />
+              </div>
+            </PopoverContent>
+          </Popover>
           {data ? (
             <>
               <Dropdown classNames={{ content: "min-w-0" }}>

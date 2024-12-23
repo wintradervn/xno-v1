@@ -52,7 +52,11 @@ export default function useCanDoiKeToanData(
         `${ROOT_API_URL}/balancesheet?symbol=${symbol}&yearly=${yearly ? "1" : "0"}`,
       );
       const data = await res.json();
-      return data.data || [];
+      return (
+        data.data.sort((a: ICanDoiKeToanItem, b: ICanDoiKeToanItem) =>
+          a.year !== b.year ? a.year - b.year : a.quarter - b.quarter,
+        ) || []
+      );
     },
     {
       revalidateOnFocus: false,

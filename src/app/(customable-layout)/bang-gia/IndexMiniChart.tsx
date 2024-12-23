@@ -133,7 +133,10 @@ export default function IndexMiniChart({
           </div>
         </div>
       </div>
-      <IndexLineChart symbol={indexData?.oldCode} />
+      <IndexLineChart
+        symbol={indexData?.oldCode}
+        referPrice={indexData?.referPrice}
+      />
     </div>
   );
 }

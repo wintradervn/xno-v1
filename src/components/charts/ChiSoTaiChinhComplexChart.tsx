@@ -21,92 +21,6 @@ echarts.use([
   GridComponent,
 ]);
 
-const label = {};
-
-const series = [
-  {
-    data: [50, 60, 66, 70, 60, 70, 63, 64, 75, 65, 56, 65],
-    type: "bar",
-    stack: "a",
-    name: "Góp vốn đầu tư",
-    itemStyle: {
-      color: {
-        type: "linear",
-        x: 0,
-        y: 0,
-        x2: 1,
-        y2: 0,
-        colorStops: [
-          { offset: 0, color: "#CFF8EA" },
-          { offset: 1, color: "#67E1C0" },
-        ],
-      },
-    },
-    label: label,
-    barWidth: "22px",
-  },
-  {
-    data: [50, 20, 32, 60, 20, 30, 33, 34, 35, 36, 36, 38],
-    type: "bar",
-    stack: "a",
-    name: "Tài sản cố định",
-    itemStyle: {
-      color: {
-        type: "linear",
-        x: 0,
-        y: 0,
-        x2: 1,
-        y2: 0,
-        colorStops: [
-          { offset: 0, color: "#CFDBF8" },
-          { offset: 1, color: "#2D84FF" },
-        ],
-      },
-    },
-    label: label,
-    barWidth: "22px",
-  },
-  {
-    data: [20, 40, 42, 21, 20, 20, 23, 24, 25, 26, 27, 28],
-    type: "bar",
-    stack: "a",
-    name: "Tiền mặt và tương đương tiền",
-    itemStyle: {
-      borderRadius: [6, 6, 0, 0],
-      color: {
-        type: "linear",
-        x: 0,
-        y: 0,
-        x2: 1,
-        y2: 0,
-        colorStops: [
-          { offset: 0, color: "#FFCCE2" },
-          { offset: 1, color: "#FF80B6" },
-        ],
-      },
-    },
-    label: label,
-    barWidth: "22px",
-  },
-  {
-    data: [120, 140, 142, 51, 71, 71, 70, 90, 45, 65, 70, 120],
-    type: "line",
-    color: "#F5B763",
-    symbolSize: 5,
-  },
-  {
-    data: [120, 140, 142, 121, 91, 111, 110, 70, 85, 45, 110, 120],
-    type: "line",
-    color: "#3673E8",
-    symbolSize: 5,
-  },
-  {
-    data: [120, 30, 42, 21, 41, 61, 40, 50, 65, 85, 60, 90],
-    type: "line",
-    color: "#61B8FF",
-    symbolSize: 5,
-  },
-];
 const tangtruongketquakinhdoanh = [
   {
     key: "revenue",
@@ -127,13 +41,13 @@ const tangtruongketquakinhdoanh = [
     key: "yearRevenueGrowth",
     name: "Tăng trưởng Doanh thu YoY",
     type: "line",
-    formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
+    formatLabel: (value: any) => `${formatNumber(value * 100, 2)}%`,
   },
   {
     key: "yearShareHolderIncomeGrowth",
     name: "Tăng trưởng LNST YoY",
     type: "line",
-    formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
+    formatLabel: (value: any) => `${formatNumber(value * 100, 2)}%`,
   },
   {
     key: "grossProfit/revenue",
@@ -152,6 +66,12 @@ const tangtruongketquakinhdoanh = [
 ];
 
 const phantichnguonvon = [
+  {
+    key: "asset",
+    name: "Tổng nguồn vốn",
+    type: "bar",
+    stack: "a",
+  },
   {
     key: "shortDebt+longDebt",
     name: "Nợ vay",
@@ -195,6 +115,12 @@ const phantichnguonvon = [
 ];
 
 const phantichtaisan = [
+  {
+    key: "asset",
+    name: "Tổng nguồn vốn",
+    type: "bar",
+    stack: "a",
+  },
   {
     key: "cash+longDebt",
     name: "Tiền + Gửi bank",
@@ -259,7 +185,9 @@ export default function ChiSoTaiChinhComplexChart({
   const { data } = useKetQuaKinhDoanhData(symbol, yearly);
   const { data: data2 } = useCanDoiKeToanData(symbol, yearly);
   const selectedData =
-    selectedChart === "tangtruongketquakinhdoanh" ? data : data2;
+    selectedChart === "tangtruongketquakinhdoanh"
+      ? data?.slice(yearly ? -10 : -16)
+      : data2?.slice(yearly ? -10 : -16);
 
   const series = useMemo(() => {
     if (!selectedData) return [];
@@ -271,9 +199,11 @@ export default function ChiSoTaiChinhComplexChart({
           ? phantichtaisan
           : phantichnguonvon;
 
-    const sortedData = selectedData.sort((a, b) =>
-      a.year !== b.year ? a.year - b.year : a.quarter - b.quarter,
-    );
+    const sortedData = selectedData
+      .sort((a, b) =>
+        a.year !== b.year ? a.year - b.year : a.quarter - b.quarter,
+      )
+      .slice(yearly ? -10 : -16);
 
     return config.map((configItem: any) => {
       return {
@@ -285,6 +215,7 @@ export default function ChiSoTaiChinhComplexChart({
         name: configItem.name,
         stack: configItem.stack || "",
         yAxisIndex: configItem.type === "line" ? 1 : 0,
+        smooth: true,
         tooltip: {
           valueFormatter: (value: any) =>
             configItem.formatLabel
@@ -300,6 +231,7 @@ export default function ChiSoTaiChinhComplexChart({
       <ReactEChartsCore
         echarts={echarts}
         option={{
+          animation: false,
           textStyle: { fontFamily: "Manrope, Manrope Fallback" },
           tooltip: {
             trigger: "axis",
@@ -318,17 +250,20 @@ export default function ChiSoTaiChinhComplexChart({
             // },
           },
           legend: {
-            itemWidth: 12,
+            width: 530,
+            align: "auto",
+            itemWidth: 18,
             itemHeight: 12,
-            itemGap: 25,
+            itemGap: 16,
             textStyle: {
               color: "white",
             },
             bottom: "bottom",
+            left: "center",
           },
           grid: {
             top: "10px", // Remove top padding
-            bottom: "40px", // Remove bottom padding
+            bottom: "64px", // Remove bottom padding
             left: "10px", // Optional: Adjust left padding
             right: "10px", // Optional: Adjust right padding
             containLabel: true,
@@ -343,8 +278,10 @@ export default function ChiSoTaiChinhComplexChart({
             axisTick: { show: false },
             splitLine: { show: false },
             data: yearly
-              ? selectedData?.map((item) => item.year)
-              : selectedData?.map((item) => `Q${item.quarter}/${item.year}`),
+              ? selectedData?.map((item) => item.year).slice(-10)
+              : selectedData
+                  ?.map((item) => `Q${item.quarter}/${item.year}`)
+                  .slice(-16),
           },
           yAxis: [
             {

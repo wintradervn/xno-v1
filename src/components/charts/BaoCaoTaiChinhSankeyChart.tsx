@@ -3,11 +3,16 @@ import { CanvasRenderer } from "echarts/renderers";
 import { SankeyChart } from "echarts/charts";
 import * as echarts from "echarts/core";
 import { GridComponent } from "echarts/components";
+import useCanDoiKeToanData, {
+  ICanDoiKeToanItem,
+} from "@/hooks/useCanDoiKeToanData";
+import useChiTietMaCK from "@/hooks/useChiTietMaCK";
+import { useMemo } from "react";
+
 echarts.use([CanvasRenderer, SankeyChart, GridComponent]);
 
 const leftLabel = {
   position: "left",
-  color: "#1FAD8E",
   fontWeight: "600",
   distance: 20,
   lineHeight: 18,
@@ -22,7 +27,6 @@ const topLabel = {
 
 const rightLabel = {
   position: "right",
-  color: "#1FAD8E",
   fontWeight: "600",
   distance: 20,
   lineHeight: 18,
@@ -69,314 +73,481 @@ const colorLinearPurple = {
   },
 };
 
-export default function BaoCaoTaiChinhSankeyChart() {
+const propNameToTitle: Record<string, string> = {
+  shortAsset: "Tài sản ngắn hạn",
+  cash: "Tiền mặt, vàng bạc, đá quý",
+  shortInvest: "Giá trị thuần đầu tư ngắn hạn",
+  shortReceivable: "Các khoản phải thu",
+  inventory: "Hàng tồn kho, ròng",
+  longAsset: "Tài sản dài hạn",
+  fixedAsset: "Tài sản cố định",
+  asset: "Tổng tài sản",
+  debt: "Tổng nợ phải trả",
+  shortDebt: "Vay ngắn hạn",
+  longDebt: "Vay dài hạn",
+  equity: "Vốn chủ sở hữu",
+  capital: "Vốn điều lệ",
+  centralBankDeposit: "Tiền gửi tại ngân hàng nhà nước VN",
+  otherBankDeposit: "Tiền gửi và cho vay các TCTD khác",
+  otherBankLoan: "Other bank loan",
+  stockInvest: "Chứng khoán đầu tư",
+  customerLoan: "Cho vay khách hàng",
+  badLoan: "Bad loan",
+  provision: "Dự phòng rủi ro cho vay khách hàng",
+  netCustomerLoan: "Cho vay khách hàng",
+  otherAsset: "Tài sản Có khác",
+  otherBankCredit: "Tiền gửi của các TCTD khác",
+  oweOtherBank: "Tiền vay của các TCTD khác",
+  oweCentralBank: "Các khoản nợ chính phủ và NHNN Việt Nam",
+  valuablePaper: "Phát hành giấy tờ có giá",
+  payableInterest: "Payable interest",
+  receivableInterest: "Receivable interest",
+  deposit: "Tiền gửi của khách hàng",
+  otherDebt: "Các khoản nợ khác",
+  fund: "Quỹ của tổ chức tín dụng",
+  unDistributedIncome: "Lợi nhuận chưa phân phối",
+  minorShareHolderProfit: "Lợi ích của cổ đông thiểu số",
+};
+
+const colorByName: Record<string, any> = {
+  shortAsset: {
+    label: { ...topLabel, color: "#1FAD8E" },
+    itemStyle: {
+      ...colorLinearGreen,
+    },
+  },
+  shortInvest: {
+    label: { ...leftLabel, color: "#1FAD8E" },
+    itemStyle: {
+      ...colorLinearGreen,
+    },
+  },
+  shortReceivable: {
+    label: { ...leftLabel, color: "#1FAD8E" },
+    itemStyle: {
+      ...colorLinearGreen,
+    },
+  },
+  fixedAsset: {
+    label: { ...leftLabel, color: "#1FAD8E" },
+    itemStyle: {
+      ...colorLinearGreen,
+    },
+  },
+  cash: {
+    label: { ...leftLabel, color: "#1FAD8E" },
+    itemStyle: {
+      ...colorLinearGreen,
+    },
+  },
+  inventory: {
+    label: { ...leftLabel, color: "#1FAD8E" },
+    itemStyle: {
+      ...colorLinearGreen,
+    },
+  },
+  longAsset: {
+    label: { ...leftLabel, color: "#1FAD8E" },
+    itemStyle: {
+      ...colorLinearGreen,
+    },
+  },
+  asset: {
+    label: { ...topLabel, color: "#73ADFF" },
+    itemStyle: {
+      ...colorLinearBlue,
+    },
+  },
+  shortDebt: {
+    label: { ...rightLabel, color: "#7B61FF" },
+    itemStyle: {
+      ...colorLinearPurple,
+    },
+  },
+  longDebt: {
+    label: { ...rightLabel, color: "#7B61FF" },
+    itemStyle: {
+      ...colorLinearPurple,
+    },
+  },
+  debt: {
+    label: { ...topLabel, color: "#7B61FF" },
+    itemStyle: {
+      ...colorLinearPurple,
+    },
+  },
+  capital: {
+    label: { ...rightLabel, color: "#1FAD8E" },
+    itemStyle: {
+      ...colorLinearGreen,
+    },
+  },
+  equity: {
+    label: { ...topLabel, color: "#1FAD8E" },
+    itemStyle: {
+      ...colorLinearGreen,
+    },
+  },
+  minorShareHolderProfit: {
+    label: { ...rightLabel, color: "#1FAD8E" },
+    itemStyle: {
+      ...colorLinearGreen,
+    },
+  },
+};
+
+const normalOrder = [
+  {
+    id: "assetIn",
+    children: [
+      {
+        id: "shortAsset",
+        children: [
+          {
+            id: "cash",
+          },
+          {
+            id: "shortInvest",
+          },
+          {
+            id: "shortReceivable",
+          },
+          {
+            id: "inventory",
+          },
+        ],
+      },
+      {
+        id: "longAsset",
+        children: [
+          {
+            id: "fixedAsset",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "assetOut",
+    children: [
+      {
+        id: "debt",
+        children: [
+          {
+            id: "shortDebt",
+          },
+          {
+            id: "longDebt",
+          },
+        ],
+      },
+      {
+        id: "equity",
+        children: [
+          {
+            id: "capital",
+          },
+          {
+            id: "unDistributedIncome",
+          },
+          {
+            id: "minorShareHolderProfit",
+          },
+        ],
+      },
+    ],
+  },
+];
+
+// [
+//   {
+//     name: "Phải thu ngắn hạn",
+//     label: leftLabel,
+//     itemStyle: {
+//       ...colorLinearGreen,
+//     },
+//   },
+//   {
+//     name: "Hàng tồn kho",
+//     label: leftLabel,
+//     itemStyle: {
+//       ...colorLinearGreen,
+//     },
+//   },
+//   {
+//     name: "Phải thu dài hạn",
+//     label: leftLabel,
+//     itemStyle: {
+//       ...colorLinearGreen,
+//     },
+//   },
+//   {
+//     name: "Tài sản ngắn hạn",
+//     label: {
+//       ...topLabel,
+//       color: "#1FAD8E",
+//     },
+//     itemStyle: {
+//       ...colorLinearGreen,
+//     },
+//   },
+//   {
+//     name: "Tài sản cố định",
+//     label: leftLabel,
+//     itemStyle: {
+//       ...colorLinearGreen,
+//     },
+//   },
+//   {
+//     name: "Tài sản dở dang",
+//     label: leftLabel,
+//     itemStyle: {
+//       ...colorLinearGreen,
+//     },
+//   },
+//   {
+//     name: "Đầu tư tài chính",
+//     label: leftLabel,
+//     itemStyle: {
+//       ...colorLinearGreen,
+//     },
+//   },
+//   {
+//     name: "Lợi thế thương mại",
+//     label: leftLabel,
+//     itemStyle: {
+//       ...colorLinearGreen,
+//     },
+//   },
+//   {
+//     name: "Tài sản dài hạn",
+//     label: {
+//       ...topLabel,
+//       color: "#1FAD8E",
+//     },
+//     itemStyle: {
+//       ...colorLinearGreen,
+//     },
+//   },
+//   {
+//     name: "Tổng tài sản",
+//     label: {
+//       ...topLabel,
+//       color: "#73ADFF",
+//     },
+//     itemStyle: {
+//       ...colorLinearBlue,
+//     },
+//   },
+//   {
+//     name: "Nợ ngắn hạn",
+//     label: {
+//       ...topLabel,
+//       color: "#7B61FF",
+//     },
+//     itemStyle: {
+//       ...colorLinearPurple,
+//     },
+//   },
+//   {
+//     name: "Nợ dài hạn",
+//     label: {
+//       ...topLabel,
+//       color: "#7B61FF",
+//     },
+//     itemStyle: {
+//       ...colorLinearPurple,
+//     },
+//   },
+//   {
+//     name: "Vốn chủ sở hữu",
+//     label: {
+//       ...topLabel,
+//       color: "#1FAD8E",
+//     },
+//     itemStyle: {
+//       ...colorLinearGreen,
+//     },
+//   },
+//   {
+//     name: "Tổng nợ",
+//     label: {
+//       ...topLabel,
+//       color: "#7B61FF",
+//     },
+//     itemStyle: {
+//       ...colorLinearPurple,
+//     },
+//   },
+//   {
+//     name: "Vốn điều lệ",
+//     label: { ...rightLabel },
+//     itemStyle: {
+//       ...colorLinearGreen,
+//     },
+//   },
+//   {
+//     name: "Thặng dư vốn",
+//     label: { ...rightLabel },
+//     itemStyle: {
+//       ...colorLinearGreen,
+//     },
+//   },
+//   {
+//     name: "LNST chưa phân phối",
+//     label: { ...rightLabel },
+//     itemStyle: {
+//       ...colorLinearGreen,
+//     },
+//   },
+//   {
+//     name: "Phải trả ngắn hạn",
+//     label: { ...rightLabel, color: "#7B61FF" },
+//     itemStyle: {
+//       ...colorLinearPurple,
+//     },
+//   },
+//   {
+//     name: "Người mua trả tiền trước",
+//     label: { ...rightLabel, color: "#7B61FF" },
+//     itemStyle: {
+//       ...colorLinearPurple,
+//     },
+//   },
+//   {
+//     name: "Nợ vay ngắn hạn",
+//     label: { ...rightLabel, color: "#7B61FF" },
+//     itemStyle: {
+//       ...colorLinearPurple,
+//     },
+//   },
+//   {
+//     name: "Nợ vay dài hạn",
+//     label: { ...rightLabel, color: "#7B61FF" },
+//     itemStyle: {
+//       ...colorLinearPurple,
+//     },
+//   },
+// ]
+
+export default function BaoCaoTaiChinhSankeyChart({
+  yearly,
+}: {
+  yearly: boolean;
+}) {
+  const { symbol } = useChiTietMaCK();
+
+  const { data, isLoading } = useCanDoiKeToanData(symbol, yearly);
+  const latestYearData = useMemo(() => {
+    const latestData = data?.[data.length - 1];
+    return {
+      ...latestData,
+    };
+  }, [data]);
+
+  const dataList = useMemo(() => {
+    if (!latestYearData) return [];
+    return Object.entries(latestYearData || {})
+      .map(([key, value]) => {
+        return propNameToTitle[key]
+          ? {
+              name: propNameToTitle[key],
+              label: { ...leftLabel, color: "#1FAD8E" },
+              ...colorByName[key as string],
+            }
+          : undefined;
+      })
+      .filter(Boolean);
+  }, [latestYearData]);
+
+  const links: any[] = useMemo(() => {
+    if (!latestYearData) return [];
+    const result: any[] = [];
+    const update = (parent: any, child: any, isIn: boolean) => {
+      if (child.children) {
+        child.children.forEach((item: any) => {
+          update(child, item, isIn);
+        });
+      }
+      const parentId = ["assetIn", "assetOut"].includes(parent?.id)
+        ? "asset"
+        : parent?.id;
+
+      return (
+        parent?.id &&
+        child?.id &&
+        latestYearData[child.id as keyof ICanDoiKeToanItem] &&
+        result.push({
+          source: isIn ? propNameToTitle[child.id] : propNameToTitle[parentId],
+          target: isIn ? propNameToTitle[parentId] : propNameToTitle[child.id],
+          value: latestYearData[child.id as keyof ICanDoiKeToanItem],
+        })
+      );
+    };
+    normalOrder.forEach((item) => {
+      let isIn = item.id === "assetIn";
+      update(null, item, isIn);
+    });
+    return result;
+  }, [latestYearData]);
+  console.log("links", links);
+  console.log("normalOrder", normalOrder);
+
   return (
     <div className="flex-1">
       <ReactEChartsCore
         echarts={echarts}
         option={{
+          textStyle: {
+            fontFamily: "Manrope, Manrope Fallback",
+          },
+          grid: {
+            top: "10px", // Remove top padding
+            bottom: "64px", // Remove bottom padding
+            left: "10px", // Optional: Adjust left padding
+            right: "10px", // Optional: Adjust right padding
+            containLabel: true,
+          },
           series: {
             type: "sankey",
             layout: "none",
             emphasis: {
               focus: "adjacency",
             },
-            nodeGap: 50,
-            left: "150px",
-            right: "170px",
-            data: [
-              {
-                name: "Phải thu ngắn hạn",
-                label: leftLabel,
-                itemStyle: {
-                  ...colorLinearGreen,
-                },
-              },
-              {
-                name: "Hàng tồn kho",
-                label: leftLabel,
-                itemStyle: {
-                  ...colorLinearGreen,
-                },
-              },
-              {
-                name: "Phải thu dài hạn",
-                label: leftLabel,
-                itemStyle: {
-                  ...colorLinearGreen,
-                },
-              },
-              {
-                name: "Tài sản ngắn hạn",
-                label: {
-                  ...topLabel,
-                  color: "#1FAD8E",
-                },
-                itemStyle: {
-                  ...colorLinearGreen,
-                },
-              },
-              {
-                name: "Tài sản cố định",
-                label: leftLabel,
-                itemStyle: {
-                  ...colorLinearGreen,
-                },
-              },
-              {
-                name: "Tài sản dở dang",
-                label: leftLabel,
-                itemStyle: {
-                  ...colorLinearGreen,
-                },
-              },
-              {
-                name: "Đầu tư tài chính",
-                label: leftLabel,
-                itemStyle: {
-                  ...colorLinearGreen,
-                },
-              },
-              {
-                name: "Lợi thế thương mại",
-                label: leftLabel,
-                itemStyle: {
-                  ...colorLinearGreen,
-                },
-              },
-              {
-                name: "Tài sản dài hạn",
-                label: {
-                  ...topLabel,
-                  color: "#1FAD8E",
-                },
-                itemStyle: {
-                  ...colorLinearGreen,
-                },
-              },
-              {
-                name: "Tổng tài sản",
-                label: {
-                  ...topLabel,
-                  color: "#73ADFF",
-                },
-                itemStyle: {
-                  ...colorLinearBlue,
-                },
-              },
-              {
-                name: "Nợ ngắn hạn",
-                label: {
-                  ...topLabel,
-                  color: "#7B61FF",
-                },
-                itemStyle: {
-                  ...colorLinearPurple,
-                },
-              },
-              {
-                name: "Nợ dài hạn",
-                label: {
-                  ...topLabel,
-                  color: "#7B61FF",
-                },
-                itemStyle: {
-                  ...colorLinearPurple,
-                },
-              },
-              {
-                name: "Vốn chủ sở hữu",
-                label: {
-                  ...topLabel,
-                  color: "#1FAD8E",
-                },
-                itemStyle: {
-                  ...colorLinearGreen,
-                },
-              },
-              {
-                name: "Tổng nợ",
-                label: {
-                  ...topLabel,
-                  color: "#7B61FF",
-                },
-                itemStyle: {
-                  ...colorLinearPurple,
-                },
-              },
-              {
-                name: "Vốn điều lệ",
-                label: { ...rightLabel },
-                itemStyle: {
-                  ...colorLinearGreen,
-                },
-              },
-              {
-                name: "Thặng dư vốn",
-                label: { ...rightLabel },
-                itemStyle: {
-                  ...colorLinearGreen,
-                },
-              },
-              {
-                name: "LNST chưa phân phối",
-                label: { ...rightLabel },
-                itemStyle: {
-                  ...colorLinearGreen,
-                },
-              },
-              {
-                name: "Phải trả ngắn hạn",
-                label: { ...rightLabel, color: "#7B61FF" },
-                itemStyle: {
-                  ...colorLinearPurple,
-                },
-              },
-              {
-                name: "Người mua trả tiền trước",
-                label: { ...rightLabel, color: "#7B61FF" },
-                itemStyle: {
-                  ...colorLinearPurple,
-                },
-              },
-              {
-                name: "Nợ vay ngắn hạn",
-                label: { ...rightLabel, color: "#7B61FF" },
-                itemStyle: {
-                  ...colorLinearPurple,
-                },
-              },
-              {
-                name: "Nợ vay dài hạn",
-                label: { ...rightLabel, color: "#7B61FF" },
-                itemStyle: {
-                  ...colorLinearPurple,
-                },
-              },
-            ],
-            links: [
-              {
-                source: "Phải thu ngắn hạn",
-                target: "Tài sản ngắn hạn",
-                value: 5,
-              },
-              {
-                source: "Hàng tồn kho",
-                target: "Tài sản ngắn hạn",
-                value: 25,
-              },
-              {
-                source: "Phải thu dài hạn",
-                target: "Tài sản ngắn hạn",
-                value: 4,
-              },
-              {
-                source: "Tài sản cố định",
-                target: "Tài sản dài hạn",
-                value: 2,
-              },
-              {
-                source: "Tài sản dở dang",
-                target: "Tài sản dài hạn",
-                value: 5,
-              },
-              {
-                source: "Đầu tư tài chính",
-                target: "Tài sản dài hạn",
-                value: 5,
-              },
-              {
-                source: "Lợi thế thương mại",
-                target: "Tài sản dài hạn",
-                value: 2,
-              },
-              {
-                source: "Tài sản ngắn hạn",
-                target: "Tổng tài sản",
-                value: 34,
-              },
-              {
-                source: "Tài sản dài hạn",
-                target: "Tổng tài sản",
-                value: 14,
-              },
-              {
-                source: "Tổng tài sản",
-                target: "Nợ ngắn hạn",
-                value: 14,
-              },
-              {
-                source: "Tổng tài sản",
-                target: "Nợ dài hạn",
-                value: 14,
-              },
-              {
-                source: "Tổng tài sản",
-                target: "Vốn chủ sở hữu",
-                value: 20,
-              },
-              {
-                source: "Vốn chủ sở hữu",
-                target: "Vốn điều lệ",
-                value: 10,
-              },
-              {
-                source: "Vốn chủ sở hữu",
-                target: "Thặng dư vốn",
-                value: 6,
-              },
-              {
-                source: "Vốn chủ sở hữu",
-                target: "LNST chưa phân phối",
-                value: 4,
-              },
-              {
-                source: "Nợ ngắn hạn",
-                target: "Tổng nợ",
-                value: 14,
-              },
-              {
-                source: "Nợ dài hạn",
-                target: "Tổng nợ",
-                value: 14,
-              },
-              {
-                source: "Tổng nợ",
-                target: "Phải trả ngắn hạn",
-                value: 6,
-              },
-              {
-                source: "Tổng nợ",
-                target: "Người mua trả tiền trước",
-                value: 14,
-              },
-              {
-                source: "Tổng nợ",
-                target: "Nợ vay ngắn hạn",
-                value: 4,
-              },
-              {
-                source: "Tổng nợ",
-                target: "Nợ vay dài hạn",
-                value: 4,
-              },
-            ],
+            nodeGap: 100,
+            left: "180px",
+            top: "40px",
+            right: "180px",
+            data: dataList.filter((item) =>
+              links.some(
+                (link) =>
+                  item &&
+                  (link.source === item.name || link.target === item.name),
+              ),
+            ),
+            links: links,
             label: {
               show: true,
               formatter: function (params: any) {
-                return `${params.name}
-{b|744,231}`;
+                return `{name|${params.name}}
+                {b|${params.value}}`;
               },
               rich: {
+                name: {
+                  fontSize: 12,
+                  align: "left", // Align text to the left
+                },
                 b: {
                   color: "#98A2B3",
-                  fontSize: 9,
+                  fontSize: 10,
+                  align: "left",
                 },
               },
               textStyle: {
                 fontFamily: "Manrope, Manrope Fallback",
               },
             },
+            layoutIterations: 0,
             lineStyle: {},
           },
         }}

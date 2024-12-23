@@ -17,7 +17,7 @@ export interface IVNIndexThanhKhoanData {
 
 export default function useVNIndexThanhKhoanData(type?: string) {
   const { data } = useSWR<IVNIndexThanhKhoanData[]>(
-    `${ROOT_API_URL}/getVnindex?type=${type || "intra"}`,
+    `${ROOT_API_URL}/getVnindex?type=${"5day"}`,
     async (url: string) => {
       const res = await fetch(url);
       const data = await res.json();

@@ -35,10 +35,12 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <Script src="/charting_library/charting_library.standalone.js"></Script>
-      <body className={`${manrope.className} p-1 antialiased dark`}>
+      <body
+        className={`${manrope.className} no-scrollbar p-1 antialiased dark`}
+      >
         <Suspense>
           <Providers>
-            <div className="flex h-[calc(100vh-8px)] flex-col gap-1">
+            <div className="hidden h-[calc(100vh-8px)] flex-col gap-1 sm:flex">
               <Header />
               <InfoBar />
               <MucYeuThich />
@@ -60,6 +62,12 @@ export default async function RootLayout({
                 theme="dark"
                 bodyClassName="text-sm"
                 toastClassName=""
+              />
+            </div>
+            <div className="flex min-h-screen w-full items-center justify-center bg-card sm:hidden">
+              <img
+                src="/image/unfinished-feature-mobile.png"
+                className="h-full w-full object-contain"
               />
             </div>
           </Providers>

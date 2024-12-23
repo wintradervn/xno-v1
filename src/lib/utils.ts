@@ -51,6 +51,7 @@ export function formatVeryLargeNumber(
   number: number | string | undefined | null,
   showFull?: boolean,
   fixed?: number,
+  noNgTy?: boolean,
 ) {
   if (!number) {
     return "-";
@@ -61,7 +62,7 @@ export function formatVeryLargeNumber(
 
   const symbol = +number >= 0 ? "" : "-";
 
-  if (Math.abs(+number) >= 1000_000_000_000) {
+  if (!noNgTy && Math.abs(+number) >= 1000_000_000_000) {
     return (
       symbol +
       (Math.abs(+number) / 1000_000_000_000).toFixed(fixed ?? 2) +
@@ -70,11 +71,15 @@ export function formatVeryLargeNumber(
   }
   if (Math.abs(+number) >= 10_000_000) {
     return (
-      symbol + (Math.abs(+number) / 1000_000_000).toFixed(fixed ?? 2) + " tỷ"
+      symbol +
+      formatNumber(Math.abs(+number) / 1000_000_000, fixed ?? 2) +
+      " tỷ"
     );
   }
   if (showFull && Math.abs(+number) >= 10_000) {
-    return symbol + (Math.abs(+number) / 1000_000).toFixed(fixed ?? 2) + " tr";
+    return (
+      symbol + formatNumber(Math.abs(+number) / 1000_000, fixed ?? 2) + " tr"
+    );
   }
   return showFull ? symbol + formatNumber(number) : "<0.01 tỷ";
 }

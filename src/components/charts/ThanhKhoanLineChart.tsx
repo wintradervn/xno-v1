@@ -1,18 +1,18 @@
 import ReactEChartsCore from "echarts-for-react/lib/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { LineChart } from "echarts/charts";
+import { UniversalTransition } from "echarts/features";
 import {
   TitleComponent,
   ToolboxComponent,
   TooltipComponent,
   GridComponent,
-  VisualMapComponent,
+  LegendComponent,
 } from "echarts/components";
 import * as echarts from "echarts/core";
 import { IVNIndexThanhKhoanData } from "@/hooks/useVNIndexThanhKhoanData";
 import { useMemo } from "react";
-import { format } from "date-fns";
-import { formatNumber, formatVeryLargeNumber } from "@/lib/utils";
+import { formatVeryLargeNumber } from "@/lib/utils";
 echarts.use([
   TitleComponent,
   ToolboxComponent,
@@ -20,7 +20,8 @@ echarts.use([
   GridComponent,
   LineChart,
   CanvasRenderer,
-  VisualMapComponent,
+  UniversalTransition,
+  LegendComponent,
 ]);
 
 const data = [
@@ -99,54 +100,30 @@ const seriesData2 = data2.map(function (item: any, index: number) {
 });
 
 export default function ThanhKhoanLineChart({
-  data,
+  timeList,
+  data1,
+  data2,
+  data2Name,
 }: {
-  data?: IVNIndexThanhKhoanData[];
+  timeList: string[];
+  data1?: IVNIndexThanhKhoanData[];
+  data2?: { time: string; allValue: number }[];
+  data2Name?: string;
 }) {
-  const valueList = useMemo(() => {
-    if (!data) return [];
+  const valueList1 = useMemo(() => {
+    if (!data1) return [];
 
-    const valueByTime = data.reduce((acc: any, item) => {
-      const time = new Date(item.time).getTime().toString();
-      if (!acc[time]) {
-        acc[time] = item.allValue;
-      }
-      return acc;
-    }, {});
-
-    return data.map((item) => {
-      const time = new Date(item.time).getTime();
-      // Nếu thứ 2 thì trừ 3 ngày để lấy dữ liệu thứ 6
-      const weekDay = new Date(time).getDay();
-
-      const lastDayValue =
-        valueByTime[
-          (time - (weekDay === 1 ? 72 : 24) * (60 * 60 * 1000)).toString()
-        ];
-      let lastDayValueChange = undefined;
-      let lastDayChangePercent = undefined;
-
-      if (lastDayValue) {
-        lastDayValueChange = item.allValue - lastDayValue;
-        lastDayChangePercent = (lastDayValueChange / lastDayValue) * 100;
-      }
-
-      return {
-        ...item,
-        value: item.allValue / 1000_000_000,
-        lastDayValueChange,
-        lastDayChangePercent,
-      };
+    return data1.map((item) => {
+      return [item.time, item.allValue];
     });
-  }, [data]);
+  }, [data1]);
+  const valueList2 = useMemo(() => {
+    if (!data2) return [];
 
-  const timeList = useMemo(() => {
-    if (!data) return [];
-
-    return data.map((item) => {
-      return new Date(item.time).getTime();
+    return data2.map((item) => {
+      return [item.time, item.allValue];
     });
-  }, [data]);
+  }, [data2]);
 
   return (
     <div className="flex-1">
@@ -156,24 +133,42 @@ export default function ThanhKhoanLineChart({
           textStyle: {
             fontFamily: "Manrope, Manrope Fallback",
           },
+          legend: {
+            width: 510,
+            align: "auto",
+            itemWidth: 18,
+            itemHeight: 12,
+            itemGap: 16,
+            textStyle: {
+              color: "white",
+            },
+            bottom: "bottom",
+            left: "center",
+          },
           tooltip: {
             trigger: "axis",
             formatter: function (params: any) {
-              return `<div class="text-left text-[12px] flex flex-col gap-[1px] text-white">${format(new Date(+params[0].name), "HH:mm dd/MM/yyyy")}<br/><div>GTGD hôm nay: <span class="text-green font-semibold">${formatNumber(params[0].value)} tỷ</span></div></div>
-              <div class="${params[0].data.lastDayValueChange > 0 ? "text-green" : params[0].data.lastDayValueChange < 0 ? "text-red" : "text-white"}"><span class="text-white">So với phiên hôm qua: </span><span class="font-semibold">${formatVeryLargeNumber(params[0].data.lastDayValueChange)}</span> (<span>${formatNumber(params[0].data.lastDayChangePercent, 2)}%</span>)</div></div>`;
+              return `<div class="text-left text-[12px] flex flex-col gap-[1px] text-white">${params[0]?.name || params[1]?.name || "9:15"}<br/>
+              <div>${data2Name}: <span class="text-green font-semibold">${formatVeryLargeNumber(params[0]?.value[1], true, 2, true)}</span></div>
+              <div>GTGD hôm nay: <span class="text-green font-semibold">${formatVeryLargeNumber(params[1]?.value[1], true, 2, true)}</span></div>
+              ${params[0]?.value[1] && params[1]?.value[1] ? `<div>Thay đổi: <span class="${params[1].value[1] - params[0].value[1] > 0 ? "text-green" : "text-red"} font-semibold">${formatVeryLargeNumber(params[1].value[1] - params[0].value[1], true, 2, true)}</span></div>` : ""}
+              </div>
+             `;
             },
+
             backgroundColor: "#0A0E14", // Tooltip background color
             borderWidth: 0, // Tooltip border width
             padding: 10, // Tooltip padding
             textStyle: {
               fontFamily: "Manrope, Manrope Fallback",
               fontSize: 12,
+              color: "white",
             },
           },
           grid: {
             top: "10px", // Remove top padding
-            bottom: "10px", // Remove bottom padding
-            left: "0px", // Optional: Adjust left padding
+            bottom: "35px", // Remove bottom padding
+            left: "10px", // Optional: Adjust left padding
             right: "0px", // Optional: Adjust right padding
             containLabel: true,
           },
@@ -182,9 +177,6 @@ export default function ThanhKhoanLineChart({
             axisLine: { show: false },
             data: timeList,
             axisLabel: {
-              formatter: function (value: any) {
-                return format(new Date(+value), "HH:mm");
-              },
               color: "#98A2B3",
               fontSize: 8,
             },
@@ -193,6 +185,7 @@ export default function ThanhKhoanLineChart({
           },
           yAxis: {
             type: "value", // Set y-axis to value type
+
             splitLine: {
               lineStyle: {
                 color: "#1D2939",
@@ -201,49 +194,49 @@ export default function ThanhKhoanLineChart({
             axisLabel: {
               color: "#98A2B3",
               fontSize: 10,
+              formatter: function (value: any) {
+                return value ? formatVeryLargeNumber(value, true, 0, true) : 0;
+              },
             },
           },
-          visualMap: [
-            {
-              min: -100,
-              max: 0,
-              dimension: 1, // Map the second dimension (value) to color
-              inRange: {
-                type: "linear", // Use linear gradient
-                color: ["#E5115232", "#E51152"], // Gradient from red to green
-              },
-              show: false,
-              seriesIndex: 0,
-            },
-            {
-              min: 0,
-              max: 100,
-              dimension: 1, // Map the second dimension (value) to color
-              inRange: {
-                type: "", // Use linear gradient
-                color: ["#1FAD8E", "#1FAD8E32"], // Gradient from red to green
-              },
-              show: false,
-              seriesIndex: 0,
-            },
-            {
-              min: 0,
-              max: 0.1,
-              dimension: 1, // Map the second dimension (value) to color
-              inRange: {
-                color: ["#E51152", "#1FAD8E"], // Color gradient from red to green
-              },
-              show: false,
-              seriesIndex: 1,
-            },
-          ],
           series: [
             {
-              name: "Giao dịch hôm nay",
+              name: data2Name,
               type: "line",
               symbol: "none",
-              symbolSize: 5,
               sampling: "average",
+              color: "#7B61FF",
+              lineStyle: {
+                width: 1,
+                color: "#7B61FF",
+              },
+              areaStyle: {
+                opacity: 0.6,
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  {
+                    offset: 0,
+                    color: "rgb(123, 97, 255,1)",
+                  },
+                  {
+                    offset: 1,
+                    color: "rgb(123, 97, 255,0.2)",
+                  },
+                ]),
+              },
+              data: valueList2,
+              smooth: true,
+              z: 5,
+              zLevel: 5,
+              connectNulls: true,
+              emphasis: {
+                focus: "series",
+              },
+            },
+            {
+              name: "GTGD hôm nay",
+              type: "line",
+              symbol: "none",
+              color: "#1FAD8E",
               lineStyle: {
                 width: 1,
                 color: "#1FAD8E",
@@ -251,43 +244,24 @@ export default function ThanhKhoanLineChart({
               areaStyle: {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                   {
-                    offset: 1,
-                    color: "rgb(31, 173, 142, 0.8)",
+                    offset: 0,
+                    color: "rgb(31, 173, 142, 1)",
                   },
                   {
-                    offset: 0,
-                    color: "rgb(31, 173, 142, 0.1)",
+                    offset: 1,
+                    color: "rgb(31, 173, 142, 0.2)",
                   },
                 ]),
               },
-              data: valueList,
-              smooth: false,
+              data: valueList1,
+              smooth: true,
+              z: 6,
+              zLevel: 6,
+              connectNulls: true,
+              emphasis: {
+                focus: "series",
+              },
             },
-            // {
-            //   name: "Giao dịch hôm qua",
-            //   type: "line",
-            //   smooth: true,
-            //   symbol: "none",
-            //   symbolSize: 5,
-            //   sampling: "average",
-            //   lineStyle: {
-            //     width: 1,
-            //     color: "#7B61FF",
-            //   },
-            //   areaStyle: {
-            //     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            //       {
-            //         offset: 1,
-            //         color: "rgb(123, 97, 255,0.5)",
-            //       },
-            //       {
-            //         offset: 0,
-            //         color: "rgb(123, 97, 255,0.1)",
-            //       },
-            //     ]),
-            //   },
-            //   data: seriesData2,
-            // },
           ],
         }}
         notMerge={true}

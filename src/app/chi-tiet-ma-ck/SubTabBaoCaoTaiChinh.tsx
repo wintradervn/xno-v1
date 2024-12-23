@@ -11,6 +11,7 @@ import CanDoiKeToanTable from "./CanDoiKeToanTable";
 import KetQuaKinhDoanhTable from "./KetQuaKinhDoanhTable";
 import LuuChuyenTienTeTable from "./LuuChuyenTienTeTable";
 import useLuuChuyenTienTeData from "@/hooks/useLuuChuyenTienTeData";
+import useMarketOverviewData from "@/hooks/useMarketOverview";
 
 export default function SubTabBaoCaoTaiChinh() {
   const [selectedTab, setSelectedTab] = useState("chart");
@@ -18,6 +19,15 @@ export default function SubTabBaoCaoTaiChinh() {
   const [yearly, setYearly] = useState(false);
 
   const { symbol } = useChiTietMaCK();
+  const { data: overviewData } = useMarketOverviewData();
+
+  const isBankSymbol = useMemo(() => {
+    if (!overviewData) return false;
+    const item = overviewData.find((item) => item.code === symbol);
+    if (!item || !item.sectors) return false;
+    return item.sectors.includes("bank");
+  }, [overviewData, symbol]);
+
   const { data: candoiketoanData, isLoading: isLoadingCandoiketoan } =
     useCanDoiKeToanData(symbol, yearly);
   const { data: ketquakinhdoanhData, isLoading: isLoadingKetquakinhdoanh } =
@@ -49,44 +59,22 @@ export default function SubTabBaoCaoTaiChinh() {
           <div className="text-sm font-semibold">Tỷ VND</div>
         </div>
         <div className="flex items-center gap-3">
-          {/* <div className="flex items-center gap-3 text-sm text-muted">
-            Từ{" "}
-            <Select
-              variant="bordered"
-              placeholder="--"
-              size="sm"
-              className="w-[92px]"
-              selectedKeys={range[0] && [range[0]]}
-              onChange={(e: any) =>
-                setRange((prev) => [e.target.value, prev[1]])
-              }
-              aria-label="from-date"
+          {selectedData === "candoiketoan" && !isBankSymbol && (
+            <Tabs
+              color="primary"
+              classNames={{
+                tabList: "p-0.5 rounded-[6px]",
+                tab: "h-[26px] rounded-[4px] px-2",
+                cursor: "rounded-[4px]",
+              }}
+              selectedKey={selectedTab}
+              onSelectionChange={(k) => setSelectedTab(k as string)}
             >
-              {fromDateOptions?.map((item) => (
-                <SelectItem key={item} value={item}>
-                  {item}
-                </SelectItem>
-              ))}
-            </Select>
-            đến
-            <Select
-              variant="bordered"
-              placeholder="--"
-              size="sm"
-              className="w-[92px]"
-              selectedKeys={range[1] && [range[1]]}
-              aria-label="to-date"
-              onChange={(e: any) =>
-                setRange((prev) => [prev[0], e.target.value])
-              }
-            >
-              {toDateOptions?.map((item) => (
-                <SelectItem key={item} value={item}>
-                  {item}
-                </SelectItem>
-              ))}
-            </Select>
-          </div> */}
+              <Tab key="chart" title={<Chart />}></Tab>
+              <Tab key="data" title={<Documents />}></Tab>
+            </Tabs>
+          )}
+
           <Tabs
             color="default"
             classNames={{
@@ -100,48 +88,32 @@ export default function SubTabBaoCaoTaiChinh() {
             <Tab key="hangquy" title="Hàng quý"></Tab>
             <Tab key="hangnam" title="Hàng năm"></Tab>
           </Tabs>
-          <Tabs
-            color="primary"
-            classNames={{
-              tabList: "p-0.5 rounded-[6px]",
-              tab: "h-[26px] rounded-[4px] px-2",
-              cursor: "rounded-[4px]",
-            }}
-            selectedKey={selectedTab}
-            onSelectionChange={(k) => setSelectedTab(k as string)}
-          >
-            <Tab key="chart" title={<Chart />}></Tab>
-            <Tab key="data" title={<Documents />}></Tab>
-          </Tabs>
         </div>
       </div>
       <div className="flex flex-1">
-        {selectedTab === "data" ? (
-          <>
-            {selectedData === "candoiketoan" && (
-              <CanDoiKeToanTable
-                data={candoiketoanData}
-                isLoading={isLoadingCandoiketoan}
-                yearly={yearly}
-              />
-            )}
-            {selectedData === "ketquakinhdoanh" && (
-              <KetQuaKinhDoanhTable
-                data={ketquakinhdoanhData}
-                isLoading={isLoadingKetquakinhdoanh}
-                yearly={yearly}
-              />
-            )}
-            {selectedData === "luuchuyentiente" && (
-              <LuuChuyenTienTeTable
-                data={luuchuyentienteData}
-                isLoading={isLoadingluuchuyentiente}
-                yearly={yearly}
-              />
-            )}
-          </>
-        ) : (
-          <BaoCaoTaiChinhSankeyChart />
+        {selectedData === "candoiketoan" &&
+          (selectedTab === "data" || isBankSymbol ? (
+            <CanDoiKeToanTable
+              data={candoiketoanData}
+              isLoading={isLoadingCandoiketoan}
+              yearly={yearly}
+            />
+          ) : (
+            <BaoCaoTaiChinhSankeyChart yearly={yearly} />
+          ))}
+        {selectedData === "ketquakinhdoanh" && (
+          <KetQuaKinhDoanhTable
+            data={ketquakinhdoanhData}
+            isLoading={isLoadingKetquakinhdoanh}
+            yearly={yearly}
+          />
+        )}
+        {selectedData === "luuchuyentiente" && (
+          <LuuChuyenTienTeTable
+            data={luuchuyentienteData}
+            isLoading={isLoadingluuchuyentiente}
+            yearly={yearly}
+          />
         )}
       </div>
     </div>

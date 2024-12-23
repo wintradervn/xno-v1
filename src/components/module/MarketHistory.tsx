@@ -1,4 +1,4 @@
-import { cn, formatPrice } from "@/lib/utils";
+import { cn, formatPrice, getPriceColorFromOverviewData } from "@/lib/utils";
 import { ScrollArea } from "../ui/scroll-area";
 import useCurrentSymbol from "@/hooks/useCurrentSymbol";
 import useSWR from "swr";
@@ -10,11 +10,20 @@ import Popover from "../ui/Popover";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { useDebounce } from "use-debounce";
+import useMarketOverviewData from "@/hooks/useMarketOverview";
 
 function MarketHistory({ symbol }: { symbol?: string }) {
   const { currentSymbol } = useCurrentSymbol();
   const [isOpen, setIsOpen] = useState(false);
   const [klFilter, setKlFilter] = useState<number | null>(null);
+  const { data: marketOverviewData } = useMarketOverviewData();
+  const symbolData = useMemo(
+    () =>
+      marketOverviewData?.find(
+        (item) => item.code === (symbol || currentSymbol),
+      ),
+    [marketOverviewData, currentSymbol, symbol],
+  );
 
   const debouncedKlFilter = useDebounce(klFilter, 300)[0];
 
@@ -130,7 +139,15 @@ function MarketHistory({ symbol }: { symbol?: string }) {
                 >
                   <div
                     className={cn(
-                      item.side === "B" ? "text-green" : "text-red",
+                      symbolData?.referPrice
+                        ? item.price > symbolData?.referPrice
+                          ? "text-green"
+                          : item.price < symbolData.referPrice
+                            ? "text-red"
+                            : "text-yellow"
+                        : "text-yellow",
+                      item.price === symbolData?.ceiling && "text-purple",
+                      item.price === symbolData?.floor && "text-cyan",
                     )}
                   >
                     {formatPrice(item.price)}

@@ -4,23 +4,9 @@ import useLocCoPhieuState from "@/hooks/useLocCoPhieuState";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { RoundedMagnifer } from "solar-icon-set";
-import { LOC_CO_PHIEU } from "../constant";
+import { NHOM_TIEU_CHI_LOC, TTieuChiLoc } from "../constant";
 import { Check, X } from "lucide-react";
-
-const chitieuList = [
-  { id: "1", name: "Nhóm thông dụng" },
-  { id: "2", name: "Nhóm tăng trưởng" },
-  { id: "3", name: "Nhóm tỷ suất tài chính" },
-  { id: "4", name: "Biến động giá & khối lượng" },
-];
-
-const defaultListFilter = [
-  "giaTriGiaoDichRong",
-  "bienDoGiaDongCua",
-  "pe",
-  "vonhoa",
-  "esp",
-];
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function ChonChiTieu() {
   const [selectedChiTieu, setSelectedChiTieu] = useState("1");
@@ -47,7 +33,7 @@ export default function ChonChiTieu() {
       </div>
       <div className="card flex flex-1 gap-5 rounded-tl-none p-3">
         <div className="flex flex-col items-center gap-1">
-          {chitieuList.map((chitieu) => (
+          {NHOM_TIEU_CHI_LOC.map((chitieu) => (
             <div
               className={cn(
                 "font-semibold= w-full cursor-pointer select-none rounded-[8px] border-l-2 p-2 text-md transition-all",
@@ -67,36 +53,40 @@ export default function ChonChiTieu() {
             placeholder="Tìm điều kiện cho bộ lọc"
             startContent={<RoundedMagnifer size={20} />}
           />
-          {defaultListFilter?.map((filterId: string) => (
-            <div
-              className={cn(
-                "group flex cursor-pointer items-center justify-between p-1 text-sm font-bold hover:text-purple",
-                listFilter?.includes(filterId)
-                  ? "text-linearpurple"
-                  : "text-muted",
-              )}
-              key={filterId}
-              onClick={() => addFilter(filterId)}
-            >
-              <div>{LOC_CO_PHIEU[filterId].name}</div>
-              {listFilter?.includes(filterId) && (
-                <div
-                  className="cursor-pointer text-fuchsia-200 hover:text-white"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    removeFilter(filterId);
-                  }}
-                >
-                  <X
-                    size={16}
-                    className="hidden text-muted hover:text-red hover:brightness-125 group-hover:block"
-                  />
-                  <Check size={16} className="group-hover:hidden" />
-                </div>
-              )}
-            </div>
-          ))}
+          <ScrollArea className="max-h-[260px] pr-2">
+            {NHOM_TIEU_CHI_LOC.find(
+              (item) => item.id === selectedChiTieu,
+            )?.list?.map((filter: TTieuChiLoc) => (
+              <div
+                className={cn(
+                  "group flex cursor-pointer items-center justify-between px-1 py-2 text-sm font-bold hover:bg-content1/60 hover:text-purple",
+                  listFilter?.includes(filter.key)
+                    ? "text-linearpurple"
+                    : "text-muted",
+                )}
+                key={filter.key}
+                onClick={() => addFilter(filter.key)}
+              >
+                <div>{filter.name}</div>
+                {listFilter?.includes(filter.key) && (
+                  <div
+                    className="cursor-pointer text-fuchsia-200 hover:text-white"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      removeFilter(filter.key);
+                    }}
+                  >
+                    <X
+                      size={16}
+                      className="hidden text-muted hover:text-red hover:brightness-125 group-hover:block"
+                    />
+                    <Check size={16} className="group-hover:hidden" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </ScrollArea>
         </div>
       </div>
     </div>

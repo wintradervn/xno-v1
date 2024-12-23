@@ -33,8 +33,10 @@ echarts.use([
 
 export default function IndexLineChart({
   symbol = "VNIndex",
+  referPrice,
 }: {
   symbol?: string;
+  referPrice?: number;
 }) {
   const { data } = useIndexChartData();
   const indexData = useMemo(() => {
@@ -208,11 +210,11 @@ export default function IndexLineChart({
                 color: "#10B969",
               },
               {
-                gt: averageData,
+                gt: referPrice,
                 color: "#10B969",
               },
               {
-                lte: averageData,
+                lte: referPrice,
                 color: "#FF4D4F",
               },
               {
@@ -234,21 +236,25 @@ export default function IndexLineChart({
               yAxisIndex: 0,
               xAxisIndex: 0,
               data: formattedData,
-              markLine: {
-                animation: false,
-                silent: true,
-                symbol: "none",
-                lineStyle: {
-                  color: "yellow",
-                  dash: [5, 5],
-                },
-                label: {
-                  show: false,
-                },
-                data: [
-                  { type: "average", name: "Average" }, // This will automatically calculate the average
-                ],
-              },
+              markLine: referPrice
+                ? {
+                    animation: false,
+                    silent: true,
+                    symbol: "none",
+                    lineStyle: {
+                      color: "yellow",
+                      dash: [5, 5],
+                    },
+                    label: {
+                      show: false,
+                    },
+                    data: [
+                      {
+                        yAxis: referPrice,
+                      },
+                    ],
+                  }
+                : undefined,
               connectNulls: true,
             },
             {

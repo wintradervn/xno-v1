@@ -8,7 +8,7 @@ import { Tooltip } from "@nextui-org/react";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { DoubleAltArrowLeft, DoubleAltArrowRight } from "solar-icon-set";
 
-const propNameToTitle: Record<string, string> = {
+export const propNameToTitle: Record<string, string> = {
   shortAsset: "Tài sản ngắn hạn",
   cash: "Tiền mặt, vàng bạc, đá quý",
   shortInvest: "Giá trị thuần đầu tư ngắn hạn",
@@ -45,7 +45,7 @@ const propNameToTitle: Record<string, string> = {
   minorShareHolderProfit: "Lợi ích của cổ đông thiểu số",
 };
 
-const normalOrder = [
+export const normalOrder = [
   {
     id: "asset1",
     children: [
@@ -103,66 +103,6 @@ const normalOrder = [
             id: "minorShareHolderProfit",
           },
         ],
-      },
-    ],
-  },
-  {
-    id: "khac",
-    title: "Khác",
-    children: [
-      {
-        id: "centralBankDeposit",
-      },
-      {
-        id: "otherBankDeposit",
-      },
-      {
-        id: "otherBankLoan",
-      },
-      {
-        id: "stockInvest",
-      },
-      {
-        id: "customerLoan",
-      },
-      {
-        id: "badLoan",
-      },
-      {
-        id: "provision",
-      },
-      {
-        id: "netCustomerLoan",
-      },
-      {
-        id: "otherAsset",
-      },
-      {
-        id: "otherBankCredit",
-      },
-      {
-        id: "oweOtherBank",
-      },
-      {
-        id: "oweCentralBank",
-      },
-      {
-        id: "valuablePaper",
-      },
-      {
-        id: "payableInterest",
-      },
-      {
-        id: "receivableInterest",
-      },
-      {
-        id: "deposit",
-      },
-      {
-        id: "otherDebt",
-      },
-      {
-        id: "fund",
       },
     ],
   },

@@ -4,6 +4,7 @@ import { Tab } from "@nextui-org/react";
 import DefaultLoader from "@/components/ui/DefaultLoader";
 import SubTabHoSoCongTy from "./SubTabHoSoCongTy";
 import SubTabCoDongGDNoiBo from "./SubTabCoDongGDNoiBo";
+import UnfinishedFeature from "@/components/ui/UnfinishedFeature";
 
 export default function TabThongTinDoanhNghiep() {
   const [state, setState] = useState("hosocongty");
@@ -29,8 +30,10 @@ export default function TabThongTinDoanhNghiep() {
       </div>
       <div className="flex flex-1 flex-col">
         <Suspense fallback={<DefaultLoader />}>
-          {state === "hosocongty" && <SubTabHoSoCongTy />}
-          {state === "codong" && <SubTabCoDongGDNoiBo />}
+          {/* {state === "hosocongty" && <SubTabHoSoCongTy />} */}
+          {state === "hosocongty" && <UnfinishedFeature />}
+          {/* {state === "codong" && <SubTabCoDongGDNoiBo />} */}
+          {state === "codong" && <UnfinishedFeature />}
         </Suspense>
       </div>
     </div>

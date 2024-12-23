@@ -98,6 +98,10 @@ export default function TopBienDongTable() {
                   {item.dayChangePercent.toFixed(2)}%
                 </div>
               ),
+            sortFn: (a: TSymbolOverviewData, b: TSymbolOverviewData) =>
+              a.dayChangePercent &&
+              b.dayChangePercent &&
+              a.dayChangePercent - b.dayChangePercent,
           },
           {
             title: "% Tuần này",
@@ -119,6 +123,10 @@ export default function TopBienDongTable() {
                   {item.weekChangePercent.toFixed(2)}%
                 </div>
               ),
+            sortFn: (a: TSymbolOverviewData, b: TSymbolOverviewData) =>
+              a.weekChangePercent &&
+              b.weekChangePercent &&
+              a.weekChangePercent - b.weekChangePercent,
           },
         ]}
         data={filteredData}

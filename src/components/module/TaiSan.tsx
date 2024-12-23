@@ -15,6 +15,7 @@ import useDNSEDeals, { TDNSEDeal } from "@/hooks/dnse/useDNSEDeals";
 import Table from "../ui/Table";
 import { useMemo } from "react";
 import useMarketOverviewData from "@/hooks/useMarketOverview";
+import useDNSEPhaiSinhDeals from "@/hooks/dnse/useDNSEPhaiSinhDeals";
 
 function TaiSan() {
   return (
@@ -38,181 +39,7 @@ function TaiSan() {
           <TabCoPhieu />
         </Tab>
         <Tab key="phaisinh" title="Phái sinh">
-          <div className="flex h-full flex-col">
-            <div className="mb-1 grid grid-cols-5 text-sm">
-              <div className="font-semibold text-muted">Mã CK</div>
-              <div className="text-end font-semibold text-muted">Giá vốn</div>
-              <div className="text-end font-semibold text-muted">+/- (%)</div>
-              <div className="text-end font-semibold text-muted">Lãi/Lỗ</div>
-              <div className="text-end font-semibold text-muted">KLGD</div>
-            </div>
-            <ScrollArea className="min-h-0 flex-1">
-              <div>
-                <div className="grid grid-cols-5 py-1 text-sm">
-                  <div className="font-semibold">DGW</div>
-                  <div className="text-end font-semibold">47.1</div>
-                  <div className="text-end font-semibold text-red">-7.01%</div>
-                  <div className="text-end font-semibold text-red">
-                    -7.250.000đ
-                  </div>
-                  <div className="text-end font-semibold">141.942</div>
-                </div>
-                <div className="grid grid-cols-5 py-1 text-sm">
-                  <div className="font-semibold">TCB</div>
-                  <div className="text-end font-semibold">24.05</div>
-                  <div className="text-end font-semibold text-green">+0.83</div>
-                  <div className="text-end font-semibold text-green">
-                    +200.000đ
-                  </div>
-                  <div className="text-end font-semibold">141.942</div>
-                </div>
-                <div className="grid grid-cols-5 py-1 text-sm">
-                  <div className="font-semibold">DGW</div>
-                  <div className="text-end font-semibold">47.1</div>
-                  <div className="text-end font-semibold text-red">-7.01%</div>
-                  <div className="text-end font-semibold text-red">
-                    -7.250.000đ
-                  </div>
-                  <div className="text-end font-semibold">141.942</div>
-                </div>
-                <div className="grid grid-cols-5 py-1 text-sm">
-                  <div className="font-semibold">TCB</div>
-                  <div className="text-end font-semibold">24.05</div>
-                  <div className="text-end font-semibold text-green">+0.83</div>
-                  <div className="text-end font-semibold text-green">
-                    +200.000đ
-                  </div>
-                  <div className="text-end font-semibold">141.942</div>
-                </div>
-                <div className="grid grid-cols-5 py-1 text-sm">
-                  <div className="font-semibold">DGW</div>
-                  <div className="text-end font-semibold">47.1</div>
-                  <div className="text-end font-semibold text-red">-7.01%</div>
-                  <div className="text-end font-semibold text-red">
-                    -7.250.000đ
-                  </div>
-                  <div className="text-end font-semibold">141.942</div>
-                </div>
-                <div className="grid grid-cols-5 py-1 text-sm">
-                  <div className="font-semibold">TCB</div>
-                  <div className="text-end font-semibold">24.05</div>
-                  <div className="text-end font-semibold text-green">+0.83</div>
-                  <div className="text-end font-semibold text-green">
-                    +200.000đ
-                  </div>
-                  <div className="text-end font-semibold">141.942</div>
-                </div>
-                <div className="grid grid-cols-5 py-1 text-sm">
-                  <div className="font-semibold">DGW</div>
-                  <div className="text-end font-semibold">47.1</div>
-                  <div className="text-end font-semibold text-red">-7.01%</div>
-                  <div className="text-end font-semibold text-red">
-                    -7.250.000đ
-                  </div>
-                  <div className="text-end font-semibold">141.942</div>
-                </div>
-                <div className="grid grid-cols-5 py-1 text-sm">
-                  <div className="font-semibold">TCB</div>
-                  <div className="text-end font-semibold">24.05</div>
-                  <div className="text-end font-semibold text-green">+0.83</div>
-                  <div className="text-end font-semibold text-green">
-                    +200.000đ
-                  </div>
-                  <div className="text-end font-semibold">141.942</div>
-                </div>
-                <div className="grid grid-cols-5 py-1 text-sm">
-                  <div className="font-semibold">DGW</div>
-                  <div className="text-end font-semibold">47.1</div>
-                  <div className="text-end font-semibold text-red">-7.01%</div>
-                  <div className="text-end font-semibold text-red">
-                    -7.250.000đ
-                  </div>
-                  <div className="text-end font-semibold">141.942</div>
-                </div>
-                <div className="grid grid-cols-5 py-1 text-sm">
-                  <div className="font-semibold">TCB</div>
-                  <div className="text-end font-semibold">24.05</div>
-                  <div className="text-end font-semibold text-green">+0.83</div>
-                  <div className="text-end font-semibold text-green">
-                    +200.000đ
-                  </div>
-                  <div className="text-end font-semibold">141.942</div>
-                </div>
-                <div className="grid grid-cols-5 py-1 text-sm">
-                  <div className="font-semibold">DGW</div>
-                  <div className="text-end font-semibold">47.1</div>
-                  <div className="text-end font-semibold text-red">-7.01%</div>
-                  <div className="text-end font-semibold text-red">
-                    -7.250.000đ
-                  </div>
-                  <div className="text-end font-semibold">141.942</div>
-                </div>
-                <div className="grid grid-cols-5 py-1 text-sm">
-                  <div className="font-semibold">TCB</div>
-                  <div className="text-end font-semibold">24.05</div>
-                  <div className="text-end font-semibold text-green">+0.83</div>
-                  <div className="text-end font-semibold text-green">
-                    +200.000đ
-                  </div>
-                  <div className="text-end font-semibold">141.942</div>
-                </div>
-                <div className="grid grid-cols-5 py-1 text-sm">
-                  <div className="font-semibold">DGW</div>
-                  <div className="text-end font-semibold">47.1</div>
-                  <div className="text-end font-semibold text-red">-7.01%</div>
-                  <div className="text-end font-semibold text-red">
-                    -7.250.000đ
-                  </div>
-                  <div className="text-end font-semibold">141.942</div>
-                </div>
-                <div className="grid grid-cols-5 py-1 text-sm">
-                  <div className="font-semibold">TCB</div>
-                  <div className="text-end font-semibold">24.05</div>
-                  <div className="text-end font-semibold text-green">+0.83</div>
-                  <div className="text-end font-semibold text-green">
-                    +200.000đ
-                  </div>
-                  <div className="text-end font-semibold">141.942</div>
-                </div>
-                <div className="grid grid-cols-5 py-1 text-sm">
-                  <div className="font-semibold">DGW</div>
-                  <div className="text-end font-semibold">47.1</div>
-                  <div className="text-end font-semibold text-red">-7.01%</div>
-                  <div className="text-end font-semibold text-red">
-                    -7.250.000đ
-                  </div>
-                  <div className="text-end font-semibold">141.942</div>
-                </div>
-                <div className="grid grid-cols-5 py-1 text-sm">
-                  <div className="font-semibold">TCB</div>
-                  <div className="text-end font-semibold">24.05</div>
-                  <div className="text-end font-semibold text-green">+0.83</div>
-                  <div className="text-end font-semibold text-green">
-                    +200.000đ
-                  </div>
-                  <div className="text-end font-semibold">141.942</div>
-                </div>
-                <div className="grid grid-cols-5 py-1 text-sm">
-                  <div className="font-semibold">DGW</div>
-                  <div className="text-end font-semibold">47.1</div>
-                  <div className="text-end font-semibold text-red">-7.01%</div>
-                  <div className="text-end font-semibold text-red">
-                    -7.250.000đ
-                  </div>
-                  <div className="text-end font-semibold">141.942</div>
-                </div>
-                <div className="grid grid-cols-5 py-1 text-sm">
-                  <div className="font-semibold">TCB</div>
-                  <div className="text-end font-semibold">24.05</div>
-                  <div className="text-end font-semibold text-green">+0.83</div>
-                  <div className="text-end font-semibold text-green">
-                    +200.000đ
-                  </div>
-                  <div className="text-end font-semibold">141.942</div>
-                </div>
-              </div>
-            </ScrollArea>
-          </div>
+          <TabPhaiSinh />
         </Tab>
       </Tabs>
     </div>
@@ -376,13 +203,134 @@ function TabCoPhieu() {
                 : "text-white",
           )}
         >
-          {`${formatNumber(tongLaiLo.laiLo)} | (${tongLaiLo.lailoPercent.toFixed(2)}%)`}
+          {tongLaiLo &&
+            `${formatNumber(tongLaiLo.laiLo)} (${tongLaiLo.lailoPercent.toFixed(2)}%)`}
         </div>
       </div>
       <Table
         columns={columns}
         data={data}
         noDataText="Chưa có mã cổ phiếu nào"
+      />
+      <div>
+        <Button
+          className="bg-linearpurple h-[28px] rounded-[4px] text-sm font-medium text-black"
+          onClick={toggle}
+        >
+          Chi tiết danh mục
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function TabPhaiSinh() {
+  const { data } = useDNSEPhaiSinhDeals();
+  const { toggle } = useChiTietDanhMucModal();
+  const { data: marketOverview } = useMarketOverviewData();
+
+  const tongLaiLo = useMemo(() => {
+    const result = { laiLo: 0, tongVon: 0, lailoPercent: 0 };
+    if (!data) return result;
+    data.forEach((item) => {
+      if (item.status !== "OPEN") return;
+      result.laiLo +=
+        item.unrealizedProfit -
+        item.estimateRemainTaxAndFee -
+        item.unrealizedOpenTaxAndFee -
+        item.currentInterest;
+      result.lailoPercent = result.tongVon
+        ? (100 * result.laiLo) / result.tongVon
+        : 0;
+    });
+    return result;
+  }, [data]);
+  const columns = [
+    {
+      key: "name",
+      title: "Mã",
+      render: (item: TDNSEDeal) => {
+        const symbolData = marketOverview?.find((i) => i.code === item.symbol);
+        return (
+          <div
+            className={cn(
+              "flex items-center gap-2",
+              getPriceColorFromOverviewData(symbolData),
+            )}
+          >
+            <div className="relative h-4 w-4 overflow-hidden rounded-full bg-white">
+              <img
+                src={`https://finance.vietstock.vn/image/${item.symbol}`}
+                className="h-full w-full object-contain"
+              />
+            </div>
+            {item.symbol}
+          </div>
+        );
+      },
+    },
+    {
+      key: "giavon",
+      title: "Giá vốn",
+      className: "text-end",
+      render: (item: TDNSEDeal) => formatPrice(item.averageCostPrice),
+    },
+    {
+      key: "lailo%",
+      title: "+/- (%)",
+      className: "text-end",
+
+      render: (item: TDNSEDeal) => {
+        const value =
+          (item.unrealizedProfit -
+            item.estimateRemainTaxAndFee -
+            item.unrealizedOpenTaxAndFee -
+            item.currentInterest) /
+          item.accumulateSecure;
+        const color =
+          value > 0 ? "text-green" : value < 0 ? "text-red" : "text-white";
+        return (
+          <div className={color}>
+            {value
+              ? (value * 100).toLocaleString("en-US", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                }) + "%"
+              : ""}
+          </div>
+        );
+      },
+    },
+    {
+      key: "lailo",
+      title: "Lãi/Lỗ",
+      className: "text-end",
+      render: (item: TDNSEDeal) => {
+        const value =
+          item.unrealizedProfit -
+          item.estimateRemainTaxAndFee -
+          item.unrealizedOpenTaxAndFee -
+          item.currentInterest;
+        const color =
+          value > 0 ? "text-green" : value < 0 ? "text-red" : "text-white";
+        return (
+          <div className={color}>
+            {value
+              ? Math.round(value).toLocaleString("en-US", {
+                  maximumFractionDigits: 0,
+                })
+              : ""}
+          </div>
+        );
+      },
+    },
+  ];
+  return (
+    <div className="flex h-full flex-col gap-3">
+      <Table
+        columns={columns}
+        data={data}
+        noDataText="Chưa có deal phái sinh nào"
       />
       <div>
         <Button

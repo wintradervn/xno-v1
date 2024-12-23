@@ -2,11 +2,14 @@
 import FavoriteStarButton from "@/components/FavoriteStarButton";
 import DefaultLoader from "@/components/ui/DefaultLoader";
 import Divider from "@/components/ui/Divider";
+import Input from "@/components/ui/Input";
+import Popover from "@/components/ui/Popover";
 import Tabs from "@/components/ui/Tabs";
 import useChiTietMaCK from "@/hooks/useChiTietMaCK";
 import useCompanyEvents from "@/hooks/useCompanyEvents";
 import useCompanyProfile from "@/hooks/useCompanyProfile";
-import useModalsState, { MODALS } from "@/hooks/useModalsState";
+import useCurrentSymbol from "@/hooks/useCurrentSymbol";
+import SearchResultUI from "@/components/SearchSymbol/SearchResultUI";
 import useSymbolInfo from "@/hooks/useSymbolInfo";
 import DoubleArrow from "@/icons/DoubleArrow";
 import { cn, formatPrice } from "@/lib/utils";
@@ -15,15 +18,18 @@ import {
   ModalBody,
   ModalContent,
   ModalHeader,
+  PopoverContent,
+  PopoverTrigger,
   Tab,
 } from "@nextui-org/react";
-import { ChevronDown } from "lucide-react";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { ChevronDown, X } from "lucide-react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import { AltArrowDown } from "solar-icon-set";
+import UnfinishedFeature from "@/components/ui/UnfinishedFeature";
 
 const TabTongQuan = lazy(() => import("./TabTongQuan"));
 const TabPhanTichTaiChinh = lazy(() => import("./TabPhanTichTaiChinh"));
 const TabPhanTichKyThuat = lazy(() => import("./TabPhanTichKyThuat"));
-const TabBaoCaoPhanTich = lazy(() => import("./TabBaoCaoPhanTich"));
 const TabThongTinDoanhNghiep = lazy(() => import("./TabThongTinDoanhNghiep"));
 const TabTinTucSuKien = lazy(() => import("./TabTinTucSuKien"));
 
@@ -31,8 +37,8 @@ export default function ChiTietMaCKModal() {
   const [debouncedSymbol, setDebouncedSymbol] = useState("");
   const { setChiTietMaCK, symbol, isOpen } = useChiTietMaCK();
   const { data: symbolInfo, isLoading } = useSymbolInfo(symbol || "");
+  console.log("🚀 ~ ChiTietMaCKModal ~ symbolInfo:", symbolInfo);
   const [selectedTab, setSelectedTab] = useState("tongquan");
-  const { openModal } = useModalsState(MODALS.TIM_KIEM);
 
   // Prefetch
   useCompanyProfile(debouncedSymbol);
@@ -53,7 +59,7 @@ export default function ChiTietMaCKModal() {
     setSelectedTab("tongquan");
   }, [debouncedSymbol]);
 
-  if (!debouncedSymbol || !symbolInfo) return null;
+  // if (!debouncedSymbol || !symbolInfo) return null;
   return (
     <Modal
       isOpen={isOpen}
@@ -66,35 +72,7 @@ export default function ChiTietMaCKModal() {
       <ModalContent>
         <ModalHeader>
           <div className="flex h-[48px] items-center gap-8">
-            <div>
-              <div
-                className="flex cursor-pointer items-center gap-3"
-                onClick={() => openModal()}
-              >
-                <div className="h-6 w-6 overflow-hidden rounded-full bg-white">
-                  <img
-                    src={`https://finance.vietstock.vn/image/${symbol}`}
-                    className="h-full w-full object-contain"
-                  />
-                </div>
-                <div className="text-[20px] font-semibold leading-[44px] text-white">
-                  {symbol}
-                </div>
-                <div>
-                  <ChevronDown />
-                </div>
-                <div>
-                  <FavoriteStarButton symbol={symbol} />
-                </div>
-                <div className="flex items-center gap-2 text-medium">
-                  <div className="bg-lineargreen h-2 w-2 rounded-full"></div>
-                  <div className="text-lineargreen">{symbolInfo?.exchange}</div>
-                </div>
-              </div>
-              <div className="h-5 flex-shrink-0 text-sm font-normal">
-                {symbolInfo?.FullName}
-              </div>
-            </div>
+            <SearchPopover symbolInfo={symbolInfo} />
             {isLoading ? (
               <div className="h-[48px]"></div>
             ) : (
@@ -148,7 +126,7 @@ export default function ChiTietMaCKModal() {
                 <Divider />
                 <div className="flex flex-col items-start gap-0.5">
                   <div className="text-xs text-muted">Giá trị khớp</div>
-                  {symbolInfo.totalTradingValue ? (
+                  {symbolInfo?.totalTradingValue ? (
                     <div className="text-md font-semibold">
                       {(
                         symbolInfo.totalTradingValue / 1000_000_000
@@ -166,7 +144,7 @@ export default function ChiTietMaCKModal() {
                 </div>
                 <div className="flex flex-col items-start gap-0.5">
                   <div className="text-xs text-muted">Khối lượng khớp</div>
-                  {symbolInfo.totalTrading ? (
+                  {symbolInfo?.totalTrading ? (
                     <div className="text-md font-semibold">
                       {(+symbolInfo.totalTrading).toLocaleString()}
                     </div>
@@ -176,7 +154,7 @@ export default function ChiTietMaCKModal() {
                 </div>
                 <div className="flex flex-col items-start gap-0.5">
                   <div className="text-xs text-muted">NN mua ròng</div>
-                  {symbolInfo.foreignBuy ? (
+                  {symbolInfo?.foreignBuy ? (
                     <div className="text-md font-semibold text-green">
                       {(+symbolInfo.foreignBuy).toLocaleString()}
                     </div>
@@ -186,7 +164,7 @@ export default function ChiTietMaCKModal() {
                 </div>
                 <div className="flex flex-col items-start gap-0.5">
                   <div className="text-xs text-muted">NN bán ròng</div>
-                  {symbolInfo.foreignSell ? (
+                  {symbolInfo?.foreignSell ? (
                     <div className="text-md font-semibold text-red">
                       {(+symbolInfo.foreignSell).toLocaleString()}
                     </div>
@@ -229,7 +207,8 @@ export default function ChiTietMaCKModal() {
               {selectedTab === "tongquan" && <TabTongQuan />}
               {selectedTab === "phantichtaichinh" && <TabPhanTichTaiChinh />}
               {selectedTab === "phantichkythuat" && <TabPhanTichKyThuat />}
-              {selectedTab === "baocaophantich" && <TabBaoCaoPhanTich />}
+              {/* {selectedTab === "baocaophantich" && <TabBaoCaoPhanTich />} */}
+              {selectedTab === "baocaophantich" && <UnfinishedFeature />}
               {selectedTab === "thongtindoanhnghiep" && (
                 <TabThongTinDoanhNghiep />
               )}
@@ -239,5 +218,93 @@ export default function ChiTietMaCKModal() {
         </ModalBody>
       </ModalContent>
     </Modal>
+  );
+}
+
+function SearchPopover({ symbolInfo }: { symbolInfo: any }) {
+  const { currentSymbol, setCurrentSymbol } = useCurrentSymbol();
+  const [searchSymbol, setSearchSymbol] = useState("");
+  const [isOpenSearch, setIsOpenSearch] = useState(false);
+
+  useEffect(() => {
+    setSearchSymbol("");
+  }, [currentSymbol, isOpenSearch]);
+
+  const handleClearSearch = useCallback(() => {
+    setSearchSymbol("");
+  }, []);
+
+  return (
+    <Popover
+      placement="bottom-start"
+      isOpen={isOpenSearch}
+      onOpenChange={setIsOpenSearch}
+    >
+      <PopoverTrigger>
+        <div>
+          <div className="flex cursor-pointer items-center gap-3">
+            <div className="h-6 w-6 overflow-hidden rounded-full bg-white">
+              <img
+                src={`https://finance.vietstock.vn/image/${currentSymbol}`}
+                className="h-full w-full object-contain"
+              />
+            </div>
+            <div className="text-[20px] font-semibold leading-[44px] text-white">
+              {currentSymbol}
+            </div>
+            <div>
+              <ChevronDown />
+            </div>
+            <div>
+              <FavoriteStarButton symbol={currentSymbol} />
+            </div>
+            <div className="flex items-center gap-2 text-medium">
+              <div className="bg-lineargreen h-2 w-2 rounded-full"></div>
+              <div className="text-lineargreen">{symbolInfo?.exchange}</div>
+            </div>
+          </div>
+          <div className="h-5 flex-shrink-0 text-sm font-normal">
+            {symbolInfo?.FullName}
+          </div>
+        </div>
+      </PopoverTrigger>
+      <PopoverContent autoFocus>
+        <div className="flex max-w-[500px] flex-col gap-2">
+          <Input
+            autoFocus
+            placeholder="Tìm mã CK"
+            value={searchSymbol}
+            onValueChange={setSearchSymbol}
+            endContent={
+              searchSymbol && (
+                <button
+                  className="transition-all hover:bg-neutral-800 hover:text-white/80 active:bg-neutral-700"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setSearchSymbol("");
+                  }}
+                >
+                  <X size={20} />
+                </button>
+              )
+            }
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                handleClearSearch();
+              }
+            }}
+          />
+          <SearchResultUI
+            search={searchSymbol}
+            onSearch={(s) => {
+              setCurrentSymbol(s);
+              setIsOpenSearch(false);
+            }}
+            hiddenIndex
+          />
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }

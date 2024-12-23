@@ -31,3 +31,9 @@ export const INDEXES_INFO: Record<
 
 export const ROOT_API_URL =
   process.env.NODE_ENV === "development" ? "/api/v2" : "https://api.xno.vn/v2";
+
+export const mapExchangeToIndex: Record<string, string> = {
+  HOSE: "VNINDEX",
+  HNX: "HNX",
+  UPCOM: "UPCOM",
+};

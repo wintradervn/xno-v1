@@ -88,17 +88,13 @@ const DragItem = React.memo(function DragItem({ item }: { item: any }) {
       return 0;
     });
   }, [item, sortField, sortDirection]);
-  console.log(
-    "stock",
-    sortedItems.find((x) => x.code === "HDB"),
-  );
 
   return (
     <Reorder.Item
       value={item.id}
       key={item.name}
       className={cn(
-        "flex min-w-[200px] flex-col rounded-[8px] bg-content1 p-2",
+        "flex min-w-[200px] flex-1 flex-col rounded-[8px] bg-content1 p-2",
       )}
       dragListener={false}
       dragControls={controls}
@@ -298,7 +294,7 @@ export default function BangGia() {
                 as="ul"
                 axis="x"
                 onReorder={setColumnsOrder}
-                className="flex gap-1"
+                className="flex w-full gap-1"
                 values={columnsOrder}
               >
                 <AnimatePresence initial={false}>

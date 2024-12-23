@@ -7,6 +7,7 @@ import DoubleArrow from "@/icons/DoubleArrow";
 import { Plus } from "lucide-react";
 import Button from "../ui/Button";
 import useChiTietDanhMucModal from "@/hooks/useChiTietDanhMucModal";
+import UnfinishedFeature from "../ui/UnfinishedFeature";
 
 const EdgeSvg = () => (
   <svg
@@ -43,7 +44,7 @@ export default function QuanTriDanhMucModal() {
           </div>
         </ModalHeader>
         <ModalBody className="px-4 pb-4 pt-0">
-          <Input
+          {/* <Input
             classNames={{ inputWrapper: "bg-card" }}
             startContent={<RoundedMagnifer size={20} />}
             size="sm"
@@ -247,7 +248,8 @@ export default function QuanTriDanhMucModal() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
+          <UnfinishedFeature />
         </ModalBody>
       </ModalContent>
     </Modal>

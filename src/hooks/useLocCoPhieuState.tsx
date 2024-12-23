@@ -1,36 +1,43 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import usePersistStore from "./usePersistStore";
 
-const defaultListFilter = [
-  "giaTriGiaoDichRong",
-  "bienDoGiaDongCua",
-  "pe",
-  "vonhoa",
-];
-const useLocCoPhieuStore = create(
-  persist(
-    (set) => ({
-      listFilter: ["giaTriGiaoDichRong", "bienDoGiaDongCua", "pe", "vonhoa"],
-      addFilter: (filter: string) =>
-        set((state: any) =>
-          state.listFilter.includes(filter)
-            ? { istFilter: [...state.listFilter] }
-            : { listFilter: [...state.listFilter, filter] },
-        ),
-      removeFilter: (filter: string) =>
-        set((state: any) => ({
-          listFilter: state.listFilter.filter(
-            (item: string) => item !== filter,
-          ),
-        })),
-      setDefaultFilter: () => set({ listFilter: defaultListFilter }),
+function removeEmptyArrayProperties(obj: any) {
+  Object.keys(obj).forEach((key) => {
+    if (Array.isArray(obj[key]) && obj[key].length === 0) {
+      delete obj[key];
+    }
+  });
+  return obj;
+}
+
+const useLocCoPhieuStore = create((set) => ({
+  listFilter: ["NGANH", "KL1KLTB", "NGANHAN", "TRUNGHAN", "DAIHAN", "SUCMANH"],
+  filterState: {},
+  addFilter: (filter: string) =>
+    set((state: any) =>
+      state.listFilter.includes(filter)
+        ? { listFilter: [...state.listFilter] }
+        : { listFilter: [...state.listFilter, filter] },
+    ),
+  removeFilter: (filter: string) =>
+    set((state: any) => {
+      const newState = { ...state.filterState };
+      delete newState[filter];
+
+      return {
+        listFilter: state.listFilter.filter((item: string) => item !== filter),
+        filterState: newState,
+      };
     }),
-    {
-      name: "locCoPhieuListFilter",
-    },
-  ),
-);
+  setFilter(state: any) {
+    set({ filterState: state, listFilter: Object.keys(state) });
+  },
+  updateFilterState: (newFilter: any) =>
+    set({
+      filterState: removeEmptyArrayProperties(newFilter),
+    }),
+  setDefaultFilter: () => set({ filterState: {} }),
+}));
 
 export default function useLocCoPhieuState() {
   const state = usePersistStore(useLocCoPhieuStore, (state: any) => state);

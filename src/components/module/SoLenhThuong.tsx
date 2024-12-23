@@ -2,6 +2,8 @@ import Table from "../ui/Table";
 import { cn, formatPrice } from "@/lib/utils";
 import useDNSEOrders, { IOrder } from "@/hooks/dnse/useDNSEOrders";
 import { format } from "date-fns";
+import Button from "../ui/Button";
+import { Copy, Pen, TrashBinTrash } from "solar-icon-set";
 
 const columns = [
   {
@@ -59,12 +61,24 @@ const columns = [
   {
     key: "trangthai",
     title: "Trạng thái",
-    render: (item: IOrder) => <div>--</div>,
+    render: (item: IOrder) => <div>{item.orderStatus}</div>,
   },
   {
     key: "action",
     title: "",
-    render: (item: IOrder) => <div>--</div>,
+    render: (item: IOrder) => (
+      <div className="flex">
+        <Button isIconOnly>
+          <Copy />
+        </Button>
+        <Button isIconOnly>
+          <Pen />
+        </Button>
+        <Button isIconOnly>
+          <TrashBinTrash />
+        </Button>
+      </div>
+    ),
   },
 ];
 

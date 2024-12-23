@@ -3,6 +3,7 @@ import Tabs from "@/components/ui/Tabs";
 import { Tab } from "@nextui-org/react";
 import { lazy, Suspense, useState } from "react";
 import SubTabCoSo from "./SubTabCoSo";
+import UnfinishedFeature from "@/components/ui/UnfinishedFeature";
 
 const BienDong = lazy(() => import("./SubTabBienDong"));
 const NuocNgoai = lazy(() => import("./SubTabNuocNgoai"));
@@ -103,7 +104,8 @@ export default function TabThiTruong() {
           {selectedTab === "tudoanh" && <TuDoanh exchange={selectedExchange} />}
           {selectedTab === "thanhtoan" && <ThanhKhoan />}
           {selectedTab === "tacdong" && <TacDongToiIndex />}
-          {selectedTab === "dongtienndt" && <SubTabCoSo />}
+          {/* {selectedTab === "dongtienndt" && <SubTabCoSo />} */}
+          {selectedTab === "dongtienndt" && <UnfinishedFeature />}
         </Suspense>
       </div>
     </div>

@@ -5,6 +5,8 @@ import Tabs from "@/components/ui/Tabs";
 import { Tab } from "@nextui-org/react";
 import { Suspense, useState } from "react";
 import SubTabTongQuanPTKT from "./SubTabTongQuanPTKT";
+import UnfinishedFeature from "@/components/ui/UnfinishedFeature";
+import SubTabXuHuong from "./SubTabXuHuong";
 
 export default function TabPhanTichKyThuat() {
   const [state, setState] = useState("tongquan");
@@ -23,7 +25,8 @@ export default function TabPhanTichKyThuat() {
             selectedKey={state}
             onSelectionChange={(k) => setState(k as string)}
           >
-            <Tab key="tongquan" title="Tổng quan"></Tab>
+            {/* <Tab key="tongquan" title="Tổng quan"></Tab> */}
+            <Tab key="xuhuong" title="Xu hướng"></Tab>
             <Tab key="bieudorrg" title="Biểu đồ RRG"></Tab>
             <Tab key="dongtienthongminh" title="Dòng tiền thông minh"></Tab>
           </Tabs>
@@ -31,9 +34,11 @@ export default function TabPhanTichKyThuat() {
       </div>
       <div className="flex flex-1 flex-col">
         <Suspense fallback={<DefaultLoader />}>
-          {state === "tongquan" && <SubTabTongQuanPTKT />}
+          {/* {state === "tongquan" && <SubTabTongQuanPTKT />} */}
+          {state === "xuhuong" && <SubTabXuHuong />}
           {state === "bieudorrg" && <RRGChart />}
-          {state === "dongtienthongminh" && <DongTienThongMinhLineChart />}
+          {/* {state === "dongtienthongminh" && <DongTienThongMinhLineChart />} */}
+          {state === "dongtienthongminh" && <UnfinishedFeature />}
         </Suspense>
       </div>
     </div>

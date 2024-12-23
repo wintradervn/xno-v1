@@ -3,6 +3,7 @@ import Tabs from "../ui/Tabs";
 import Button from "../ui/Button";
 import { ScrollArea } from "../ui/scroll-area";
 import GiaoDich from "./GiaoDich";
+import UnfinishedFeature from "../ui/UnfinishedFeature";
 
 function BotItem() {
   return (
@@ -104,7 +105,8 @@ export default function Trade() {
           <GiaoDich />
         </Tab>
         <Tab key="botgiaodich" title="Bot giao dịch">
-          <BotGiaoDich />
+          {/* <BotGiaoDich /> */}
+          <UnfinishedFeature />
         </Tab>
       </Tabs>
     </div>

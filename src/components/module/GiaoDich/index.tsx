@@ -39,6 +39,7 @@ import ChonGoiVay from "./ChonGoiVay";
 import useSelectedGoiVay from "@/hooks/useSelectedGoiVay";
 import SearchSymbolInput from "@/components/ui/SearchSymbolInput";
 import useDNSEPhaiSinhLoanPackages from "@/hooks/dnse/useDNSEPhaiSinhLoanPackages";
+import UnfinishedFeature from "@/components/ui/UnfinishedFeature";
 
 export default function GiaoDich() {
   const [isOpenXacNhanSmartOTP, setIsOpenXacNhanSmartOTP] = useState(false);
@@ -132,7 +133,8 @@ export default function GiaoDich() {
                 onRequestOTP={handleRequestOTP}
               />
             )}
-            {selectedTab === "lenhDieuKien" && <TabLenhDieuKien />}
+            {/* {selectedTab === "lenhDieuKien" && <TabLenhDieuKien />} */}
+            {selectedTab === "lenhDieuKien" && <UnfinishedFeature />}
           </>
         )}
       </div>

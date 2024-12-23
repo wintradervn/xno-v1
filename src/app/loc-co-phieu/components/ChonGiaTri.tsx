@@ -2,12 +2,48 @@
 import Input from "@/components/ui/Input";
 import useLocCoPhieuState from "@/hooks/useLocCoPhieuState";
 import { RefreshCircle } from "solar-icon-set";
-import { LOC_CO_PHIEU } from "../constant";
+import {
+  TIEU_CHI_LOC_NHOM_BIEN_DONG_GIA,
+  TIEU_CHI_LOC_NHOM_DIEM_SO_TAI_CHINH,
+  TIEU_CHI_LOC_NHOM_KY_THUAT_CHUYEN_SAU,
+  TIEU_CHI_LOC_NHOM_THONG_DUNG,
+  TTieuChiLoc,
+} from "../constant";
 import { X } from "lucide-react";
 import Button from "@/components/ui/Button";
+import { Select, SelectItem } from "@/components/ui/Select";
+import { use, useEffect, useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function ChonGiaTri() {
-  const { listFilter, removeFilter, setDefaultFilter } = useLocCoPhieuState();
+  const {
+    listFilter,
+    removeFilter,
+    setDefaultFilter,
+    filterState,
+    updateFilterState,
+  } = useLocCoPhieuState();
+
+  const [state, setState] = useState<any>(filterState || {});
+
+  const filtersData = listFilter
+    ? [
+        ...TIEU_CHI_LOC_NHOM_THONG_DUNG,
+        ...TIEU_CHI_LOC_NHOM_BIEN_DONG_GIA,
+        ...TIEU_CHI_LOC_NHOM_DIEM_SO_TAI_CHINH,
+        ...TIEU_CHI_LOC_NHOM_KY_THUAT_CHUYEN_SAU,
+      ]
+        .filter((item) => listFilter.includes(item.key))
+        .sort(
+          (a: any, b: any) =>
+            listFilter.indexOf(a.key) - listFilter.indexOf(b.key),
+        )
+    : [];
+
+  useEffect(() => {
+    if (JSON.stringify(filterState) === JSON.stringify(state)) return;
+    setState(filterState || {});
+  }, [filterState]);
 
   return (
     <div className="flex min-h-[250px] flex-1 flex-col">
@@ -28,34 +64,107 @@ export default function ChonGiaTri() {
         </svg>
         Chọn giá trị
       </div>
-      <div className="card flex flex-1 flex-col gap-2 rounded-tl-none p-3">
-        <div className="flex flex-1 flex-col gap-1">
-          {listFilter?.map((filterId: keyof typeof LOC_CO_PHIEU) => (
+      <div className="card flex max-h-[340px] flex-1 flex-col gap-2 rounded-tl-none p-3">
+        <ScrollArea className="flex flex-1 flex-col pr-2">
+          {filtersData?.map((filter: TTieuChiLoc) => (
             <div
               className="grid items-center p-1 text-md font-semibold"
-              key={filterId}
-              style={{ gridTemplateColumns: "1fr 2fr 1fr" }}
+              key={filter.key}
+              style={{ gridTemplateColumns: "1.4fr 2fr 0.2fr" }}
             >
-              <div className="text-sm font-semibold text-white">
-                {LOC_CO_PHIEU[filterId].name}
+              <div className="overflow-hidden text-ellipsis text-nowrap text-sm font-semibold text-white">
+                {filter.name}
               </div>
               <div className="flex items-center justify-center gap-3">
-                <Input className="w-28" placeholder="Tối thiểu" size="sm" />
-                <span>-</span>
-                <Input className="w-28" placeholder="Tối đa" size="sm" />
+                {filter.type === "minmax" && (
+                  <>
+                    <Input
+                      className="w-28"
+                      placeholder="Tối thiểu"
+                      size="sm"
+                      value={state[filter.key]?.min ?? ""}
+                      type="number"
+                      onValueChange={(value: any) => {
+                        console.log("value", value);
+                        setState({
+                          ...state,
+                          [filter.key]: {
+                            ...state[filter.key],
+                            min: value !== "" ? +value : undefined,
+                          },
+                        });
+                      }}
+                    />
+                    <span>-</span>
+                    <Input
+                      className="w-28"
+                      placeholder="Tối đa"
+                      size="sm"
+                      value={state[filter.key]?.max}
+                      onValueChange={(value: any) =>
+                        setState({
+                          ...state,
+                          [filter.key]: {
+                            ...state[filter.key],
+                            max: +value,
+                          },
+                        })
+                      }
+                    />
+                  </>
+                )}
+                {filter.type === "select" && (
+                  <>
+                    <Select
+                      size="sm"
+                      color="default"
+                      selectedKeys={state[filter.key] || []}
+                      onSelectionChange={(value) => {
+                        console.log("value", value);
+                        setState({
+                          ...state,
+                          [filter.key]: Array.from(value),
+                        });
+                      }}
+                      className="w-64"
+                      variant="flat"
+                      selectionMode="multiple"
+                    >
+                      {filter.options.map((option) => (
+                        <SelectItem key={option.label} value={option.label}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </>
+                )}
               </div>
-              <div
-                className="flex cursor-pointer justify-end text-fuchsia-200 hover:text-white"
-                onClick={() => removeFilter(filterId)}
-              >
-                <X size={16} />
+              <div className="flex cursor-pointer justify-end text-fuchsia-200 hover:text-white">
+                <div
+                  className="rounded-full p-1 hover:text-red"
+                  onClick={() => {
+                    removeFilter(filter.key);
+                    const newState = { ...state };
+                    delete newState[filter.key];
+                    setState(newState);
+                  }}
+                >
+                  <X size={16} />
+                </div>
               </div>
             </div>
           ))}
-        </div>
-        <div className="flex w-full justify-between self-end">
+        </ScrollArea>
+        <div className="flex w-full flex-shrink-0 justify-between self-end">
           <div className="flex gap-2">
-            <Button className="flex-1" size="sm" onClick={setDefaultFilter}>
+            <Button
+              className="flex-1"
+              size="sm"
+              onClick={() => {
+                setDefaultFilter();
+                setState({});
+              }}
+            >
               Đặt lại
             </Button>
             <Button className="flex-1" size="sm">
@@ -63,7 +172,12 @@ export default function ChonGiaTri() {
             </Button>
           </div>
           <div>
-            <Button color="primary" size="sm" className="text-sm font-semibold">
+            <Button
+              color="primary"
+              size="sm"
+              className="text-sm font-semibold"
+              onClick={() => updateFilterState(state)}
+            >
               Lọc <RefreshCircle />
             </Button>
           </div>

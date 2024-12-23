@@ -12,6 +12,10 @@ export const Select = extendVariants(SelectNextUI, {
         trigger: "border-1 rounded-[4px] border-neutral-800",
         popoverContent: "bg-background rounded-[6px]",
       },
+      flat: {
+        trigger: "rounded-[4px] bg-content1 data-[hover=true]:bg-slate-900",
+        popoverContent: "bg-background rounded-[6px]",
+      },
     },
   },
   defaultVariants: {

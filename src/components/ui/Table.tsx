@@ -83,7 +83,7 @@ export default function Table({
         <>
           <div
             className={cn(
-              "mb-2 grid gap-2 pr-2 text-sm font-semibold text-muted",
+              "mb-2 grid gap-2 text-nowrap pr-2 text-sm font-semibold text-muted",
             )}
             style={{ gridTemplateColumns: `repeat(${columns.length}, 1fr)` }}
           >
@@ -137,7 +137,7 @@ export default function Table({
                     gridTemplateColumns: `repeat(${columns.length}, 1fr)`,
                   }}
                 >
-                  {columns.map((col: any) => (
+                  {columns.filter(Boolean).map((col: any) => (
                     <div key={col.key} className={col.className || ""}>
                       {col.render?.(item)}
                     </div>

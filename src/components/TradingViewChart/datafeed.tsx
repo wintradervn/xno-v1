@@ -11,6 +11,7 @@ import {
   Timezone,
 } from "./charting_library";
 import useCurrentSymbol from "@/hooks/useCurrentSymbol";
+import useMarketOverviewData from "@/hooks/useMarketOverview";
 
 const configurationData = {
   supports_search: true,
@@ -82,12 +83,12 @@ const getohlcv = async (
   to: number,
   countback: number,
 ) => {
-  const baseUrl = `/api/tradingview`;
+  const baseUrl = `https://api.xno.vn/v2/datafeed/history`;
   const params = new URLSearchParams({
     symbol: symbol,
     resolution: resolution,
-    from: from.toString(),
-    to: to.toString(),
+    start: from.toString(),
+    end: to.toString(),
     countback: countback.toString(),
   });
   const urlWithParams = `${baseUrl}?${params.toString()}`;
@@ -141,6 +142,11 @@ export const useDatafeed = (symbol?: string) => {
   const intervalRef = useRef<any>();
 
   const { currentSymbol } = useCurrentSymbol();
+  const { data: overviewData } = useMarketOverviewData();
+  const symbolData = useMemo(
+    () => overviewData?.find((item) => item.code === currentSymbol),
+    [overviewData, currentSymbol],
+  );
 
   const finalSymbol = symbol || currentSymbol;
 
@@ -164,12 +170,12 @@ export const useDatafeed = (symbol?: string) => {
       ) => {
         try {
           const symbolInfo: LibrarySymbolInfo = {
-            description: "Ngân hàng Thương mại Cổ phần Ngoại thương Việt Nam",
-            name: finalSymbol,
-            full_name: finalSymbol,
+            description: symbolData?.symbolName || finalSymbol,
+            name: symbolData?.code || finalSymbol,
+            full_name: symbolData?.symbolName || finalSymbol,
             ticker: finalSymbol,
-            exchange: "HOSE",
-            listed_exchange: "HOSE",
+            exchange: symbolData?.exchange || "HOSE",
+            listed_exchange: symbolData?.exchange || "HOSE",
             format: "price",
             type: "stock",
             timezone: "Asia/Ho_Chi_Minh",

@@ -1,12 +1,16 @@
 import TuDoanhMuaRong10PhienBarChart from "@/components/charts/TuDoanhMuaRong10PhienBarChart";
 import TuDoanhTreeChart from "@/components/charts/TuDoanhTreeChart";
+import TuDoanhYTDBarChart from "@/components/charts/TuDoanhYTDBarChart";
+import Tabs from "@/components/ui/Tabs";
 import useTuDoanhData from "@/hooks/useTuDoanhData";
 import { cn, formatVeryLargeNumber } from "@/lib/utils";
-import { Tooltip } from "@nextui-org/react";
-import { useMemo } from "react";
+import { Tab, Tooltip } from "@nextui-org/react";
+import { useMemo, useState } from "react";
 import { DangerCircle } from "solar-icon-set";
 
 export default function SubTabTuDoanh({ exchange }: { exchange?: string }) {
+  const [selectedTab, setSelectedTab] = useState("10phien");
+
   const { data } = useTuDoanhData();
 
   const filteredData = useMemo(
@@ -128,8 +132,27 @@ export default function SubTabTuDoanh({ exchange }: { exchange?: string }) {
             <div className="text-sm font-semibold">
               GT tự doanh mua ròng 10 phiên
             </div>
+            <div>
+              <Tabs
+                classNames={{
+                  tabList: "flex-1 bg-content1 p-1 rounded-[4px]",
+                  cursor: "!bg-background rounded-[4px]",
+                  tab: "text-sm py-0 h-6",
+                  panel: "h-full flex flex-col overflow-hidden",
+                }}
+                selectedKey={selectedTab}
+                onSelectionChange={(key) => setSelectedTab(key as string)}
+              >
+                <Tab key="10phien" title="10 phiên"></Tab>
+                <Tab key="ytd" title="YTD"></Tab>
+              </Tabs>
+            </div>
           </div>
-          <TuDoanhMuaRong10PhienBarChart exchange={exchange} />
+          {selectedTab === "10phien" ? (
+            <TuDoanhMuaRong10PhienBarChart exchange={exchange} />
+          ) : (
+            <TuDoanhYTDBarChart symbol={exchange} />
+          )}
         </div>
       </div>
     </div>

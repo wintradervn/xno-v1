@@ -16,9 +16,18 @@ export const LOC_CO_PHIEU: Record<string, { name: string }> = {
   },
 };
 
-export const TIEU_CHI_LOC = [
+export type TTieuChiLoc = {
+  name: string;
+  key: string;
+} & (
+  | { type: "select"; options: Array<{ label: string; includes?: string[] }> }
+  | { type: "minmax"; suggestions?: Array<{ label: string }> }
+);
+
+export const TIEU_CHI_LOC_NHOM_THONG_DUNG: Array<TTieuChiLoc> = [
   {
     name: "Ngành",
+    key: "NGANH",
     type: "select",
     options: [
       { label: "Ngân hàng" },
@@ -42,7 +51,28 @@ export const TIEU_CHI_LOC = [
     ],
   },
   {
-    name: "KLGD so sánh với % KLTB(50 phiên)",
+    name: "Giá trị giao dịch (tỷ)",
+    key: "THANHKHOAN",
+    type: "minmax",
+  },
+  {
+    name: "Giá trị giao dịch trung bình 50 phiên (cp)",
+    key: "ThanhKhoanTB50",
+    type: "minmax",
+  },
+  {
+    name: "Khối lượng (cp)",
+    key: "volume",
+    type: "minmax",
+  },
+  {
+    name: "Khối lượng trung bình 50 phiên (cp)",
+    key: "volTB50",
+    type: "minmax",
+  },
+  {
+    name: "KLGD so sánh với % KLTB(50 phiên) (%)",
+    key: "KL1KLTB",
     type: "minmax",
     suggestions: [
       { label: "Dưới 30%" },
@@ -53,64 +83,37 @@ export const TIEU_CHI_LOC = [
     ],
   },
   {
-    name: "KL mua luỹ kế (5 phiên)",
-    type: "minmax",
-    suggestions: [
-      { label: "Dưới 100K" },
-      { label: "Trên 100K" },
-      { label: "Trên 300K" },
-      { label: "Trên 500K" },
-      { label: "Trên 1000K" },
-    ],
-  },
-  {
-    name: "KL bán luỹ kế (5 phiên)",
-    type: "minmax",
-    suggestions: [
-      { label: "Dưới 100K" },
-      { label: "Trên 100K" },
-      { label: "Trên 300K" },
-      { label: "Trên 500K" },
-      { label: "Trên 1000K" },
-    ],
-  },
-  {
     name: "Xu hướng ngắn hạn",
+    key: "NGANHAN",
     type: "select",
     options: [{ label: "Tăng" }, { label: "Giảm" }],
   },
   {
     name: "Xu hướng trung hạn",
+    key: "TRUNGHAN",
     type: "select",
     options: [{ label: "Tăng" }, { label: "Giảm" }],
   },
   {
     name: "Xu hướng dài hạn",
+    key: "DAIHAN",
     type: "select",
     options: [{ label: "Tăng" }, { label: "Giảm" }],
   },
   {
-    name: "Sức mạnh",
+    name: "Sức mạnh giá",
+    key: "SUCMANH",
     type: "select",
     options: [
       { label: "Tăng mạnh" },
-      { label: "Tăng yếu" },
       { label: "Giảm mạnh" },
+      { label: "Tăng yếu" },
       { label: "Giảm yếu" },
     ],
   },
   {
-    name: "RRG",
-    type: "select",
-    options: [
-      { label: "Cải thiện" },
-      { label: "Dẫn dắt" },
-      { label: "Suy yếu" },
-      { label: "Tụt hậu" },
-    ],
-  },
-  {
-    name: "RS",
+    name: "Chỉ số sức mạnh RS",
+    key: "RS",
     type: "minmax",
     suggestions: [
       { label: "Dưới 30" },
@@ -120,78 +123,187 @@ export const TIEU_CHI_LOC = [
     ],
   },
   {
-    name: "Mẫu hình giảm giá",
+    name: "Định giá P/E",
+    key: "PE",
+    type: "minmax",
+  },
+  // {
+  //   name: "Định giá P/B",
+  //   key: "PB",
+  //   type: "minmax",
+  // },
+  {
+    name: "ROE (%)",
+    key: "ROE",
+    type: "minmax",
+  },
+  {
+    name: "Biên lợi nhuận ròng (%)",
+    key: "BLNR",
+    type: "minmax",
+  },
+  {
+    name: "Tăng trưởng doanh thu Quý gần nhất (%)",
+    key: "TTDT",
+    type: "minmax",
+  },
+  {
+    name: "Tăng trưởng lợi nhuận Quý gần nhất (%)",
+    key: "TTLN",
+    type: "minmax",
+  },
+];
+
+export const TIEU_CHI_LOC_NHOM_BIEN_DONG_GIA: Array<TTieuChiLoc> = [
+  {
+    name: "Giá (%) so với MA(20)",
+    key: "pMA20",
+    type: "minmax",
+  },
+  {
+    name: "Giá (%) so với MA(50)",
+    key: "pMA50",
+    type: "minmax",
+  },
+  {
+    name: "Giá (%) so với MA(100)",
+    key: "pMA100",
+    type: "minmax",
+  },
+  {
+    name: "Giá (%) so với MA(200)",
+    key: "pMA200",
+    type: "minmax",
+  },
+  {
+    name: "Giá (%) so với Đỉnh 52 tuần",
+    key: "ptop52W",
+    type: "minmax",
+  },
+  {
+    name: "Giá (%) so với Đáy 52 tuần",
+    key: "plow52W",
+    type: "minmax",
+  },
+];
+
+export const TIEU_CHI_LOC_NHOM_KY_THUAT_CHUYEN_SAU: Array<TTieuChiLoc> = [
+  {
+    name: "AI Trend",
+    key: "AiTrend",
     type: "select",
     options: [
-      { label: "Dragon Walks" },
-      { label: "Ascending Triangle" },
-      { label: "Falling Wedge" },
-      { label: "Up Channel" },
-      { label: "Rectangle (Bullish breakout)" },
-      { label: "Symmetrical Triangle" },
-      { label: "Mark Minervini" },
+      { label: "Uptrend" },
+      { label: "Downtrend" },
+      { label: "Sideway" },
+    ],
+  },
+  {
+    name: "Tín hiệu SMC",
+    key: "signalSMC",
+    type: "select",
+    options: [
+      { label: "WarZone" },
+      { label: "Sell SMC" },
+      { label: "Sell FVG" },
+      { label: "Buy SMC" },
+      { label: "Buy FVG" },
+    ],
+  },
+  {
+    name: "Chỉ số sức mạnh RRG",
+    key: "RRG",
+    type: "select",
+    options: [
+      { label: "Cải thiện" },
+      { label: "Dẫn dắt" },
+      { label: "Suy yếu" },
+      { label: "Tụt hậu" },
     ],
   },
   {
     name: "Mẫu hình tăng giá",
+    key: "pattern",
     type: "select",
     options: [
-      { label: "Descending Triangle" },
-      { label: "Rising Wedge" },
-      { label: "Down Channel" },
-      { label: "Rectangle (Bearish breakout)" },
-      { label: "Expanding Triangle" },
-      { label: "Delphic" },
-      { label: "Sniper" },
-      { label: "X300" },
+      {
+        label: "Tăng giá",
+        includes: [
+          "Dragon Walks",
+          "Ascending Triangle",
+          "Falling Wedge",
+          "Up Channel",
+          "Rectangle (Bullish breakout)",
+          "Symmetrical Triangle",
+          "Mark Minervini",
+        ],
+      },
+      {
+        label: "Giảm giá",
+        includes: [
+          "Descending Triangle",
+          "Rising Wedge",
+          "Down Channel",
+          "Rectangle (Bearish breakout)",
+          "Expanding Triangle",
+          "Delphic",
+          "Sniper",
+        ],
+      },
     ],
   },
   {
-    name: "Nến tăng giá",
+    name: "Mẫu hình nến tăng giá",
+    key: "candles",
     type: "select",
     options: [
-      { label: "3 Inside Up" },
-      { label: "Hammer" },
-      { label: "Harami Bullish" },
-      { label: "Bullish Doji Star" },
-      { label: "Dragonfly Doji" },
-      { label: "Morning Doji Star" },
-      { label: "Near Doji" },
-      { label: "Meeting Lines Bullish" },
-      { label: "Piercing Line" },
-      { label: "Separating Lines Bullish" },
-      { label: "Tweezer Bottom" },
-      { label: "Inverted Hammer" },
-      { label: "Homing Pigeon" },
-      { label: "Tri-Star Bullish" },
-    ],
-  },
-  {
-    name: "Nến giảm giá",
-    type: "select",
-    options: [
-      { label: "3 Black Crows" },
-      { label: "3 Outside Down" },
-      { label: "Bearish Engulfing" },
-      { label: "Bearish Hammer" },
-      { label: "Counter Attack Bearish" },
-      { label: "Deliberation Bearish" },
-      { label: "Doji Star Bearish" },
-      { label: "Evening Doji Star" },
-      { label: "Evening Star" },
-      { label: "Hanging Man" },
-      { label: "Harami Bearish" },
-      { label: "Harami Cross Bearish" },
-      { label: "In Neck Bearish" },
-      { label: "On Neck Bearish" },
-      { label: "Shooting Star" },
-      { label: "Side by Side White Lines Bearish" },
-      { label: "Tri-Star Bearish" },
-      { label: "Tweezer Top" },
+      {
+        label: "Tăng giá",
+        includes: [
+          "3 Inside Up",
+          "Hammer",
+          "Harami Bullish",
+          "Bullish Doji Star",
+          "Dragonfly Doji",
+          "Morning Doji Star",
+          "Near Doji",
+          "Meeting Lines Bullish",
+          "Piercing Line",
+          "Separating Lines Bullish",
+          "Tweezer Bottom",
+          "Inverted Hammer",
+          "Homing Pigeon",
+          "Tri-Star Bullish",
+        ],
+      },
+      {
+        label: "Giảm giá",
+        includes: [
+          "3 Black Crows",
+          "3 Outside Down",
+          "Bearish Engulfing",
+          "Bearish Hammer",
+          "Counter Attack Bearish",
+          "Deliberation Bearish",
+          "Doji Star Bearish",
+          "Evening Doji Star",
+          "Evening Star",
+          "Hanging Man",
+          "Harami Bearish",
+          "Harami Cross Bearish",
+          "In Neck Bearish",
+          "On Neck Bearish",
+          "Shooting Star",
+          "Side by Side White Lines Bearish",
+          "Tri-Star Bearish",
+          "Tweezer Top",
+        ],
+      },
     ],
   },
   {
     name: "Vùng cung",
+    key: "vungcung",
     type: "select",
     options: [
       { label: "Break" },
@@ -201,6 +313,7 @@ export const TIEU_CHI_LOC = [
   },
   {
     name: "Vùng cầu",
+    key: "vungcau",
     type: "select",
     options: [
       { label: "Break" },
@@ -210,6 +323,7 @@ export const TIEU_CHI_LOC = [
   },
   {
     name: "Hỗ trợ",
+    key: "hotro",
     type: "select",
     options: [
       { label: "Break" },
@@ -219,6 +333,7 @@ export const TIEU_CHI_LOC = [
   },
   {
     name: "Kháng cự",
+    key: "khangcu",
     type: "select",
     options: [
       { label: "Break" },
@@ -228,6 +343,7 @@ export const TIEU_CHI_LOC = [
   },
   {
     name: "Kênh dưới",
+    key: "kenhduoi",
     type: "select",
     options: [
       { label: "Break" },
@@ -237,6 +353,7 @@ export const TIEU_CHI_LOC = [
   },
   {
     name: "Kênh trên",
+    key: "kenhtren",
     type: "select",
     options: [
       { label: "Break" },
@@ -244,114 +361,62 @@ export const TIEU_CHI_LOC = [
       { label: "Đảo chiều" },
     ],
   },
-  {
-    name: "Giá (%) so với MA(20)",
-    type: "minmax",
-    suggestions: [
-      { label: "Nhỏ hơn -30%" },
-      { label: "Lớn lớn -30%" },
-      { label: "Lớn hơn 0%" },
-      { label: "Lớn hơn 30%" },
-    ],
-  },
-  {
-    name: "Giá (%) so với MA(50)",
-    type: "minmax",
-    suggestions: [
-      { label: "Nhỏ hơn -30%" },
-      { label: "Lớn lớn -30%" },
-      { label: "Lớn hơn 0%" },
-      { label: "Lớn hơn 30%" },
-    ],
-  },
-  {
-    name: "Giá (%) so với MA(100)",
-    type: "minmax",
-    suggestions: [
-      { label: "Nhỏ hơn -30%" },
-      { label: "Lớn lớn -30%" },
-      { label: "Lớn hơn 0%" },
-      { label: "Lớn hơn 30%" },
-    ],
-  },
-  {
-    name: "Giá (%) so với MA(200)",
-    type: "minmax",
-    suggestions: [
-      { label: "Nhỏ hơn -30%" },
-      { label: "Lớn lớn -30%" },
-      { label: "Lớn hơn 0%" },
-      { label: "Lớn hơn 30%" },
-    ],
-  },
-  {
-    name: "Giá (%) so với Đỉnh 52 tuần",
-    type: "minmax",
-    suggestions: [
-      { label: "Nhỏ hơn -30%" },
-      { label: "Lớn lớn -30%" },
-      { label: "Lớn hơn 0%" },
-      { label: "Lớn hơn 30%" },
-    ],
-  },
-  {
-    name: "Giá (%) so với Đáy 52 tuần",
-    type: "minmax",
-    suggestions: [
-      { label: "Nhỏ hơn -30%" },
-      { label: "Lớn lớn -30%" },
-      { label: "Lớn hơn 0%" },
-      { label: "Lớn hơn 30%" },
-    ],
-  },
-  {
-    name: "Action Score",
-    type: "minmax",
-    suggestions: [
-      { label: "Nhỏ hơn 30" },
-      { label: "Lớn hơn 30" },
-      { label: "Lớn hơn 50" },
-      { label: "Lớn hơn 70" },
-    ],
-  },
+];
+
+export const TIEU_CHI_LOC_NHOM_DIEM_SO_TAI_CHINH: Array<TTieuChiLoc> = [
   {
     name: "Mô hình kinh doanh",
+    key: "mohinhKinhdoanh",
     type: "minmax",
-    suggestions: [
-      { label: "Nhỏ hơn 30" },
-      { label: "Lớn hơn 30" },
-      { label: "Lớn hơn 50" },
-      { label: "Lớn hơn 70" },
-    ],
   },
   {
     name: "Sức khỏe tài chính",
+    key: "skTaichinh",
     type: "minmax",
-    suggestions: [
-      { label: "Nhỏ hơn 30" },
-      { label: "Lớn hơn 30" },
-      { label: "Lớn hơn 50" },
-      { label: "Lớn hơn 70" },
-    ],
   },
   {
     name: "Hiệu quả kinh doanh",
+    key: "hieuquaHoatdong",
     type: "minmax",
-    suggestions: [
-      { label: "Nhỏ hơn 30" },
-      { label: "Lớn hơn 30" },
-      { label: "Lớn hơn 50" },
-      { label: "Lớn hơn 70" },
-    ],
+  },
+  {
+    name: "Action Score",
+    key: "diemBinhquan",
+    type: "minmax",
   },
   {
     name: "Biên an toàn",
+    key: "BAT",
     type: "minmax",
-    suggestions: [
-      { label: "Nhỏ hơn -30%" },
-      { label: "Lớn lớn -30%" },
-      { label: "Lớn hơn 0%" },
-      { label: "Lớn hơn 30%" },
-    ],
   },
 ];
+
+export const NHOM_TIEU_CHI_LOC = [
+  { id: "1", name: "Nhóm thông dụng", list: TIEU_CHI_LOC_NHOM_THONG_DUNG },
+  {
+    id: "2",
+    name: "Nhóm biến động giá",
+    list: TIEU_CHI_LOC_NHOM_BIEN_DONG_GIA,
+  },
+  {
+    id: "3",
+    name: "Nhóm kỹ thuật chuyên sâu",
+    list: TIEU_CHI_LOC_NHOM_KY_THUAT_CHUYEN_SAU,
+  },
+  {
+    id: "4",
+    name: "Điểm số tài chính",
+    list: TIEU_CHI_LOC_NHOM_DIEM_SO_TAI_CHINH,
+  },
+];
+
+export const TIEU_CHI_LOC_LIST: TTieuChiLoc[] = [
+  ...TIEU_CHI_LOC_NHOM_THONG_DUNG,
+  ...TIEU_CHI_LOC_NHOM_BIEN_DONG_GIA,
+  ...TIEU_CHI_LOC_NHOM_KY_THUAT_CHUYEN_SAU,
+  ...TIEU_CHI_LOC_NHOM_DIEM_SO_TAI_CHINH,
+];
+
+export const KEY_TO_NAME: Record<string, string> = Object.fromEntries(
+  TIEU_CHI_LOC_LIST.map((item) => [item.key, item.name]),
+);

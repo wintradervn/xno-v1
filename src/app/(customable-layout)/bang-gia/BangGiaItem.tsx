@@ -40,9 +40,7 @@ function formatVolume(num: number) {
 }
 function BangGiaItem({ stock }: { stock: any }) {
   const { setChiTietMaCK } = useChiTietMaCK();
-  if (stock.code === "HDB") {
-    console.log("stock2", stock);
-  }
+
   return (
     <div
       className="rounded-[6px]"

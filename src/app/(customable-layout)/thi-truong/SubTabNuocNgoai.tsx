@@ -1,16 +1,23 @@
-import BienDongTreeChart from "@/components/charts/BienDongTreeChart";
 import NNMuaRong10PhienBarChart from "@/components/charts/NNMuaRong10PhienBarChart";
-import NNMuaRongHomNayLineChart from "@/components/charts/NNMuaRongHomNayLineChart";
+import NNYTDBarChart from "@/components/charts/NNYTDBarChart";
 import NuocNgoaiTreeChart from "@/components/charts/NuocNgoaiTreeChart";
 import Tabs from "@/components/ui/Tabs";
+import useIndexOverview from "@/hooks/useIndexOverview";
 import useNuocNgoaiData from "@/hooks/useNuocNgoaiData";
-import { cn, formatVeryLargeNumber } from "@/lib/utils";
+import { mapExchangeToIndex } from "@/lib/constant";
+import { cn, formatNumber, formatVeryLargeNumber } from "@/lib/utils";
 import { Tab } from "@nextui-org/react";
 import { useMemo, useState } from "react";
 
 export default function SubTabNuocNgoai({ exchange }: { exchange?: string }) {
   const [selectedTab, setSelectedTab] = useState("10phien");
   const { data } = useNuocNgoaiData();
+  const { data: indexOverviewData } = useIndexOverview();
+  const indexData = useMemo(() => {
+    return indexOverviewData?.find(
+      (item) => exchange && item.code === mapExchangeToIndex[exchange],
+    );
+  }, [indexOverviewData, exchange]);
 
   const filteredData = useMemo(
     () =>
@@ -55,27 +62,19 @@ export default function SubTabNuocNgoai({ exchange }: { exchange?: string }) {
             <div className="grid grid-cols-3 px-1 py-2">
               <div className="text-muted">Mua</div>
               <div className="font-bold text-green">
-                {tongLuongGiaoDichStats.mua
-                  ? tongLuongGiaoDichStats.mua.toLocaleString("en-US")
-                  : ""}
+                {formatNumber(indexData?.foreignBuyVol)}
               </div>
               <div className="font-bold text-green">
-                {tongLuongGiaoDichStats.muaVal
-                  ? formatVeryLargeNumber(tongLuongGiaoDichStats.muaVal)
-                  : ""}
+                {formatVeryLargeNumber(indexData?.foreignBuyVal)}
               </div>
             </div>
             <div className="grid grid-cols-3 px-1 py-2">
               <div className="text-muted">Bán</div>
               <div className="font-bold text-red">
-                {tongLuongGiaoDichStats.ban
-                  ? tongLuongGiaoDichStats.ban.toLocaleString("en-US")
-                  : ""}
+                {formatNumber(indexData?.foreignSellVol)}
               </div>
               <div className="font-bold text-red">
-                {tongLuongGiaoDichStats.banVal
-                  ? formatVeryLargeNumber(tongLuongGiaoDichStats.banVal)
-                  : ""}
+                {formatVeryLargeNumber(indexData?.foreignSellVal)}
               </div>
             </div>
             <div className="grid grid-cols-3 px-1 py-2">
@@ -90,9 +89,10 @@ export default function SubTabNuocNgoai({ exchange }: { exchange?: string }) {
                       : "text-white",
                 )}
               >
-                {tongLuongGiaoDichStats.muaBan
-                  ? tongLuongGiaoDichStats.muaBan.toLocaleString("en-US")
-                  : ""}
+                {formatNumber(
+                  (indexData?.foreignBuyVol || 0) -
+                    (indexData?.foreignSellVol || 0),
+                )}
               </div>
               <div
                 className={cn(
@@ -104,9 +104,10 @@ export default function SubTabNuocNgoai({ exchange }: { exchange?: string }) {
                       : "text-white",
                 )}
               >
-                {tongLuongGiaoDichStats.muaBanVal
-                  ? formatVeryLargeNumber(tongLuongGiaoDichStats.muaBanVal)
-                  : ""}
+                {formatVeryLargeNumber(
+                  (indexData?.foreignBuyVal || 0) -
+                    (indexData?.foreignSellVal || 0),
+                )}
               </div>
             </div>
           </div>
@@ -125,13 +126,13 @@ export default function SubTabNuocNgoai({ exchange }: { exchange?: string }) {
               onSelectionChange={(key) => setSelectedTab(key as string)}
             >
               <Tab key="10phien" title="10 phiên"></Tab>
-              <Tab key="homnay" title="Hôm nay"></Tab>
+              <Tab key="ytd" title="YTD"></Tab>
             </Tabs>
           </div>
           {selectedTab === "10phien" ? (
             <NNMuaRong10PhienBarChart symbol={exchange} />
           ) : (
-            <NNMuaRongHomNayLineChart />
+            <NNYTDBarChart symbol={exchange} />
           )}
         </div>
       </div>

@@ -1,9 +1,14 @@
 import PhanTichTaiChinhBarChart from "@/components/charts/ChiSoTaiChinhComplexChart";
 import Button from "@/components/ui/Button";
 import Tabs from "@/components/ui/Tabs";
+import useCanDoiKeToanData from "@/hooks/useCanDoiKeToanData";
+import useChiTietMaCK from "@/hooks/useChiTietMaCK";
+import useKetQuaKinhDoanhData from "@/hooks/useKetQuaKinhDoanhData";
+import Documents from "@/icons/Documents";
+import { formatNumber } from "@/lib/utils";
 import { Accordion, AccordionItem, Tab } from "@nextui-org/react";
 import { ChevronDown } from "lucide-react";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, use, useEffect, useMemo, useRef, useState } from "react";
 import {
   Chart,
   DoubleAltArrowLeft,
@@ -13,7 +18,9 @@ import {
 } from "solar-icon-set";
 
 export default function SubTabChiSoTaiChinh() {
-  const [selectedTab, setSelectedTab] = useState<string>("hangquy");
+  const [selectedTime, setSelectedTime] = useState<string>("hangquy");
+  const [selectedTab, setSelectedTab] = useState<string>("chart");
+
   return (
     <div className="flex h-full flex-col gap-4">
       <div className="flex flex-shrink-0 justify-between">
@@ -23,19 +30,6 @@ export default function SubTabChiSoTaiChinh() {
         </div>
         <div className="flex items-center gap-3">
           <Tabs
-            color="default"
-            classNames={{
-              tabList: "p-0.5 rounded-[6px]",
-              tab: "h-[26px] rounded-[4px] text-sm",
-              cursor: "rounded-[4px]",
-            }}
-            selectedKey={selectedTab}
-            onSelectionChange={(k) => setSelectedTab(k as string)}
-          >
-            <Tab key="hangquy" title="Hàng quý"></Tab>
-            <Tab key="hangnam" title="Hàng năm"></Tab>
-          </Tabs>
-          {/* <Tabs
             color="primary"
             classNames={{
               tabList: "p-0.5 rounded-[6px]",
@@ -47,15 +41,201 @@ export default function SubTabChiSoTaiChinh() {
           >
             <Tab key="chart" title={<Chart />}></Tab>
             <Tab key="data" title={<Documents />}></Tab>
-          </Tabs> */}
+          </Tabs>
+          <Tabs
+            color="default"
+            classNames={{
+              tabList: "p-0.5 rounded-[6px]",
+              tab: "h-[26px] rounded-[4px] text-sm",
+              cursor: "rounded-[4px]",
+            }}
+            selectedKey={selectedTime}
+            onSelectionChange={(k) => setSelectedTime(k as string)}
+          >
+            <Tab key="hangquy" title="Hàng quý"></Tab>
+            <Tab key="hangnam" title="Hàng năm"></Tab>
+          </Tabs>
         </div>
       </div>
       <div className="flex-1">
-        <SubTabChart selectedTime={selectedTab} />
+        {selectedTab === "chart" && <SubTabChart selectedTime={selectedTime} />}
+        {selectedTab === "data" && <SubTabData selectedTime={selectedTime} />}
       </div>
     </div>
   );
 }
+
+const dataConfig = [
+  {
+    key: "tangtruongketquakinhdoanh",
+    name: "Tăng trưởng kết quả kinh doanh",
+    children: [
+      {
+        key: "revenue",
+        name: "Doanh thu thuần",
+        type: "bar",
+      },
+      {
+        key: "grossProfit",
+        name: "Lợi nhuận gộp",
+        type: "bar",
+      },
+      {
+        key: "postTaxProfit",
+        name: "LNST",
+        type: "bar",
+      },
+      {
+        key: "yearRevenueGrowth",
+        name: "Tăng trưởng Doanh thu YoY",
+        type: "line",
+        formatLabel: (value: any) =>
+          value ? `${formatNumber(value * 100, 2)}%` : "-",
+      },
+      {
+        key: "yearShareHolderIncomeGrowth",
+        name: "Tăng trưởng LNST YoY",
+        type: "line",
+        formatLabel: (value: any) =>
+          value ? `${formatNumber(value * 100, 2)}%` : "-",
+      },
+      {
+        key: "grossProfit/revenue",
+        name: "Biên lợi nhuận gộp",
+        type: "line",
+        getData: (item: any) => (100 * item["grossProfit"]) / item["revenue"],
+        formatLabel: (value: any) =>
+          value ? `${formatNumber(value, 2)}%` : "-",
+      },
+      {
+        key: "postTaxProfit/revenue",
+        name: "Biên lợi nhuận ròng",
+        type: "line",
+        getData: (item: any) => (100 * item["postTaxProfit"]) / item["revenue"],
+        formatLabel: (value: any) =>
+          value ? `${formatNumber(value, 2)}%` : "-",
+      },
+    ],
+  },
+  {
+    key: "phantichnguonvon",
+    name: "Phân tích nguồn vốn",
+    children: [
+      {
+        key: "asset",
+        name: "Tổng nguồn vốn",
+        type: "bar",
+        stack: "a",
+      },
+      {
+        key: "shortDebt+longDebt",
+        name: "Nợ vay",
+        type: "bar",
+        stack: "a",
+        getData: (item: any) => item["shortDebt"] + item["longDebt"],
+      },
+      {
+        key: "capital",
+        name: "Vốn góp",
+        type: "bar",
+        stack: "a",
+      },
+      {
+        key: "unDistributedIncome",
+        name: "LN chưa phân phối",
+        type: "bar",
+        stack: "a",
+      },
+      {
+        key: "debt-shortDebt-longDebt",
+        name: "Nợ chiếm dụng",
+        type: "bar",
+        stack: "a",
+        getData: (item: any) =>
+          item["debt"] - item["shortDebt"] - item["longDebt"],
+      },
+      {
+        key: "minorShareHolderProfit",
+        name: "LN cổ đông không kiểm soát",
+        type: "bar",
+        stack: "a",
+      },
+      {
+        key: "shortDebt+longDebt/asset",
+        name: "Nợ vay/Tổng nguồn vốn (%)",
+        type: "line",
+        getData: (item: any) =>
+          ((item["shortDebt"] + item["longDebt"]) * 100) / item["asset"],
+        formatLabel: (value: any) =>
+          value ? `${formatNumber(value, 2)}%` : "-",
+      },
+    ],
+  },
+  {
+    key: "phantichtaisan",
+    name: "Phân tích tài sản",
+    children: [
+      {
+        key: "asset",
+        name: "Tổng nguồn vốn",
+        type: "bar",
+        stack: "a",
+      },
+      {
+        key: "cash+longDebt",
+        name: "Tiền + Gửi bank",
+        type: "bar",
+        stack: "a",
+        getData: (item: any) => item["cash"] + item["shortInvest"],
+      },
+      {
+        key: "shortRecaivable",
+        name: "Phải thu ngắn hạn",
+        type: "bar",
+        stack: "a",
+      },
+      {
+        key: "inventory",
+        name: "Tồn kho",
+        type: "bar",
+        stack: "a",
+      },
+      {
+        key: "fixedAsset",
+        name: "Tài sản cố định",
+        type: "bar",
+        stack: "a",
+      },
+      {
+        key: "longAsset",
+        name: "Tài sản dài hạn",
+        type: "bar",
+        stack: "a",
+      },
+      {
+        key: "stockInvest",
+        name: "Đầu tư chứng khoán",
+        type: "bar",
+        stack: "a",
+      },
+      {
+        key: "otherAsset",
+        name: "Tài sản khác",
+        type: "bar",
+        stack: "a",
+      },
+      {
+        key: "cash+shortInvest/asset",
+        name: "Tiền/Tổng tài sản",
+        type: "line",
+        getData: (item: any) =>
+          ((item["cash"] + item["shortInvest"]) * 100) / item["asset"],
+        formatLabel: (value: any) =>
+          value ? `${formatNumber(value, 2)}%` : "-",
+      },
+    ],
+  },
+];
 
 const statsGroup = [
   {
@@ -81,27 +261,27 @@ const statsGroup = [
   },
 ];
 
-const data = [
-  "Q1/2021",
-  "Q2/2021",
-  "Q3/2021",
-  "Q4/2021",
-  "Q1/2022",
-  "Q2/2022",
-  "Q3/2022",
-  "Q4/2022",
-  "Q1/2023",
-  "Q2/2023",
-  "Q3/2023",
-  "Q4/2023",
-  "Q1/2024",
-  "Q2/2024",
-  "Q3/2024",
-  "Q4/2024",
-];
-
-function SubTabData() {
+function SubTabData({ selectedTime }: { selectedTime: string }) {
   const ref = useRef<HTMLDivElement>(null);
+  const { symbol } = useChiTietMaCK();
+  const yearly = selectedTime !== "hangquy";
+  const { data } = useKetQuaKinhDoanhData(symbol, yearly);
+  const { data: data2 } = useCanDoiKeToanData(symbol, yearly);
+  const combinedData = useMemo(() => {
+    if (!data || !data2) return [];
+    const firstData = data.length >= data2.length ? data : data2;
+    const secondData = data.length >= data2.length ? data2 : data;
+
+    return firstData.map((item) => {
+      const secondItem = secondData.find(
+        (_) => _.year === item.year && _.quarter === item.quarter,
+      );
+      return {
+        ...item,
+        ...secondItem,
+      };
+    });
+  }, [data, data2]);
 
   const handleScrollClick = (direction: "left" | "right") => {
     if (ref.current) {
@@ -113,26 +293,26 @@ function SubTabData() {
   };
 
   useEffect(() => {
-    if (ref.current) {
+    if (ref.current && combinedData) {
       ref.current.scrollLeft = 9999;
     }
-  }, []);
+  }, [combinedData]);
 
   return (
     <div className="no-scrollbar h-full overflow-auto text-md">
       <div className="flex h-fit w-full justify-between gap-2">
         <div className="mt-7 flex h-fit flex-shrink-0 flex-col">
-          {statsGroup.map((group) => (
-            <Fragment key={group.title}>
+          {dataConfig.map((group) => (
+            <Fragment key={group.key}>
               <div
                 className="text-lineargreen mt-4 h-[44px] text-md font-semibold uppercase"
-                key={group.title}
+                key={group.key}
               >
-                {group.title}
+                {group.name}
               </div>
               {group.children.map((item) => (
-                <div className="h-[44px] font-semibold" key={item}>
-                  {item}
+                <div className="h-[44px] font-semibold" key={item.key}>
+                  {item.name}
                 </div>
               ))}
             </Fragment>
@@ -149,7 +329,39 @@ function SubTabData() {
           </div>
           <div className="no-scrollbar flex w-[800px] overflow-auto" ref={ref}>
             <div className="flex w-fit min-w-full justify-center">
-              {data.map((item) => (
+              {combinedData.map((item: any) => (
+                <div
+                  key={item.year.toString() + item.quarter.toString()}
+                  className="flex w-[100px] flex-shrink-0 flex-col text-right text-md font-semibold"
+                >
+                  <div>
+                    {yearly
+                      ? item.year.toString()
+                      : `Q${item.quarter}/${item.year}`}
+                  </div>
+                  {dataConfig.map((group: any, index: number) => (
+                    <Fragment key={index}>
+                      <div className="mt-4 h-[44px]"></div>
+                      {group.children.map((config: any, index: number) => (
+                        <div className="h-[44px] font-medium" key={index}>
+                          {config.formatLabel
+                            ? config.formatLabel(
+                                item[config.key as string] ||
+                                  config.getData?.(item) ||
+                                  "",
+                              )
+                            : formatNumber(
+                                item[config.key as string] ||
+                                  config.getData?.(item) ||
+                                  "",
+                              )}
+                        </div>
+                      ))}
+                    </Fragment>
+                  ))}
+                </div>
+              ))}
+              {/* {combinedData.map((item) => (
                 <Fragment key={item}>
                   <div className="flex w-[100px] flex-shrink-0 flex-col text-md font-semibold">
                     <div>{item}</div>
@@ -165,7 +377,7 @@ function SubTabData() {
                     ))}
                   </div>
                 </Fragment>
-              ))}
+              ))} */}
             </div>
           </div>
           <div className="flex-shrink-0">
@@ -182,74 +394,11 @@ function SubTabData() {
   );
 }
 
-const chartConfig = [
-  {
-    key: "tangtruongketquakinhdoanh",
-    name: "Tăng trưởng kết quả kinh doanh",
-    children: [
-      "Doanh thu thuần",
-      "Lợi nhuận gộp",
-      "Lợi nhuận sau thuế",
-      "Tăng trưởng Doanh thu YoY",
-      "Tăng trưởng LNST YoY",
-      "Biên lợi nhuận gộp",
-      "Biên lợi nhuận ròng",
-    ],
-  },
-  {
-    key: "phantichnguonvon",
-    name: "Phân tích nguồn vốn",
-    children: [
-      "Nợ vay",
-      "Vốn góp",
-      "LN chưa phân phối",
-      "Nợ chiếm dụng",
-      "LN cổ đông không kiểm soát",
-      "Nợ vay/Tổng nguồn vốn",
-    ],
-  },
-  {
-    key: "phantichtaisan",
-    name: "Phân tích tài sản",
-    children: [
-      "Tiền + Gửi bank",
-      "Phải thu ngắn hạn",
-      "Tồn kho",
-      "Tài sản cố định",
-      "Tài sản dài hạn",
-      "Đầu tư chứng khoán",
-      "Tài sản khác",
-      "Tiền/Tổng tài sản",
-    ],
-  },
-];
-
 function SubTabChart({ selectedTime }: { selectedTime: string }) {
   const [selectedChart, setSelectedChart] = useState<Set<string>>(
     new Set(["tangtruongketquakinhdoanh"]),
   );
 
-  const renderContent = () => {
-    return (
-      <div className="flex flex-col gap-6">
-        <div className="text-lineargreen flex items-center gap-2 text-sm font-medium">
-          <div className="bg-lineargreen h-2 w-2 rounded-full"></div>
-          <div>Tiền mặt và tương đương tiền</div>
-        </div>
-        <div className="text-lineargreen flex items-center gap-2 text-sm font-medium">
-          <div className="bg-lineargreen h-2 w-2 rounded-full"></div>
-          <div>Tiền mặt và tương đương tiền</div>
-        </div>
-        <div className="text-lineargreen flex items-center gap-2 text-sm font-medium">
-          <div className="bg-lineargreen h-2 w-2 rounded-full"></div>
-          <div>Tiền mặt và tương đương tiền</div>
-        </div>
-        <div className="flex items-center gap-2 text-sm font-medium">
-          <div className="ml-4">Tiền mặt và tương đương tiền</div>
-        </div>
-      </div>
-    );
-  };
   return (
     <div className="flex h-full gap-3">
       <div className="flex flex-1 flex-col gap-2 rounded-[8px] border border-neutral-800 p-2">
@@ -258,15 +407,6 @@ function SubTabChart({ selectedTime }: { selectedTime: string }) {
           <div className="flex items-center gap-2 text-muted">
             <Scale size={24} />
           </div>
-        </div>
-        <div>
-          <Button
-            className="h-[28px] rounded-[4px] text-sm font-semibold"
-            color="secondary"
-            size="sm"
-          >
-            So sánh với giá cổ phiếu
-          </Button>
         </div>
         <div className="flex flex-1">
           <PhanTichTaiChinhBarChart
@@ -288,9 +428,8 @@ function SubTabChart({ selectedTime }: { selectedTime: string }) {
             }}
             selectionMode="single"
             selectedKeys={selectedChart}
-            onSelectionChange={(keys) => setSelectedChart(keys as Set<string>)}
           >
-            {chartConfig.map((item) => (
+            {dataConfig.map((item) => (
               <AccordionItem
                 title={
                   <div className="flex items-center gap-2 text-md font-medium">
@@ -302,15 +441,18 @@ function SubTabChart({ selectedTime }: { selectedTime: string }) {
                   <ChevronDown style={{ transform: "rotate(90deg)" }} />
                 }
                 key={item.key}
+                onPress={() => {
+                  setSelectedChart(new Set([item.key]));
+                }}
               >
                 <div className="flex flex-col gap-6">
                   {item.children.map((child, index: number) => (
                     <div
                       className="text-lineargreen flex items-center gap-2 text-sm font-medium"
-                      key={child + index}
+                      key={child.key + index}
                     >
                       <div className="bg-lineargreen h-2 w-2 rounded-full"></div>
-                      <div>{child}</div>
+                      <div>{child.name}</div>
                     </div>
                   ))}
                 </div>

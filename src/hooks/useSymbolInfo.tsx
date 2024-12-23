@@ -1,6 +1,6 @@
 import useSWR from "swr";
 import useCurrentSymbol from "./useCurrentSymbol";
-import { INDEXES_INFO } from "@/lib/constant";
+import { INDEXES_INFO, ROOT_API_URL } from "@/lib/constant";
 
 export default function useSymbolInfo(symbol?: string) {
   const { currentSymbol } = useCurrentSymbol();
@@ -10,9 +10,11 @@ export default function useSymbolInfo(symbol?: string) {
       ? ["orderbook", symbol || currentSymbol]
       : null,
     () => {
-      return fetch(`/api/orderbook?symbols=${symbol || currentSymbol}`)
+      return fetch(
+        `${ROOT_API_URL}/hitprice?symbols=${symbol || currentSymbol}`,
+      )
         .then((res) => res.json())
-        .then((data) => data.data[0]);
+        .then((data) => data.data.d[0]);
     },
     {
       refreshInterval: 3_000,

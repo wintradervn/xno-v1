@@ -31,7 +31,7 @@ export default function TabTongQuan() {
         >
           <Tab key="tongquan" title="Tổng quan"></Tab>
           <Tab key="banggia" title="Bảng giá"></Tab>
-          <Tab key="mucgia" title="Mức giá"></Tab>
+          {/* <Tab key="mucgia" title="Mức giá"></Tab> */}
           <Tab key="nhandinh" title="Nhận định"></Tab>
         </Tabs>
         <div className="flex-1">

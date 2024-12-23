@@ -83,7 +83,6 @@ export default function PhanBoDongTienBarChart({
       };
     });
   }, [data]);
-  console.log("groupedData", groupedData);
 
   if (isLoading) {
     return <DefaultLoader />;
@@ -118,10 +117,10 @@ export default function PhanBoDongTienBarChart({
           },
 
           grid: {
-            top: "10px", // Remove top padding
+            top: "15px", // Remove top padding
             bottom: "20px", // Remove bottom padding
             left: "4px", // Optional: Adjust left padding
-            right: "10px", // Optional: Adjust right padding
+            right: "4px", // Optional: Adjust right padding
             containLabel: true,
           },
           xAxis: {
