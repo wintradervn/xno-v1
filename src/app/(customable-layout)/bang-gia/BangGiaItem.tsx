@@ -18,7 +18,7 @@ const getColor = (change: number) => {
   if (change > -4) return "#F97066";
   if (change > -5) return "#F04438";
   if (change > -6) return "#98e5e7";
-  if (change > -6.7) return "#0FDEE6";
+  return "#0FDEE6";
 };
 
 const getAnimationClass = (change: number) => {
@@ -26,7 +26,7 @@ const getAnimationClass = (change: number) => {
   if (change > 0) return "animate-changeBackgroundGreen";
   if (change === 0) return "";
   if (change > -6) return "animate-changeBackgroundRed";
-  return "animate-changeBackgroundCyan";
+  return "";
 };
 
 function formatVolume(num: number) {

@@ -105,8 +105,9 @@ export default function Trade() {
           <GiaoDich />
         </Tab>
         <Tab key="botgiaodich" title="Bot giao dịch">
-          {/* <BotGiaoDich /> */}
-          <UnfinishedFeature />
+          <UnfinishedFeature>
+            <BotGiaoDich />
+          </UnfinishedFeature>
         </Tab>
       </Tabs>
     </div>

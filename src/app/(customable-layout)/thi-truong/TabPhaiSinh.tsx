@@ -39,8 +39,11 @@ export default function TabPhaiSinh() {
       </Tabs>
       {selectedTab === "phaisinh" && <SubTabPhaiSinh />}
 
-      {/* {selectedTab === "vithendt" && <SubTabViTheNDT />} */}
-      {selectedTab === "vithendt" && <UnfinishedFeature />}
+      {selectedTab === "vithendt" && (
+        <UnfinishedFeature>
+          <SubTabViTheNDT />
+        </UnfinishedFeature>
+      )}
     </div>
   );
 }

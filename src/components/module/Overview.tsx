@@ -11,7 +11,7 @@ import NuocNgoaiTreeChart from "../charts/NuocNgoaiTreeChart";
 import useMarketOverviewData from "@/hooks/useMarketOverview";
 import { format } from "date-fns";
 import useVNIndexThanhKhoanData from "@/hooks/useVNIndexThanhKhoanData";
-import NNYTDBarChart from "../charts/NNYTDBarChart";
+import NNYTDIndexBarChart from "../charts/NNYTDIndexBarChart";
 
 export default function Overview() {
   const { data: marketOverviewData } = useMarketOverviewData();
@@ -184,7 +184,7 @@ export default function Overview() {
               {selectedTab === "10phien" ? (
                 <NNMuaRong10PhienBarChart />
               ) : (
-                <NNYTDBarChart />
+                <NNYTDIndexBarChart />
               )}
             </div>
           </div>

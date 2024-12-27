@@ -1,9 +1,11 @@
 import MuaBanChuDongPieChart from "@/components/charts/MuaBanChuDongPieChart";
 import NNMuaRong10PhienBarChart from "@/components/charts/NNMuaRong10PhienBarChart";
+import NNYTDStockBarChart from "@/components/charts/NNYTDStockBarChart";
 import Tabs from "@/components/ui/Tabs";
 import useChiTietMaCK from "@/hooks/useChiTietMaCK";
 import useMarketOverviewData from "@/hooks/useMarketOverview";
 import useMuaBanChuDong from "@/hooks/useMuaBanChuDong";
+import useYTDStockData from "@/hooks/useYTDStockData";
 import { formatNumber, formatPrice, formatVeryLargeNumber } from "@/lib/utils";
 import { Tab } from "@nextui-org/react";
 import { useMemo, useState } from "react";
@@ -12,6 +14,11 @@ export default function SubTabTongQuan() {
   const { symbol } = useChiTietMaCK();
   const { data } = useMarketOverviewData();
   const { data: muabanchudong } = useMuaBanChuDong(symbol);
+
+  //Preload data
+  useYTDStockData(symbol);
+
+  const [selectedTab, setSelectedTab] = useState("10phien");
 
   const symbolData = useMemo(
     () => data?.find((item) => item.code === symbol),
@@ -103,10 +110,10 @@ export default function SubTabTongQuan() {
           </div>
         </div>
       </div>
-      <div className="flex min-h-[180px] flex-1 flex-col">
+      <div className="flex min-h-[220px] flex-1 flex-col">
         <div className="mt-2 flex items-center justify-between">
           <div className="text-sm font-semibold">NN mua ròng (tỷ)</div>
-          {/* <Tabs
+          <Tabs
             classNames={{
               tabList: "flex-1 bg-content1 p-1 rounded-[4px]",
               cursor: "!bg-background rounded-[4px]",
@@ -117,10 +124,14 @@ export default function SubTabTongQuan() {
             onSelectionChange={(key) => setSelectedTab(key as string)}
           >
             <Tab key="10phien" title="10 phiên"></Tab>
-            <Tab key="homnay" title="Hôm nay"></Tab>
-          </Tabs> */}
+            <Tab key="ytd" title="YTD"></Tab>
+          </Tabs>
         </div>
-        <NNMuaRong10PhienBarChart symbol={symbol} />
+        {selectedTab === "10phien" ? (
+          <NNMuaRong10PhienBarChart symbol={symbol} />
+        ) : (
+          <NNYTDStockBarChart symbol={symbol} />
+        )}
       </div>
     </div>
   );

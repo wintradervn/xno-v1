@@ -5,7 +5,12 @@ import { Tooltip } from "@nextui-org/react";
 import { X } from "lucide-react";
 import { Fragment, useMemo, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
-import { cn, formatNumber, formatPrice } from "@/lib/utils";
+import {
+  cn,
+  formatNumber,
+  formatPrice,
+  formatPriceWithType,
+} from "@/lib/utils";
 
 export default function SearchResultUI({
   search,
@@ -115,19 +120,19 @@ export default function SearchResultUI({
       ) : (
         <></>
       )}
-      <ScrollArea className="h-[500px] min-h-0">
+      <ScrollArea className="h-[500px] min-h-0 min-w-[300px]">
         <div className="flex flex-col">
           {filterData?.map((item, index: number) => (
             <div
               key={index}
               className={cn(
-                "flex w-full cursor-pointer justify-between p-2 hover:bg-card",
+                "flex w-full cursor-pointer justify-between gap-2 p-2 hover:bg-card",
               )}
               onClick={() => handleSymbolClick(item.code)}
             >
               <div className="flex flex-col">
                 <div className="font-bold">{item.code}</div>
-                <div className="text-sm font-thin text-muted">
+                <div className="max-w-[300px] overflow-hidden text-ellipsis text-nowrap text-sm font-thin text-muted">
                   {item.exchange} - {item.symbolName}
                 </div>
               </div>
@@ -148,7 +153,7 @@ export default function SearchResultUI({
                 <div className="font-bold">
                   {item.secType === "Index"
                     ? formatNumber(item.price, 2)
-                    : formatPrice(item.price)}
+                    : formatPriceWithType(item.price, item.secType)}
                 </div>
                 <div className="text-sm">
                   {item.dayChangePercent !== null &&

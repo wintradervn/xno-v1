@@ -133,8 +133,11 @@ export default function GiaoDich() {
                 onRequestOTP={handleRequestOTP}
               />
             )}
-            {/* {selectedTab === "lenhDieuKien" && <TabLenhDieuKien />} */}
-            {selectedTab === "lenhDieuKien" && <UnfinishedFeature />}
+            {selectedTab === "lenhDieuKien" && (
+              <UnfinishedFeature>
+                <TabLenhDieuKien />
+              </UnfinishedFeature>
+            )}
           </>
         )}
       </div>
@@ -158,7 +161,7 @@ function TabLenhThuong({
   onRequestOTP?: () => void;
 }) {
   const { data } = useDNSEAccounts();
-  const { jwtToken, tradingToken } = useTaiKhoanChungKhoan();
+  const { jwtToken, tradingToken, expire } = useTaiKhoanChungKhoan();
   const accountNo = data?.default.id;
   const { data: marketOverviewData } = useMarketOverviewData();
   const symbolData = useMemo(
@@ -467,13 +470,39 @@ function TabLenhThuong({
         </Button>
       </div>
       <div className="-mt-1 flex">
-        <div className="flex-1 text-center text-xs text-muted">
+        <div
+          className={cn(
+            "flex-1 text-center text-xs text-muted",
+            sucmuasucban?.qmaxLong && sucmuasucban?.qmaxLong > 0
+              ? "cursor-pointer hover:text-white"
+              : "",
+          )}
+          onClick={() => {
+            if (sucmuasucban?.qmaxLong && sucmuasucban?.qmaxLong > 0) {
+              setIsBuy(false);
+              formik.setFieldValue("quantity", sucmuasucban?.qmaxLong || 0);
+            }
+          }}
+        >
           Mua tối đa:{" "}
           <span className="text-sm font-semibold text-white">
             {sucmuasucban?.qmaxLong || 0}
           </span>
         </div>
-        <div className="flex-1 text-center text-xs text-muted">
+        <div
+          className={cn(
+            "flex-1 text-center text-xs text-muted",
+            sucmuasucban?.qmaxShort && sucmuasucban?.qmaxShort > 0
+              ? "cursor-pointer hover:text-white"
+              : "",
+          )}
+          onClick={() => {
+            if (sucmuasucban?.qmaxShort && sucmuasucban?.qmaxShort > 0) {
+              setIsBuy(false);
+              formik.setFieldValue("quantity", sucmuasucban?.qmaxShort || 0);
+            }
+          }}
+        >
           Bán tối đa:{" "}
           <span className="text-sm font-semibold text-white">
             {sucmuasucban?.qmaxShort || 0}

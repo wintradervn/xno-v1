@@ -17,14 +17,15 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import TimMaChungKhoanModal from "@/components/modals/TimMaChungKhoanModal";
 import Updater from "./Updater";
-
+import { GoogleAnalytics } from "@next/third-parties/google";
 const manrope = Manrope({
   subsets: ["latin"],
   weight: ["200", "300", "400", "500", "600", "700", "800"],
 });
 export const metadata: Metadata = {
-  title: "XNO Platform",
-  description: "XNO Platform",
+  title: "XNO – Nền tảng giao dịch chứng khoán toàn diện",
+  description:
+    "Khám phá XNO – Nền tảng giao dịch hiện đại, tích hợp AI thông minh và phân tích kỹ thuật tiên tiến. Hỗ trợ nhà đầu tư tối ưu hóa lợi nhuận và nâng tầm trải nghiệm giao dịch chứng khoán.",
 };
 
 export default async function RootLayout({
@@ -35,6 +36,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <Script src="/charting_library/charting_library.standalone.js"></Script>
+      <GoogleAnalytics gaId="G-BD3W4VZ4CP" />
       <body
         className={`${manrope.className} no-scrollbar p-1 antialiased dark`}
       >

@@ -30,10 +30,12 @@ export default function TabThongTinDoanhNghiep() {
       </div>
       <div className="flex flex-1 flex-col">
         <Suspense fallback={<DefaultLoader />}>
-          {/* {state === "hosocongty" && <SubTabHoSoCongTy />} */}
-          {state === "hosocongty" && <UnfinishedFeature />}
-          {/* {state === "codong" && <SubTabCoDongGDNoiBo />} */}
-          {state === "codong" && <UnfinishedFeature />}
+          {state === "hosocongty" && <SubTabHoSoCongTy />}
+          {state === "codong" && (
+            <UnfinishedFeature>
+              <SubTabCoDongGDNoiBo />
+            </UnfinishedFeature>
+          )}
         </Suspense>
       </div>
     </div>

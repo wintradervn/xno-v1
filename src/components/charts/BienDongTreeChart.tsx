@@ -39,7 +39,7 @@ const labelMap: { [key: string]: string } = {
   logistics: "Vận chuyển",
 };
 
-export default function BienDongTreeChart({
+function BienDongTreeChart({
   data: dataProp,
 }: {
   data?: TSymbolOverviewData[];
@@ -109,7 +109,7 @@ export default function BienDongTreeChart({
           echarts={echarts}
           onEvents={{
             click: function (params: any) {
-              if (params.data.name) {
+              if (params.data.name && params.data.price) {
                 setChiTietMaCK(params.data.name);
               }
             },
@@ -126,6 +126,7 @@ export default function BienDongTreeChart({
                     : params.data.change < 0
                       ? "text-red"
                       : "text-yellow";
+                if (!params.data.price) return "";
                 return `
                   <div class="text-muted text-left text-[11px] font-thin flex flex-col gap-[1px]">
                       <strong class="w-44 text-wrap font-semibold text-white">${params.name} - ${
@@ -226,3 +227,5 @@ export default function BienDongTreeChart({
     </div>
   );
 }
+
+export default React.memo(BienDongTreeChart);

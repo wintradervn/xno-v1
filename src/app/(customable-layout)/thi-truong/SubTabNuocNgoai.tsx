@@ -1,5 +1,5 @@
 import NNMuaRong10PhienBarChart from "@/components/charts/NNMuaRong10PhienBarChart";
-import NNYTDBarChart from "@/components/charts/NNYTDBarChart";
+import NNYTDIndexBarChart from "@/components/charts/NNYTDIndexBarChart";
 import NuocNgoaiTreeChart from "@/components/charts/NuocNgoaiTreeChart";
 import Tabs from "@/components/ui/Tabs";
 import useIndexOverview from "@/hooks/useIndexOverview";
@@ -132,7 +132,7 @@ export default function SubTabNuocNgoai({ exchange }: { exchange?: string }) {
           {selectedTab === "10phien" ? (
             <NNMuaRong10PhienBarChart symbol={exchange} />
           ) : (
-            <NNYTDBarChart symbol={exchange} />
+            <NNYTDIndexBarChart symbol={exchange} />
           )}
         </div>
       </div>

@@ -83,7 +83,7 @@ export default function Table({
         <>
           <div
             className={cn(
-              "mb-2 grid gap-2 text-nowrap pr-2 text-sm font-semibold text-muted",
+              "mb-2 grid gap-2 pr-2 text-sm font-semibold text-muted",
             )}
             style={{ gridTemplateColumns: `repeat(${columns.length}, 1fr)` }}
           >
@@ -92,7 +92,7 @@ export default function Table({
                 key={col.key}
                 className={cn(
                   col.sortFn &&
-                    "cursor-pointer select-none text-nowrap font-normal hover:text-default-200",
+                    "cursor-pointer select-none font-normal hover:text-default-200",
                   col.className || "",
                 )}
                 onClick={() => {

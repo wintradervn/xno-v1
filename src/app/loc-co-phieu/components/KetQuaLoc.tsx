@@ -6,11 +6,13 @@ import Table from "@/components/ui/Table";
 import FavoriteStarButton from "@/components/FavoriteStarButton";
 import { formatNumber } from "@/lib/utils";
 import useLocCoPhieuState from "@/hooks/useLocCoPhieuState";
-import { KEY_TO_NAME, TIEU_CHI_LOC_LIST } from "../constant";
+import { isMinMaxFilter, KEY_TO_NAME, TIEU_CHI_LOC_LIST } from "../constant";
+import useChiTietMaCK from "@/hooks/useChiTietMaCK";
 
 export default function KetQuaLoc() {
   const { data, isLoading } = useFilterProData();
   const { filterState, listFilter } = useLocCoPhieuState();
+  const { setChiTietMaCK } = useChiTietMaCK();
 
   const filteredData = useMemo(() => {
     if (!data || !filterState) return [];
@@ -37,11 +39,9 @@ export default function KetQuaLoc() {
           );
         }
         if ("min" in value || "max" in value) {
-          let multiplier = 1;
+          const filter = TIEU_CHI_LOC_LIST.find((i) => i.key === key);
           let result = true;
-          if (key === "THANHKHOAN") {
-            multiplier = 1000000000;
-          }
+
           if (!item[key as keyof IFilterProData]) return false;
           let v = 0;
           if (typeof item[key as keyof IFilterProData] === "number") {
@@ -51,12 +51,15 @@ export default function KetQuaLoc() {
               (item[key as keyof IFilterProData] as string).replaceAll("%", ""),
             );
           }
+          if (filter && isMinMaxFilter(filter) && filter?.formatValue) {
+            v = filter.formatValue(v) as number;
+          }
           if (item[key as keyof IFilterProData])
             if (value.min !== undefined) {
-              result = result && v >= +value.min * multiplier;
+              result = result && v >= +value.min;
             }
           if (value.max !== undefined) {
-            result = result && v <= +value.max * multiplier;
+            result = result && v <= +value.max;
           }
 
           return result;
@@ -106,7 +109,7 @@ export default function KetQuaLoc() {
         render: (item: IFilterProData) => {
           return (
             <div className="text-right">
-              {formatNumber(item.THANHKHOAN / 1000000000)}
+              {formatNumber(item.THANHKHOAN / 1000000000, 2)}
             </div>
           );
         },
@@ -130,14 +133,21 @@ export default function KetQuaLoc() {
           (key: string) => !["volume", "THANHKHOAN", "GIA"].includes(key),
         )
         .map((key: string) => {
+          const filterItem = TIEU_CHI_LOC_LIST.find((item) => item.key === key);
+
           return {
             key: key,
             title: KEY_TO_NAME[key],
             className: "text-end",
             render: (item: IFilterProData) => {
+              const value = item[key as keyof IFilterProData];
               return (
                 <div className="text-right">
-                  {item[key as keyof IFilterProData]}
+                  {filterItem &&
+                  isMinMaxFilter(filterItem) &&
+                  filterItem.formatValue
+                    ? formatNumber(filterItem.formatValue(value), 2)
+                    : value}
                 </div>
               );
             },
@@ -158,7 +168,14 @@ export default function KetQuaLoc() {
         </div>
       </div>
       <div className="card flex h-full flex-1 flex-col gap-2 rounded-tl-none p-3">
-        <Table columns={columns} data={filteredData} isLoading={isLoading} />
+        <Table
+          columns={columns}
+          data={filteredData}
+          isLoading={isLoading}
+          onRowClick={(item) => {
+            setChiTietMaCK(item.MA);
+          }}
+        />
       </div>
     </div>
   );

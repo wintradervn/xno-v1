@@ -13,7 +13,7 @@ export default function ChonChiTieu() {
   const { listFilter, removeFilter, addFilter } = useLocCoPhieuState();
 
   return (
-    <div className="flex min-h-[250px] flex-1 flex-col">
+    <div className="flex h-full flex-1 flex-col">
       <div className="card flex w-fit items-center gap-1 rounded-b-none px-4 text-md font-medium text-white">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -32,11 +32,11 @@ export default function ChonChiTieu() {
         Chọn chỉ tiêu
       </div>
       <div className="card flex flex-1 gap-5 rounded-tl-none p-3">
-        <div className="flex flex-col items-center gap-1">
+        <div className="no-scrollbar flex flex-col items-center gap-1 overflow-auto">
           {NHOM_TIEU_CHI_LOC.map((chitieu) => (
             <div
               className={cn(
-                "font-semibold= w-full cursor-pointer select-none rounded-[8px] border-l-2 p-2 text-md transition-all",
+                "min-h-fit w-full cursor-pointer select-none rounded-[8px] border-l-2 p-2 text-sm font-semibold transition-all",
                 selectedChiTieu === chitieu.id
                   ? "border-[#67E1C0] bg-content1"
                   : "border-transparent hover:bg-content1/40",
@@ -50,6 +50,7 @@ export default function ChonChiTieu() {
         </div>
         <div className="flex flex-1 flex-col gap-2">
           <Input
+            className="flex-shrink-0"
             placeholder="Tìm điều kiện cho bộ lọc"
             startContent={<RoundedMagnifer size={20} />}
           />

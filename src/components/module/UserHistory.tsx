@@ -12,10 +12,12 @@ import DanhMucSoHuu from "./DanhMucSoHuu";
 import SoLenhThuong from "./SoLenhThuong";
 import SoLenhDieuKien from "./SoLenhDieuKien";
 import UnfinishedFeature from "../ui/UnfinishedFeature";
+import useDNSEDeals from "@/hooks/dnse/useDNSEDeals";
 
 function UserHistory() {
   const [selectedTab, setSelectedTab] = useState("solenhthuong");
   const { name } = useTaiKhoanChungKhoan();
+  const { data: deals } = useDNSEDeals();
   const { toggle } = useLienKetTKCKModal();
   const { data: userInfo } = useDNSEUserInfo();
   const isConnected = !!name && !!userInfo;
@@ -35,7 +37,12 @@ function UserHistory() {
       >
         <Tab key="solenhthuong" title="Sổ lệnh thường"></Tab>
         <Tab key="solenhdieukien" title="Sổ lệnh điều kiện"></Tab>
-        <Tab key="danhmucsohuu" title="Danh mục sở hữu"></Tab>
+        <Tab
+          key="danhmucsohuu"
+          title={
+            "Danh mục sở hữu " + (deals?.length ? `(${deals?.length})` : "")
+          }
+        ></Tab>
         <Tab key="giaodichbot" title="Giao dịch bot"></Tab>
       </Tabs>
       {isConnected ? (
@@ -44,7 +51,9 @@ function UserHistory() {
             {selectedTab === "solenhthuong" && <SoLenhThuong />}
             {selectedTab === "solenhdieukien" && <SoLenhDieuKien />}
             {selectedTab === "danhmucsohuu" && <DanhMucSoHuu />}
-            {selectedTab === "giaodichbot" && <UnfinishedFeature />}
+            {selectedTab === "giaodichbot" && (
+              <UnfinishedFeature>Giao dịch bot</UnfinishedFeature>
+            )}
           </div>
         </>
       ) : (

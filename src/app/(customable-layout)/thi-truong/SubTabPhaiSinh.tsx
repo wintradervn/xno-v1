@@ -1,23 +1,14 @@
 import FavoriteStarButton from "@/components/FavoriteStarButton";
 import Divider from "@/components/ui/Divider";
 import Table from "@/components/ui/Table";
-import { TDNSEDeal } from "@/hooks/dnse/useDNSEDeals";
-import useMarketOverviewData, {
-  TSymbolOverviewData,
-} from "@/hooks/useMarketOverview";
+import useMarketOverviewData from "@/hooks/useMarketOverview";
 import useFilterProData, { IFilterProData } from "@/hooks/useFilterProData";
 import DoubleArrow from "@/icons/DoubleArrow";
-import {
-  cn,
-  formatNumber,
-  formatPrice,
-  formatVeryLargeNumber,
-} from "@/lib/utils";
-import { Tooltip } from "@nextui-org/react";
-import { useMemo } from "react";
-import { InfoCircle } from "solar-icon-set";
+import { cn, formatNumber } from "@/lib/utils";
+import { useMemo, useState } from "react";
 import useIndexOverview from "@/hooks/useIndexOverview";
-import { on } from "events";
+import useChiTietMaCK from "@/hooks/useChiTietMaCK";
+import { DoubleAltArrowLeft, DoubleAltArrowRight } from "solar-icon-set";
 
 const DanhSachMaPhaiSinh = [
   "ACB",
@@ -56,6 +47,8 @@ export default function SubTabPhaiSinh() {
   const { data, isLoading: isLoading1 } = useFilterProData();
   const { data: overviewData, isLoading: isLoading2 } = useMarketOverviewData();
   const { data: indexOverviewData, isLoading: isLoading3 } = useIndexOverview();
+  const { setChiTietMaCK } = useChiTietMaCK();
+  const [isDayChange, setIsDayChange] = useState(true);
 
   const isLoading = isLoading1 || isLoading2 || isLoading3;
 
@@ -116,20 +109,19 @@ export default function SubTabPhaiSinh() {
   const xuHuongChung = useMemo(() => {
     if (!vn30OverviewData) return "";
     let res = "";
-    const order = ["Giảm mạnh", "Giảm yếu", "Tăng yếu", "Tăng mạnh"];
+    const order = ["Downtrend", "Sideway", "Uptrend"];
     const acc = vn30OverviewData?.reduce((acc, item) => {
-      return acc + order.indexOf(item.SUCMANH);
+      return acc + order.indexOf(item.AiTrend);
     }, 0);
-    if (acc < 22.5) res = "Giảm mạnh";
-    else if (acc < 45) res = "Giảm yếu";
-    else if (acc < 67.5) res = "Tăng yếu";
-    else res = "Tăng mạnh";
+    if (acc < 20) res = "Downtrend";
+    else if (acc < 40) res = "Sideway";
+    else res = "Uptrend";
 
     let color = "#F1C617";
-    if (res === "Giảm mạnh") {
+    if (res === "Downtrend") {
       color = "#FF135B";
     }
-    if (res === "Tăng mạnh") {
+    if (res === "Uptrend") {
       color = "#1FAD8E";
     }
     return (
@@ -146,21 +138,21 @@ export default function SubTabPhaiSinh() {
     );
   }, [vn30OverviewData]);
 
-  const giaHopLy = useMemo(() => {
-    if (!vn30OverviewData || !overviewDataMap || !VN30FData) return 0;
-    const a = vn30OverviewData.reduce((acc, item) => {
-      const marketCap =
-        overviewDataMap?.find((j) => j.code === item.MA)?.marketCap || 0;
-      return acc + item.AIPredict20d * marketCap;
-    }, 0);
-    const b =
-      vn30OverviewData.reduce((acc, item) => {
-        const marketCap =
-          overviewDataMap?.find((j) => j.code === item.MA)?.marketCap || 0;
-        return acc + item.GIA * marketCap;
-      }, 0) || 1;
-    return (a / b) * (VN30FData.price || 0);
-  }, [vn30OverviewData]);
+  // const giaHopLy = useMemo(() => {
+  //   if (!vn30OverviewData || !overviewDataMap || !VN30FData) return 0;
+  //   const a = vn30OverviewData.reduce((acc, item) => {
+  //     const marketCap =
+  //       overviewDataMap?.find((j) => j.code === item.MA)?.marketCap || 0;
+  //     return acc + item.AIPredict20d * marketCap;
+  //   }, 0);
+  //   const b =
+  //     vn30OverviewData.reduce((acc, item) => {
+  //       const marketCap =
+  //         overviewDataMap?.find((j) => j.code === item.MA)?.marketCap || 0;
+  //       return acc + item.GIA * marketCap;
+  //     }, 0) || 1;
+  //   return (a / b) * (VN30FData.price || 0);
+  // }, [vn30OverviewData]);
 
   const columns = useMemo(() => {
     return [
@@ -257,7 +249,7 @@ export default function SubTabPhaiSinh() {
         },
       },
       {
-        title: "Điểm ảnh hưởng",
+        title: "Điểm ảnh hưởng VN30",
         key: "diemanhhuong",
         className: "text-end",
         render: (item: IFilterProData & { diemanhhuong: number }) => {
@@ -316,12 +308,12 @@ export default function SubTabPhaiSinh() {
         key: "xuhuong",
         className: "text-end",
         render: (item: IFilterProData) => {
-          const value = item.SUCMANH;
+          const value = item.AiTrend;
           let color = "#F1C617";
-          if (value === "Giảm mạnh") {
+          if (value === "Downtrend") {
             color = "#FF135B";
           }
-          if (value === "Tăng mạnh") {
+          if (value === "Uptrend") {
             color = "#1FAD8E";
           }
           return (
@@ -362,33 +354,50 @@ export default function SubTabPhaiSinh() {
           VN30F1M <FavoriteStarButton symbol={"VN30F1M"} />
         </div>
         <div className="flex flex-col items-center gap-1">
-          <div className="flex gap-2">
-            <div className="text-md text-muted">1 ngày</div>
-          </div>
-          <div
-            className={cn(
-              "flex items-center gap-1 text-green",
-              VN30FData?.dayChange
-                ? VN30FData.dayChange > 0
-                  ? "text-green"
-                  : "text-red"
-                : "text-yellow",
-            )}
-          >
-            <div>{formatNumber(VN30FData?.price, 1)}</div>
+          <div className="flex items-center gap-2">
             <div
-              className={
-                VN30FData?.dayChange
-                  ? VN30FData.dayChange > 0
-                    ? "rotate-0"
-                    : "rotate-180"
-                  : "hidden"
-              }
+              className="h-5 cursor-pointer text-muted hover:text-white"
+              onClick={() => setIsDayChange((prev) => !prev)}
             >
-              <DoubleArrow />
+              <DoubleAltArrowLeft iconStyle="Bold" size={16} />
             </div>
-            <div>{formatNumber(VN30FData?.dayChange, 1)}</div>
+            <div className="text-md text-muted">
+              {isDayChange ? "1 ngày" : "1 tuần"}
+            </div>
+            <div
+              className="h-5 cursor-pointer text-muted hover:text-white"
+              onClick={() => setIsDayChange((prev) => !prev)}
+            >
+              <DoubleAltArrowRight iconStyle="Bold" size={16} />
+            </div>
           </div>
+          {(function RenderChange() {
+            const value = isDayChange
+              ? VN30FData?.dayChange
+              : VN30FData?.weekChange;
+            return (
+              <div
+                className={cn(
+                  "flex w-[110px] items-center justify-center gap-1 text-green",
+                  value
+                    ? value > 0
+                      ? "text-green"
+                      : "text-red"
+                    : "text-yellow",
+                )}
+              >
+                <div>{formatNumber(VN30FData?.price, 1)}</div>
+                <div
+                  className={
+                    value ? (value > 0 ? "rotate-0" : "rotate-180") : "hidden"
+                  }
+                >
+                  <DoubleArrow />
+                </div>
+                <div>{formatNumber(value, 1)}</div>
+              </div>
+            );
+          })()}
         </div>
         <Divider />
         <div className="flex flex-col gap-1">
@@ -400,9 +409,11 @@ export default function SubTabPhaiSinh() {
         <Divider />
         <div className="flex flex-col gap-1">
           <div className="text-md text-muted">Xu hướng</div>
-          <div className="text-md font-semibold text-white">{xuHuongChung}</div>
+          <div className="h-5 text-md font-semibold text-white">
+            {xuHuongChung}
+          </div>
         </div>
-        <Divider />
+        {/* <Divider />
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-1 text-md text-muted">
             AI dự đoán 20D
@@ -416,12 +427,15 @@ export default function SubTabPhaiSinh() {
           <div className="text-md font-semibold text-white">
             {formatNumber(giaHopLy, 1)}
           </div>
-        </div>
+        </div> */}
       </div>
       <Table
         columns={columns}
         data={vn30OverviewData}
         isLoading={isLoading}
+        onRowClick={(item) => {
+          setChiTietMaCK(item.MA);
+        }}
       ></Table>
     </div>
   );

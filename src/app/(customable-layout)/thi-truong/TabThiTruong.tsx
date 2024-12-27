@@ -104,8 +104,11 @@ export default function TabThiTruong() {
           {selectedTab === "tudoanh" && <TuDoanh exchange={selectedExchange} />}
           {selectedTab === "thanhtoan" && <ThanhKhoan />}
           {selectedTab === "tacdong" && <TacDongToiIndex />}
-          {/* {selectedTab === "dongtienndt" && <SubTabCoSo />} */}
-          {selectedTab === "dongtienndt" && <UnfinishedFeature />}
+          {selectedTab === "dongtienndt" && (
+            <UnfinishedFeature>
+              <SubTabCoSo />
+            </UnfinishedFeature>
+          )}
         </Suspense>
       </div>
     </div>

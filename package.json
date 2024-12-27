@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@next/third-parties": "^15.1.2",
     "@nextui-org/react": "^2.6.5",
     "@radix-ui/react-context-menu": "^2.2.2",
     "@radix-ui/react-portal": "^1.1.3",

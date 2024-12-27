@@ -6,13 +6,14 @@ import Input from "@/components/ui/Input";
 import Popover from "@/components/ui/Popover";
 import useCurrentSymbol from "@/hooks/useCurrentSymbol";
 import useIndexOverview from "@/hooks/useIndexOverview";
-import useModalsState, { MODALS } from "@/hooks/useModalsState";
+import useMarketOverviewData from "@/hooks/useMarketOverview";
 import useSymbolInfo from "@/hooks/useSymbolInfo";
 import DoubleArrow from "@/icons/DoubleArrow";
 import {
   cn,
   formatNumber,
   formatPrice,
+  formatPriceWithType,
   formatVeryLargeNumber,
 } from "@/lib/utils";
 import { PopoverContent, PopoverTrigger } from "@nextui-org/react";
@@ -110,6 +111,11 @@ function IndexInfo() {
     () => data?.find((item) => item.code === currentSymbol),
     [data],
   );
+
+  useEffect(() => {
+    if (!symbolInfo?.price) return;
+    document.title = `${formatPriceWithType(symbolInfo.price, symbolInfo.secType)} | ${symbolInfo.code} | XNO Trading platform`;
+  }, [symbolInfo?.price]);
 
   return (
     <div className="card h-[46px] px-5 py-1">
@@ -267,9 +273,18 @@ function IndexInfo() {
 }
 
 function StockInfo() {
-  // const { openModal } = useModalsState(MODALS.TIM_KIEM);
   const { currentSymbol } = useCurrentSymbol();
   const { data: symbolInfo, isLoading } = useSymbolInfo();
+  const { data } = useMarketOverviewData();
+
+  const stockOverviewInfo = useMemo(() => {
+    return data?.find((item) => item.code === currentSymbol);
+  }, [data]);
+
+  useEffect(() => {
+    if (!symbolInfo?.closePrice || !stockOverviewInfo) return;
+    document.title = `${formatPriceWithType(symbolInfo.closePrice, stockOverviewInfo.secType)} | ${stockOverviewInfo.code} | XNO Trading platform`;
+  }, [symbolInfo?.closePrice, stockOverviewInfo]);
 
   return (
     <div className="card h-[46px] px-5 py-1">
@@ -297,7 +312,10 @@ function StockInfo() {
                 )}
               >
                 <div className="text-md font-semibold">
-                  {formatPrice(symbolInfo?.closePrice)}
+                  {formatPriceWithType(
+                    symbolInfo?.closePrice,
+                    stockOverviewInfo?.secType,
+                  )}
                 </div>
                 <div className={cn("flex items-center text-sm font-medium")}>
                   {symbolInfo?.changePercent ? (
@@ -307,27 +325,40 @@ function StockInfo() {
                       <DoubleArrow rotate={180} size={14} />
                     )
                   ) : null}
-                  {!!symbolInfo?.change && formatPrice(symbolInfo?.change)}(
-                  {symbolInfo?.changePercent.toFixed(2)}%)
+                  {!!symbolInfo?.change &&
+                    formatPriceWithType(
+                      symbolInfo?.change,
+                      stockOverviewInfo?.secType,
+                    )}
+                  ({symbolInfo?.changePercent.toFixed(2)}%)
                 </div>
               </div>
 
               <div className="flex flex-col items-start gap-0.5">
                 <div className="text-xs text-muted">Giá sàn</div>
                 <div className="text-md font-semibold text-cyan">
-                  {formatPrice(symbolInfo?.floor)}
+                  {formatPriceWithType(
+                    symbolInfo?.floor,
+                    stockOverviewInfo?.secType,
+                  )}
                 </div>
               </div>
               <div className="flex flex-col items-start gap-0.5">
                 <div className="text-xs text-muted">Giá tham chiếu</div>
                 <div className="text-md font-semibold text-yellow">
-                  {formatPrice(symbolInfo?.reference)}
+                  {formatPriceWithType(
+                    symbolInfo?.reference,
+                    stockOverviewInfo?.secType,
+                  )}
                 </div>
               </div>
               <div className="flex flex-col items-start gap-0.5">
                 <div className="text-xs text-muted">Giá trần</div>
                 <div className="text-md font-semibold text-purple">
-                  {formatPrice(symbolInfo?.ceiling)}
+                  {formatPriceWithType(
+                    symbolInfo?.ceiling,
+                    stockOverviewInfo?.secType,
+                  )}
                 </div>
               </div>
               <div className="flex flex-col items-start gap-0.5">
@@ -342,7 +373,10 @@ function StockInfo() {
                         : "text-yellow",
                   )}
                 >
-                  {formatPrice(symbolInfo?.low)}
+                  {formatPriceWithType(
+                    symbolInfo?.low,
+                    stockOverviewInfo?.secType,
+                  )}
                 </div>
               </div>
               <div className="flex flex-col items-start gap-0.5">
@@ -357,7 +391,10 @@ function StockInfo() {
                         : "text-yellow",
                   )}
                 >
-                  {formatPrice(symbolInfo?.high)}
+                  {formatPriceWithType(
+                    symbolInfo?.high,
+                    stockOverviewInfo?.secType,
+                  )}
                 </div>
               </div>
               <Divider />

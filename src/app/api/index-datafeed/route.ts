@@ -6,7 +6,8 @@ export async function GET(request: NextRequest) {
   const to = searchParams.get("to");
   const symbol = searchParams.get("symbol");
   const type = searchParams.get("type");
-  const apiUrl = `https://protrade.finsc.vn/api/datafeedv2/history?symbol=${symbol || "VNINDEX"}%23${type || "TdmbVal"}&resolution=1D&from=${from}&to=${to}&countback=20`; // Use the id in the API URL
+  const countback = searchParams.get("countback");
+  const apiUrl = `https://protrade.finsc.vn/api/datafeedv2/history?symbol=${symbol || "VNINDEX"}%23${type || "TdmbVal"}&resolution=1D&from=${from}&to=${to}&countback=${countback || 20}`; // Use the id in the API URL
 
   const response = await fetch(apiUrl);
   if (!response.ok) {

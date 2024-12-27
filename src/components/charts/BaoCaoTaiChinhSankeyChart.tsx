@@ -7,7 +7,7 @@ import useCanDoiKeToanData, {
   ICanDoiKeToanItem,
 } from "@/hooks/useCanDoiKeToanData";
 import useChiTietMaCK from "@/hooks/useChiTietMaCK";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 
 echarts.use([CanvasRenderer, SankeyChart, GridComponent]);
 
@@ -430,11 +430,7 @@ const normalOrder = [
 //   },
 // ]
 
-export default function BaoCaoTaiChinhSankeyChart({
-  yearly,
-}: {
-  yearly: boolean;
-}) {
+function BaoCaoTaiChinhSankeyChart({ yearly }: { yearly: boolean }) {
   const { symbol } = useChiTietMaCK();
 
   const { data, isLoading } = useCanDoiKeToanData(symbol, yearly);
@@ -490,8 +486,6 @@ export default function BaoCaoTaiChinhSankeyChart({
     });
     return result;
   }, [latestYearData]);
-  console.log("links", links);
-  console.log("normalOrder", normalOrder);
 
   return (
     <div className="flex-1">
@@ -556,3 +550,5 @@ export default function BaoCaoTaiChinhSankeyChart({
     </div>
   );
 }
+
+export default React.memo(BaoCaoTaiChinhSankeyChart);

@@ -6,7 +6,7 @@ import { useState } from "react";
 const defaultFilters = [
   {
     id: "1",
-    name: "Bộ lọc Cổ phiếu tăng trưởng",
+    name: "Cổ phiếu tăng trưởng",
     state: {
       PE: {
         max: 15,
@@ -30,7 +30,7 @@ const defaultFilters = [
   },
   {
     id: "2",
-    name: "Bộ lọc Cổ phiếu giá trị",
+    name: "Cổ phiếu giá trị",
     state: {
       PE: {
         max: 10,
@@ -51,7 +51,7 @@ const defaultFilters = [
   },
   {
     id: "3",
-    name: "Bộ lọc Cổ phiếu xu hướng mạnh",
+    name: "Cổ phiếu xu hướng mạnh",
     state: {
       RS: {
         min: 80,
@@ -75,7 +75,7 @@ const defaultFilters = [
   },
   {
     id: "4",
-    name: "Bộ lọc Cổ phiếu phục hồi",
+    name: "Cổ phiếu phục hồi",
     state: {
       pattern: ["Tăng giá"],
       NGANHAN: ["Tăng"],
@@ -102,18 +102,16 @@ export default function BoLocGoiY() {
   const [selectedFilter, setSelectedFilter] = useState("1");
   const { setFilter } = useLocCoPhieuState();
   return (
-    <div className="flex flex-col gap-5">
-      <div className="text-lineargreen text-sm font-bold uppercase">
-        Bộ lọc gợi ý
-      </div>
-      <div className="flex w-full flex-col items-center gap-1">
+    <div className="flex flex-col">
+      <div className="px-3 py-4 text-md font-semibold">Bộ lọc gợi ý</div>
+      <div className="flex w-full flex-col items-center gap-2 px-3">
         {defaultFilters.map((filter) => (
           <div
             className={cn(
-              "font-semibold= w-full cursor-pointer select-none rounded-[8px] border-l-2 p-2 text-md transition-all",
+              "relative flex h-10 w-full cursor-pointer select-none items-center rounded-[8px] border-1 p-2 px-3 text-sm font-semibold transition-all",
               selectedFilter === filter.id
-                ? "border-[#67E1C0] bg-content1"
-                : "border-transparent hover:bg-content1/40",
+                ? "bg-neutral-800"
+                : "border-neutral-800",
             )}
             onClick={() => {
               setSelectedFilter(filter.id);
@@ -121,6 +119,14 @@ export default function BoLocGoiY() {
             }}
             key={filter.id}
           >
+            <div
+              className={cn(
+                "absolute left-0 top-0 h-full w-[15px] rounded-[8px] border-l-2 bg-transparent transition-all",
+                selectedFilter === filter.id
+                  ? "border-[#67E1C0]"
+                  : "border-transparent",
+              )}
+            ></div>
             {filter.name}
           </div>
         ))}

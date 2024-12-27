@@ -84,6 +84,7 @@ function TradingViewChart({ symbol }: { symbol?: string }) {
       studies_overrides: {},
       theme: "Dark",
       custom_css_url: "/charting_library/style.css",
+      timeframe: "2w",
       time_frames: [
         {
           text: "6m",

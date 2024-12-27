@@ -1,11 +1,8 @@
-import ChiSoDongTienGauge from "@/components/charts/ChiSoDongTienGauge";
-import PivotsTable from "@/components/module/PivotsTable";
 import TradingViewChart from "@/components/TradingViewChart";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import Tabs from "@/components/ui/Tabs";
 import useCurrentSymbol from "@/hooks/useCurrentSymbol";
 import useFilterProData from "@/hooks/useFilterProData";
-import { Tab } from "@nextui-org/react";
+import BulkStar from "@/icons/BulkStar";
 import { useState } from "react";
 
 const ChiBaoMABadge = ({ value }: { value?: string }) => {
@@ -72,25 +69,30 @@ export default function SubTabXuHuong() {
   return (
     <div className="flex h-full w-full gap-10">
       <div className="flex flex-1 flex-col items-center gap-6">
-        <div className="bg-landing-rainbow rounded-full p-[1px]">
+        {/* <div className="bg-landing-rainbow rounded-full p-[1px]">
           <div className="w-fit rounded-full bg-background p-2 text-sm">
             Cổ phiếu đang trong xu hướng tăng tốt. Về thế nến, cổ phiếu xuất
             hiện Bullish Engulfing.
           </div>
-        </div>
+        </div> */}
         <div className="flex w-full flex-1">
           <TradingViewChart />
         </div>
       </div>
       <ScrollArea>
         <div className="flex w-[340px] flex-col gap-4">
-          <div className="flex min-h-[100px] flex-col items-center gap-2 rounded-[6px] border-1 border-neutral-800 p-2">
-            <div className="text-lineargreen">AI nhận định</div>
+          <div className="flex min-h-[100px] flex-col items-center gap-2 rounded-[6px] border-1 border-neutral-800 p-3">
+            <div className="relative mb-2 flex h-7 items-center overflow-hidden rounded-full bg-[#CFF8EB] px-2 pl-9 text-sm font-semibold text-[#16594E]">
+              <div className="bg-lineargreen absolute -left-2 top-[-6px] flex h-10 w-10 items-center justify-center rounded-full text-[#1FAD8E]">
+                <BulkStar />
+              </div>
+              AI nhận định
+            </div>
             <div className="text-sm">
               {symbolData?.cmtTA || "Chưa có nhận định từ AI"}
             </div>
           </div>
-          <div className="flex min-h-[200px] flex-col items-center gap-3 rounded-[6px] border-1 border-neutral-800 p-2">
+          <div className="flex min-h-[200px] flex-col items-center gap-3 rounded-[6px] border-1 border-neutral-800 p-3">
             <div className="text-md font-semibold text-white">
               Giá so với Chỉ báo MA
             </div>

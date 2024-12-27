@@ -21,8 +21,18 @@ export type TTieuChiLoc = {
   key: string;
 } & (
   | { type: "select"; options: Array<{ label: string; includes?: string[] }> }
-  | { type: "minmax"; suggestions?: Array<{ label: string }> }
+  | {
+      type: "minmax";
+      suggestions?: Array<{ label: string }>;
+      formatValue?: (value: number | string) => number | string;
+    }
 );
+
+export function isMinMaxFilter(
+  filter: TTieuChiLoc,
+): filter is TTieuChiLoc & { type: "minmax" } {
+  return filter.type === "minmax";
+}
 
 export const TIEU_CHI_LOC_NHOM_THONG_DUNG: Array<TTieuChiLoc> = [
   {
@@ -54,11 +64,13 @@ export const TIEU_CHI_LOC_NHOM_THONG_DUNG: Array<TTieuChiLoc> = [
     name: "Giá trị giao dịch (tỷ)",
     key: "THANHKHOAN",
     type: "minmax",
+    formatValue: (value) => +value / 1000_000_000,
   },
   {
-    name: "Giá trị giao dịch trung bình 50 phiên (cp)",
+    name: "Giá trị giao dịch trung bình 50 phiên (tỷ)",
     key: "ThanhKhoanTB50",
     type: "minmax",
+    formatValue: (value) => +value / 1000_000_000,
   },
   {
     name: "Khối lượng (cp)",
@@ -212,7 +224,7 @@ export const TIEU_CHI_LOC_NHOM_KY_THUAT_CHUYEN_SAU: Array<TTieuChiLoc> = [
   },
   {
     name: "Chỉ số sức mạnh RRG",
-    key: "RRG",
+    key: "rrg",
     type: "select",
     options: [
       { label: "Cải thiện" },
@@ -309,6 +321,7 @@ export const TIEU_CHI_LOC_NHOM_KY_THUAT_CHUYEN_SAU: Array<TTieuChiLoc> = [
       { label: "Break" },
       { label: "Cận trên" },
       { label: "Đảo chiều" },
+      { label: "Cận dưới" },
     ],
   },
   {

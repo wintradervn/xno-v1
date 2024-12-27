@@ -26,6 +26,7 @@ import { ChevronDown, X } from "lucide-react";
 import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { AltArrowDown } from "solar-icon-set";
 import UnfinishedFeature from "@/components/ui/UnfinishedFeature";
+import TabBaoCaoPhanTich from "./TabBaoCaoPhanTich";
 
 const TabTongQuan = lazy(() => import("./TabTongQuan"));
 const TabPhanTichTaiChinh = lazy(() => import("./TabPhanTichTaiChinh"));
@@ -37,7 +38,6 @@ export default function ChiTietMaCKModal() {
   const [debouncedSymbol, setDebouncedSymbol] = useState("");
   const { setChiTietMaCK, symbol, isOpen } = useChiTietMaCK();
   const { data: symbolInfo, isLoading } = useSymbolInfo(symbol || "");
-  console.log("🚀 ~ ChiTietMaCKModal ~ symbolInfo:", symbolInfo);
   const [selectedTab, setSelectedTab] = useState("tongquan");
 
   // Prefetch
@@ -207,8 +207,11 @@ export default function ChiTietMaCKModal() {
               {selectedTab === "tongquan" && <TabTongQuan />}
               {selectedTab === "phantichtaichinh" && <TabPhanTichTaiChinh />}
               {selectedTab === "phantichkythuat" && <TabPhanTichKyThuat />}
-              {/* {selectedTab === "baocaophantich" && <TabBaoCaoPhanTich />} */}
-              {selectedTab === "baocaophantich" && <UnfinishedFeature />}
+              {selectedTab === "baocaophantich" && (
+                <UnfinishedFeature>
+                  <TabBaoCaoPhanTich />
+                </UnfinishedFeature>
+              )}
               {selectedTab === "thongtindoanhnghiep" && (
                 <TabThongTinDoanhNghiep />
               )}

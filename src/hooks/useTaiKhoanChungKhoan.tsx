@@ -22,6 +22,7 @@ const useTaiKhoanChungKhoanStore = create(
         set({
           name: broker,
           jwtToken: token,
+          tradingToken: "",
           expire: Date.now() + 8 * 60 * 60_000, // 8 hours
         });
       },
@@ -47,6 +48,7 @@ export default function useTaiKhoanChungKhoan() {
     ? {
         ...state,
         jwtToken: Date.now() < state.expire ? state.jwtToken : "",
+        tradingToken: Date.now() < state.expire ? state.tradingToken : "",
       }
     : {};
 }

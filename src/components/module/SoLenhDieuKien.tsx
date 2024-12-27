@@ -1,6 +1,20 @@
-import useDNSEDeals, { TDNSEDeal } from "@/hooks/dnse/useDNSEDeals";
+import { TDNSEDeal } from "@/hooks/dnse/useDNSEDeals";
 import Table from "../ui/Table";
 import { formatPrice } from "@/lib/utils";
+import { useState } from "react";
+import ThongTinLaiLoTaiKhoan from "./ThongTinLaiLoTaiKhoan";
+import Input from "../ui/Input";
+import { AltArrowDown, RoundedMagnifer } from "solar-icon-set";
+import Popover from "../ui/Popover";
+import { PopoverContent, PopoverTrigger } from "@nextui-org/react";
+import Button from "../ui/Button";
+import Checkbox from "../ui/Checkbox";
+
+const mapStatusLabel: Record<string, string> = {
+  Filled: "Đã khớp",
+  New: "Mới",
+  Canceled: "Đã hủy",
+};
 
 const columns = [
   {
@@ -99,8 +113,74 @@ const filterData = [
 ];
 
 export default function SoLenhDieuKien() {
+  const [onlyBuy, setOnlyBuy] = useState(false);
+  const [onlySell, setOnlySell] = useState(false);
+  const [filter, setFilter] = useState<string[]>([]);
+  const [symbolSearch, setSymbolSearch] = useState("");
+
   return (
-    <div className="pt-2">
+    <div className="">
+      <div className="mb-5 flex justify-between">
+        <ThongTinLaiLoTaiKhoan />
+        <div className="flex w-fit items-center gap-3">
+          <Input
+            placeholder="Tìm mã CK"
+            value={symbolSearch}
+            variant="bordered"
+            onValueChange={setSymbolSearch}
+            size="sm"
+            classNames={{ base: "w-[140px]" }}
+            startContent={<RoundedMagnifer size={16} />}
+          />
+          <Popover placement="bottom-start">
+            <PopoverTrigger>
+              <Button
+                className="h-[36px] w-fit min-w-fit rounded-[4px] bg-content1 px-4 py-3 text-sm text-white"
+                color="default"
+              >
+                Trạng thái
+                <AltArrowDown />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              {Object.entries(mapStatusLabel).map(([key, name]) => (
+                <div
+                  key={key}
+                  className="flex w-full justify-start rounded-[4px] p-1 py-1 !text-xs data-[hover=true]:bg-default-600/40"
+                >
+                  <Checkbox
+                    size="sm"
+                    classNames={{
+                      label: "text-sm pl-0",
+                    }}
+                    isSelected={filter.includes(key)}
+                    onValueChange={(checked) => {
+                      if (checked) setFilter([...filter, key]);
+                      else setFilter(filter.filter((f) => f !== key));
+                    }}
+                  >
+                    {name}
+                  </Checkbox>
+                </div>
+              ))}
+            </PopoverContent>
+          </Popover>{" "}
+          <Checkbox
+            classNames={{ label: "text-sm text-green w-[50px]" }}
+            checked={onlyBuy}
+            onValueChange={setOnlyBuy}
+          >
+            Mua
+          </Checkbox>
+          <Checkbox
+            classNames={{ label: "text-sm text-red w-[50px]" }}
+            checked={onlySell}
+            onValueChange={setOnlySell}
+          >
+            Bán
+          </Checkbox>
+        </div>
+      </div>
       <Table columns={columns} data={[]} noDataText="Chưa có lệnh trong ngày" />
     </div>
   );

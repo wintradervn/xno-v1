@@ -37,8 +37,11 @@ export default function TabPhanTichKyThuat() {
           {/* {state === "tongquan" && <SubTabTongQuanPTKT />} */}
           {state === "xuhuong" && <SubTabXuHuong />}
           {state === "bieudorrg" && <RRGChart />}
-          {/* {state === "dongtienthongminh" && <DongTienThongMinhLineChart />} */}
-          {state === "dongtienthongminh" && <UnfinishedFeature />}
+          {state === "dongtienthongminh" && (
+            <UnfinishedFeature>
+              <DongTienThongMinhLineChart />
+            </UnfinishedFeature>
+          )}
         </Suspense>
       </div>
     </div>

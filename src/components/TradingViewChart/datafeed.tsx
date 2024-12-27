@@ -83,7 +83,7 @@ const getohlcv = async (
   to: number,
   countback: number,
 ) => {
-  const baseUrl = `https://api.xno.vn/v2/datafeed/history`;
+  const baseUrl = `/v2/datafeed/history`;
   const params = new URLSearchParams({
     symbol: symbol,
     resolution: resolution,

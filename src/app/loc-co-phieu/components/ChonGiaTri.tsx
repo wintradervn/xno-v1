@@ -46,7 +46,7 @@ export default function ChonGiaTri() {
   }, [filterState]);
 
   return (
-    <div className="flex min-h-[250px] flex-1 flex-col">
+    <div className="flex h-full flex-1 flex-col">
       <div className="card flex w-fit items-center gap-1 rounded-b-none px-4 text-md font-medium text-white">
         <svg
           width="20"
@@ -64,7 +64,7 @@ export default function ChonGiaTri() {
         </svg>
         Chọn giá trị
       </div>
-      <div className="card flex max-h-[340px] flex-1 flex-col gap-2 rounded-tl-none p-3">
+      <div className="card flex flex-1 flex-col gap-2 rounded-tl-none p-3">
         <ScrollArea className="flex flex-1 flex-col pr-2">
           {filtersData?.map((filter: TTieuChiLoc) => (
             <div
@@ -85,7 +85,6 @@ export default function ChonGiaTri() {
                       value={state[filter.key]?.min ?? ""}
                       type="number"
                       onValueChange={(value: any) => {
-                        console.log("value", value);
                         setState({
                           ...state,
                           [filter.key]: {
@@ -120,7 +119,6 @@ export default function ChonGiaTri() {
                       color="default"
                       selectedKeys={state[filter.key] || []}
                       onSelectionChange={(value) => {
-                        console.log("value", value);
                         setState({
                           ...state,
                           [filter.key]: Array.from(value),

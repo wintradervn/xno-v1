@@ -1,4 +1,5 @@
 import Divider from "@/components/ui/Divider";
+import UnfinishedFeature from "@/components/ui/UnfinishedFeature";
 import useCompanyProfile from "@/hooks/useCompanyProfile";
 import useCurrentSymbol from "@/hooks/useCurrentSymbol";
 import { cn, formatNumber, formatVeryLargeNumber } from "@/lib/utils";
@@ -99,41 +100,43 @@ export default function SubTabHoSoCongTy() {
       <Divider className="h-full !w-[2px] flex-shrink-0" />
       <div className="flex w-fit min-w-[300px] flex-shrink-0 flex-col">
         <div className="text-lg font-bold">Ban lãnh đạo</div>
-        <div className="flex flex-col p-1.5">
-          <div className="flex justify-between p-1.5 py-4 text-md font-semibold text-muted">
-            <div>Họ tên</div>
-            <div>Chức vụ</div>
+        <UnfinishedFeature>
+          <div className="flex flex-col p-1.5">
+            <div className="flex justify-between p-1.5 py-4 text-md font-semibold text-muted">
+              <div>Họ tên</div>
+              <div>Chức vụ</div>
+            </div>
+            <Divider className="!h-[1px] !w-full" />
+            <div className="flex justify-between gap-4 border-b-1 border-default-800 p-1.5 py-4 text-md">
+              <div className="font-bold">Nguyễn Thanh Tùng</div>
+              <div className="">Chủ tịch Hội đồng Quản trị</div>
+            </div>
+            <div className="flex justify-between gap-4 border-b-1 border-default-800 p-1.5 py-4 text-md">
+              <div className="font-bold">La Thị Hồng Minh</div>
+              <div className="">Kế toán trưởng</div>
+            </div>
+            <div className="flex justify-between gap-4 border-b-1 border-default-800 p-1.5 py-4 text-md">
+              <div className="font-bold">Lê Thị Huyền Diệu</div>
+              <div className="">Kế toán trưởng</div>
+            </div>
+            <div className="flex justify-between gap-4 border-b-1 border-default-800 p-1.5 py-4 text-md">
+              <div className="font-bold">Nguyễn Thanh Tùng</div>
+              <div className="">Chủ tịch Hội đồng Quản trị</div>
+            </div>
+            <div className="flex justify-between gap-4 border-b-1 border-default-800 p-1.5 py-4 text-md">
+              <div className="font-bold">Nguyễn Thanh Tùng</div>
+              <div className="">Chủ tịch Hội đồng Quản trị</div>
+            </div>
+            <div className="flex justify-between gap-4 border-b-1 border-default-800 p-1.5 py-4 text-md">
+              <div className="font-bold">Nguyễn Thanh Tùng</div>
+              <div className="">Chủ tịch Hội đồng Quản trị</div>
+            </div>
+            <div className="flex justify-between gap-4 border-b-1 border-default-800 p-1.5 py-4 text-md">
+              <div className="font-bold">Nguyễn Thanh Tùng</div>
+              <div className="">Chủ tịch Hội đồng Quản trị</div>
+            </div>
           </div>
-          <Divider className="!h-[1px] !w-full" />
-          <div className="flex justify-between gap-4 border-b-1 border-default-800 p-1.5 py-4 text-md">
-            <div className="font-bold">Nguyễn Thanh Tùng</div>
-            <div className="">Chủ tịch Hội đồng Quản trị</div>
-          </div>
-          <div className="flex justify-between gap-4 border-b-1 border-default-800 p-1.5 py-4 text-md">
-            <div className="font-bold">La Thị Hồng Minh</div>
-            <div className="">Kế toán trưởng</div>
-          </div>
-          <div className="flex justify-between gap-4 border-b-1 border-default-800 p-1.5 py-4 text-md">
-            <div className="font-bold">Lê Thị Huyền Diệu</div>
-            <div className="">Kế toán trưởng</div>
-          </div>
-          <div className="flex justify-between gap-4 border-b-1 border-default-800 p-1.5 py-4 text-md">
-            <div className="font-bold">Nguyễn Thanh Tùng</div>
-            <div className="">Chủ tịch Hội đồng Quản trị</div>
-          </div>
-          <div className="flex justify-between gap-4 border-b-1 border-default-800 p-1.5 py-4 text-md">
-            <div className="font-bold">Nguyễn Thanh Tùng</div>
-            <div className="">Chủ tịch Hội đồng Quản trị</div>
-          </div>
-          <div className="flex justify-between gap-4 border-b-1 border-default-800 p-1.5 py-4 text-md">
-            <div className="font-bold">Nguyễn Thanh Tùng</div>
-            <div className="">Chủ tịch Hội đồng Quản trị</div>
-          </div>
-          <div className="flex justify-between gap-4 border-b-1 border-default-800 p-1.5 py-4 text-md">
-            <div className="font-bold">Nguyễn Thanh Tùng</div>
-            <div className="">Chủ tịch Hội đồng Quản trị</div>
-          </div>
-        </div>
+        </UnfinishedFeature>
       </div>
     </div>
   );

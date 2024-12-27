@@ -15,6 +15,7 @@ import { useMemo, useState } from "react";
 import Input from "../ui/Input";
 import useMarketOverviewData from "@/hooks/useMarketOverview";
 import useCurrentSymbol from "@/hooks/useCurrentSymbol";
+import ThongTinLaiLoTaiKhoan from "./ThongTinLaiLoTaiKhoan";
 
 const filterData = [
   { key: "OPEN, ODD_LOT", name: "Đang mở" },
@@ -178,68 +179,10 @@ export default function DanhMucSoHuu() {
     [],
   );
 
-  const summaryData: {
-    vonThuc: number;
-    vonVay: number;
-    tongLaiLo: number;
-    laiLoPercent: number;
-  } = useMemo(() => {
-    const result = { vonThuc: 0, vonVay: 0, tongLaiLo: 0, laiLoPercent: 0 };
-
-    deals?.forEach((item) => {
-      if (item.status !== "OPEN") return;
-      result.vonThuc += item.accumulateSecure;
-      result.vonVay += item.currentDebt;
-      result.tongLaiLo +=
-        item.unrealizedProfit -
-        item.estimateRemainTaxAndFee -
-        item.unrealizedOpenTaxAndFee -
-        item.currentInterest;
-      result.laiLoPercent = (result.tongLaiLo * 100) / result.vonThuc;
-    });
-
-    return result;
-  }, [deals]);
-
   return (
     <div className="relative">
       <div className="mb-5 flex justify-between">
-        <div className="flex gap-4">
-          <div className="flex flex-col">
-            <div className="text-sm text-muted">Vốn thực:</div>
-            <div className="text-md font-semibold">
-              {formatNumber(summaryData.vonThuc)}
-            </div>
-          </div>
-          <div className="flex flex-col">
-            <div className="text-sm text-muted">Vốn vay:</div>
-            <div className="text-md font-semibold">
-              {formatNumber(summaryData.vonVay)}
-            </div>
-          </div>
-          <div
-            className={cn(
-              "flex flex-col",
-              summaryData.tongLaiLo > 0
-                ? "text-green"
-                : summaryData.tongLaiLo < 0
-                  ? "text-red"
-                  : "text-white",
-            )}
-          >
-            <div className="text-sm text-muted">Tổng lãi lỗ:</div>
-            <div className="text-md font-semibold">
-              {formatNumber(summaryData.tongLaiLo)} (
-              {summaryData.laiLoPercent
-                ? summaryData.laiLoPercent.toLocaleString("en-US", {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 2,
-                  })
-                : "-"}
-              ) %
-            </div>
-          </div>
-        </div>
+        <ThongTinLaiLoTaiKhoan />
         <div className="flex w-fit items-center gap-3">
           <Input
             placeholder="Tìm mã CK"
