@@ -17,7 +17,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import TimMaChungKhoanModal from "@/components/modals/TimMaChungKhoanModal";
 import Updater from "./Updater";
-import { GoogleAnalytics } from "@next/third-parties/google";
+
 const manrope = Manrope({
   subsets: ["latin"],
   weight: ["200", "300", "400", "500", "600", "700", "800"],
@@ -36,7 +36,18 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <Script src="/charting_library/charting_library.standalone.js"></Script>
-      <GoogleAnalytics gaId="G-BD3W4VZ4CP" />
+      <Script
+        src={`https://www.googletagmanager.com/gtag/js?id=G-BD3W4VZ4CP`}
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-BD3W4VZ4CP');
+        `}
+      </Script>
       <body
         className={`${manrope.className} no-scrollbar p-1 antialiased dark`}
       >
