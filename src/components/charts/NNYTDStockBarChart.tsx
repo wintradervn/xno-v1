@@ -88,7 +88,7 @@ const NNYTDStockBarChart = ({ symbol }: { symbol?: string }) => {
             formatter: function (params: any) {
               return `<div class="text-left text-[12px] flex flex-col gap-[1px] text-white font-semibold ">${params[0].name}: 
               <div class="flex ${params[0].value > 0 ? "text-green" : "text-red"}"><span class="text-white">Mua ròng:</span> ${params[0].value > 0 ? upArrow : downArrow}${formatVeryLargeNumber(params[0].value)}</div>
-              <div class="flex ${params[0].value > 0 ? "text-green" : "text-red"}"><span class="text-white">Lũy kế:</span> ${params[1].value > 0 ? upArrow : downArrow}${formatVeryLargeNumber(params[1].value)}</div>
+              <div class="flex ${params[1].value > 0 ? "text-green" : "text-red"}"><span class="text-white">Lũy kế:</span> ${params[1].value > 0 ? upArrow : downArrow}${formatVeryLargeNumber(params[1].value)}</div>
               
               </div>`;
             },
@@ -149,6 +149,11 @@ const NNYTDStockBarChart = ({ symbol }: { symbol?: string }) => {
               type: "line",
               legend: { show: false },
               data: accumulatedData,
+              color: "#E9E8FF",
+              symbolSize: 3,
+              lineStyle: {
+                color: "#E9E8FF",
+              },
             },
           ],
         }}

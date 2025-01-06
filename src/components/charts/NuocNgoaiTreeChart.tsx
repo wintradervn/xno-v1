@@ -14,6 +14,7 @@ import useChiTietMaCK from "@/hooks/useChiTietMaCK";
 import useNuocNgoaiData, {
   INuocNgoaiSymbolData,
 } from "@/hooks/useNuocNgoaiData";
+import DefaultLoader from "../ui/DefaultLoader";
 
 const colors = {
   red: "#E51152",
@@ -79,7 +80,9 @@ export default function NuocNgoaiTreeChart({
   return (
     <div className="flex-1">
       {isLoading || !data ? (
-        <div className="flex-1"></div>
+        <div className="flex-1">
+          <DefaultLoader />
+        </div>
       ) : (
         <ReactEChartsCore
           echarts={echarts}

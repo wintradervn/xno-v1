@@ -13,6 +13,7 @@ import useMarketOverviewData, {
 } from "@/hooks/useMarketOverview";
 import { formatPrice } from "@/lib/utils";
 import useChiTietMaCK from "@/hooks/useChiTietMaCK";
+import DefaultLoader from "../ui/DefaultLoader";
 
 const colors = {
   red: "#E51152",
@@ -41,12 +42,14 @@ const labelMap: { [key: string]: string } = {
 
 function BienDongTreeChart({
   data: dataProp,
+  onLabelClick,
 }: {
   data?: TSymbolOverviewData[];
+  onLabelClick?: () => void;
 }) {
   const { setChiTietMaCK } = useChiTietMaCK();
   const { data: dataStore, isLoading } = useMarketOverviewData();
-  const data = dataProp || dataStore;
+  const data = useMemo(() => dataProp || dataStore, [dataProp, dataStore]);
   const groupedData = useMemo(() => {
     const grouped: any = [];
     if (!data) return [];
@@ -103,18 +106,23 @@ function BienDongTreeChart({
   return (
     <div className="flex-1">
       {isLoading || !data ? (
-        <div className="flex-1"></div>
+        <div className="flex-1">
+          <DefaultLoader />
+        </div>
       ) : (
         <ReactEChartsCore
           echarts={echarts}
           onEvents={{
             click: function (params: any) {
-              if (params.data.name && params.data.price) {
+              if (labelMap[params.name]) {
+                onLabelClick?.();
+              } else if (params.data.name && params.data.price) {
                 setChiTietMaCK(params.data.name);
               }
             },
           }}
           option={{
+            animation: false,
             dataZoom: [],
             tooltip: {
               trigger: "item", // Trigger tooltip on item hover
@@ -126,7 +134,16 @@ function BienDongTreeChart({
                     : params.data.change < 0
                       ? "text-red"
                       : "text-yellow";
-                if (!params.data.price) return "";
+                if (!params.name) return "";
+                if (!params.data.price)
+                  // sector tooltip
+                  return `
+                  <div class="text-muted text-left text-[11px] font-thin flex flex-col gap-[1px]">
+                      <div>Nhóm CK: <strong class="w-44 text-wrap font-semibold text-white">${labelMap[params.name]}</strong></div>
+                      <div>Khối lượng GD: <strong class="text-white font-semibold">${(+params
+                        .data.value).toLocaleString()}</strong></div>
+                  </>
+              `;
                 return `
                   <div class="text-muted text-left text-[11px] font-thin flex flex-col gap-[1px]">
                       <strong class="w-44 text-wrap font-semibold text-white">${params.name} - ${
@@ -197,9 +214,6 @@ function BienDongTreeChart({
                       color: "#ddd",
                       fontFamily: "Manrope, Manrope Fallback",
                       fontSize: 10,
-                    },
-                    tooltip: {
-                      show: false,
                     },
                   },
                   {

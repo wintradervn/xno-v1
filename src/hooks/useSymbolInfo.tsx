@@ -9,12 +9,12 @@ export default function useSymbolInfo(symbol?: string) {
     !INDEXES_INFO[symbol || currentSymbol]
       ? ["orderbook", symbol || currentSymbol]
       : null,
-    () => {
-      return fetch(
+    async () => {
+      const res = await fetch(
         `${ROOT_API_URL}/hitprice?symbols=${symbol || currentSymbol}`,
-      )
-        .then((res) => res.json())
-        .then((data) => data.data.d[0]);
+      );
+      const data = await res.json();
+      return data?.data[0];
     },
     {
       refreshInterval: 3_000,

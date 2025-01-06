@@ -4,7 +4,6 @@ import { useMemo } from "react";
 
 export default function ThongTinLaiLoTaiKhoan() {
   const { data: deals } = useDNSEDeals();
-  console.log("🚀 ~ ThongTinLaiLoTaiKhoan ~ deals:", deals);
 
   const summaryData: {
     vonThuc: number;

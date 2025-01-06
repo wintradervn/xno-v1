@@ -15,6 +15,7 @@ import {
   cn,
   formatNumber,
   formatPrice,
+  formatPriceWithType,
   formatVeryLargeNumber,
 } from "@/lib/utils";
 import Table from "../ui/Table";
@@ -82,6 +83,7 @@ function TabMarket() {
   const [isShowPercents, setIsShowPercents] = useState(true);
   const { data, isLoading } = useMarketOverviewData();
   const { data: indexesData } = useIndexOverview();
+
   const filteredData = useMemo(() => {
     if (selectedChiSo === "chisoVn") {
       return indexesData
@@ -154,9 +156,7 @@ function TabMarket() {
               item.dayChangePercent === 0 && "text-yellow",
             )}
           >
-            {item.secType === "S"
-              ? formatPrice(item.price)
-              : formatNumber(item.price, 2)}
+            {formatPriceWithType(item.price, item.secType)}
           </div>
         ),
         sortFn: (a: TSymbolOverviewData, b: TSymbolOverviewData) =>

@@ -9,6 +9,7 @@ import CoPhieuActive from "@/icons/right-panel/CoPhieuActive";
 import DatLenhActive from "@/icons/right-panel/DatLenhActive";
 import TinTucActive from "@/icons/right-panel/TinTucActive";
 import TongQuanActive from "@/icons/right-panel/TongQuanActive";
+import TinHieuActive from "@/icons/right-panel/TinHieuActive";
 import { cn } from "@/lib/utils";
 import {
   ChatSquare2,
@@ -16,6 +17,7 @@ import {
   GraphNewUp,
   SettingsMinimalistic,
   Widget,
+  StarFallMinimalistic2,
 } from "solar-icon-set";
 import NetWorkStrengthComponent from "./NetworkStrengthComponent";
 import { useEffect } from "react";
@@ -39,6 +41,12 @@ const links = [
     title: "Đặt lệnh",
     icon: Order,
     iconActive: DatLenhActive,
+  },
+  {
+    id: "tinhieu",
+    title: "Tín hiệu",
+    icon: StarFallMinimalistic2,
+    iconActive: TinHieuActive,
   },
   {
     id: "tintuc",

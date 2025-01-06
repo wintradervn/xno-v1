@@ -6,7 +6,13 @@ import useChiTietMaCK from "@/hooks/useChiTietMaCK";
 import useMarketOverviewData from "@/hooks/useMarketOverview";
 import useMuaBanChuDong from "@/hooks/useMuaBanChuDong";
 import useYTDStockData from "@/hooks/useYTDStockData";
-import { formatNumber, formatPrice, formatVeryLargeNumber } from "@/lib/utils";
+import {
+  cn,
+  formatNumber,
+  formatPrice,
+  formatVeryLargeNumber,
+  getPriceColorFromOverviewData,
+} from "@/lib/utils";
 import { Tab } from "@nextui-org/react";
 import { useMemo, useState } from "react";
 
@@ -54,9 +60,21 @@ export default function SubTabTongQuan() {
           </div>
           <div className="flex justify-between">
             <div className="text-muted">Cao nhất - Thấp nhất</div>
-            <div className="font-bold text-green">
+            <div
+              className={cn(
+                "font-bold text-green",
+                symbolData?.highPrice === symbolData?.ceiling
+                  ? "text-purple"
+                  : "",
+              )}
+            >
               {formatPrice(symbolData?.highPrice)} -{" "}
-              <span className="text-red">
+              <span
+                className={cn(
+                  "text-red",
+                  symbolData?.lowPrice === symbolData?.floor ? "text-cyan" : "",
+                )}
+              >
                 {formatPrice(symbolData?.lowPrice)}
               </span>
             </div>

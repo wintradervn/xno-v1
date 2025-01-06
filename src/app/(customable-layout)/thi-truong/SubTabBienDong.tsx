@@ -14,7 +14,13 @@ const IndexMap: Record<string, string> = {
   UPCOM: "UPCOM",
 };
 
-export default function SubTabBienDong({ exchange }: { exchange?: string }) {
+export default function SubTabBienDong({
+  exchange,
+  onLabelClick,
+}: {
+  exchange?: string;
+  onLabelClick?: () => void;
+}) {
   const { data, isLoading } = useMarketOverviewData();
   const { data: indexesData } = useIndexOverview();
   const { data: tudoanhData } = useTuDoanhData();
@@ -71,7 +77,7 @@ export default function SubTabBienDong({ exchange }: { exchange?: string }) {
   return (
     <div className="flex h-full min-h-[500px] gap-8">
       <div className="z-0 flex flex-1 flex-col">
-        <BienDongTreeChart data={filteredData} />
+        <BienDongTreeChart data={filteredData} onLabelClick={onLabelClick} />
       </div>
       <div className="z-1 flex min-h-0 w-5/12 max-w-[500px] flex-col gap-5 bg-card text-sm">
         <div>

@@ -6,7 +6,7 @@ import {
   Tab,
 } from "@nextui-org/react";
 import Tabs from "../../ui/Tabs";
-import { use, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import useCurrentSymbol from "@/hooks/useCurrentSymbol";
 import useTaiKhoanChungKhoan from "@/hooks/useTaiKhoanChungKhoan";
 import useLienKetTKCKModal from "@/hooks/useLienKetTKCK";
@@ -33,7 +33,6 @@ import useDNSEUserInfo from "@/hooks/dnse/useDNSEUserInfo";
 import { placeOrderPhaiSinh, postPlaceOrder } from "@/lib/dnse-api";
 import { toast } from "react-toastify";
 import useDNSESucMuaBan from "@/hooks/dnse/useDNSESucMuaBan";
-import useModalsState, { MODALS } from "@/hooks/useModalsState";
 import ConfirmationModal from "../../ui/ConfirmationModal";
 import ChonGoiVay from "./ChonGoiVay";
 import useSelectedGoiVay from "@/hooks/useSelectedGoiVay";

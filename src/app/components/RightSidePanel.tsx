@@ -19,6 +19,9 @@ const Overview = dynamic(() => import("@/components/module/Overview"), {
 const Trade = dynamic(() => import("@/components/module/Trade"), {
   ssr: false,
 });
+const TinHieu = dynamic(() => import("@/components/module/TinHieu"), {
+  ssr: false,
+});
 export default function RightSidePanel() {
   const { state: rightPanelState, setState } = useRightPanelState();
 
@@ -33,7 +36,8 @@ export default function RightSidePanel() {
           {(rightPanelState === "cophieu" && <Market />) ||
             (rightPanelState === "tongquan" && <Overview />) ||
             (rightPanelState === "datlenh" && <Trade />) ||
-            (rightPanelState === "tintuc" && <News />)}
+            (rightPanelState === "tintuc" && <News />) ||
+            (rightPanelState === "tinhieu" && <TinHieu />)}
         </div>
       </ResizablePanel>
       <ResizableHandle />

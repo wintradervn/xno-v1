@@ -128,7 +128,7 @@ function IndexInfo() {
           <div className="h-[40px]"></div>
         ) : (
           symbolInfo && (
-            <div className="flex gap-8">
+            <div className="flex gap-8 text-nowrap">
               <div
                 className={cn(
                   "flex flex-col items-end gap-0.5",
@@ -297,7 +297,7 @@ function StockInfo() {
           <div className="h-[40px]"></div>
         ) : (
           symbolInfo && (
-            <div className="flex gap-8">
+            <div className="flex gap-8 text-nowrap">
               <div
                 className={cn(
                   "flex flex-col items-end gap-0.5",

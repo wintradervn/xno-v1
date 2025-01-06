@@ -10,8 +10,17 @@ function removeEmptyArrayProperties(obj: any) {
   return obj;
 }
 
+const defaultFilter = {
+  NGANH: {},
+  KL1KLTB: {},
+  NGANHAN: {},
+  TRUNGHAN: {},
+  DAIHAN: {},
+  SUCMANH: {},
+} as const;
+
 const useLocCoPhieuStore = create((set) => ({
-  listFilter: ["NGANH", "KL1KLTB", "NGANHAN", "TRUNGHAN", "DAIHAN", "SUCMANH"],
+  listFilter: [],
   filterState: {},
   addFilter: (filter: string) =>
     set((state: any) =>
@@ -36,7 +45,7 @@ const useLocCoPhieuStore = create((set) => ({
     set({
       filterState: removeEmptyArrayProperties(newFilter),
     }),
-  setDefaultFilter: () => set({ filterState: {} }),
+  setDefaultFilter: () => set({ filterState: defaultFilter }),
 }));
 
 export default function useLocCoPhieuState() {

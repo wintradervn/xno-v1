@@ -159,7 +159,7 @@ export default function KetQuaKinhDoanhTable({
     <div className="no-scrollbar h-full w-full overflow-auto">
       <div className="flex h-fit w-full justify-between gap-2">
         <div className="flex h-fit flex-shrink-0 flex-col">
-          <div className="mb-4 mr-2 flex justify-end">Xu hướng</div>
+          <div className="mb-4 mr-2 flex h-6 justify-end"></div>
           {finalOrder.map((item) => (
             <Fragment key={item}>
               <div

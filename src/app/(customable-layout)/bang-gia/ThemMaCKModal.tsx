@@ -131,6 +131,12 @@ export default function ThemMaCKModal({
               }
               endContent={null}
               isClearable={false}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleThemMaCK();
+                }
+              }}
+              autoFocus
             >
               {(item: TSymbolOverviewData) => (
                 <AutocompleteItem key={item.code} textValue={item.code}>

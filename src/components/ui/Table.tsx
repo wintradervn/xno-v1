@@ -13,6 +13,7 @@ export default function Table({
   keyRender,
   defaultSort,
   className,
+  classNames,
   onRowClick,
   noDataText,
 }: {
@@ -22,6 +23,10 @@ export default function Table({
   keyRender?: (a: any) => string;
   defaultSort?: { field: string; order: "asc" | "desc" };
   className?: string;
+  classNames?: {
+    header?: string;
+    row?: string;
+  };
   onRowClick?: (item: any) => void;
   noDataText?: string;
 }) {
@@ -78,12 +83,13 @@ export default function Table({
   }, [sortField, sortOrder]);
 
   return (
-    <div className={cn("flex min-h-0 flex-1 flex-col", className)}>
+    <div className={cn("flex min-h-0 min-w-fit flex-1 flex-col", className)}>
       {sortedData?.length ? (
         <>
           <div
             className={cn(
               "mb-2 grid gap-2 pr-2 text-sm font-semibold text-muted",
+              classNames?.header,
             )}
             style={{ gridTemplateColumns: `repeat(${columns.length}, 1fr)` }}
           >
@@ -91,8 +97,9 @@ export default function Table({
               <div
                 key={col.key}
                 className={cn(
+                  "",
                   col.sortFn &&
-                    "cursor-pointer select-none font-normal hover:text-default-200",
+                    "gap-1/2 flex cursor-pointer select-none items-center justify-end font-normal hover:text-default-200",
                   col.className || "",
                 )}
                 onClick={() => {
@@ -112,14 +119,18 @@ export default function Table({
                   }
                 }}
               >
-                {col.title}{" "}
-                {sortField === col.key ? (
-                  sortOrder === "asc" ? (
-                    <ArrowUp size={12} />
-                  ) : sortOrder === "desc" ? (
-                    <ArrowDown size={12} />
-                  ) : null
-                ) : null}
+                <div className="line-clamp-2 overflow-hidden text-ellipsis">
+                  {col.title}
+                </div>
+                <div>
+                  {sortField === col.key ? (
+                    sortOrder === "asc" ? (
+                      <ArrowUp size={12} />
+                    ) : sortOrder === "desc" ? (
+                      <ArrowDown size={12} />
+                    ) : null
+                  ) : null}
+                </div>
               </div>
             ))}
           </div>
@@ -131,6 +142,7 @@ export default function Table({
                   className={cn(
                     "-mx-1 grid h-[38px] items-center gap-2 px-1 text-sm font-semibold",
                     onRowClick && "cursor-pointer hover:bg-default-700/40",
+                    classNames?.row,
                   )}
                   onClick={() => onRowClick?.(item)}
                   style={{

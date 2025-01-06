@@ -181,6 +181,11 @@ const TuDoanhYTDBarChart = ({ symbol }: { symbol?: string }) => {
               legend: { show: false },
               data: accumulatedData,
               yAxisIndex: 1,
+              color: "#E9E8FF",
+              symbolSize: 3,
+              lineStyle: {
+                color: "#E9E8FF",
+              },
             },
           ],
         }}

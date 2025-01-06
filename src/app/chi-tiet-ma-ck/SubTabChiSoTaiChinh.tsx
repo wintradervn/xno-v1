@@ -1,20 +1,25 @@
 import PhanTichTaiChinhBarChart from "@/components/charts/ChiSoTaiChinhComplexChart";
-import Button from "@/components/ui/Button";
 import Tabs from "@/components/ui/Tabs";
 import useCanDoiKeToanData from "@/hooks/useCanDoiKeToanData";
+import useChiSoTaiChinhData from "@/hooks/useChiSoTaiChinhData";
 import useChiTietMaCK from "@/hooks/useChiTietMaCK";
 import useKetQuaKinhDoanhData from "@/hooks/useKetQuaKinhDoanhData";
 import Documents from "@/icons/Documents";
-import { formatNumber } from "@/lib/utils";
+import { cn, formatNumber } from "@/lib/utils";
 import { Accordion, AccordionItem, Tab } from "@nextui-org/react";
 import { ChevronDown } from "lucide-react";
-import { Fragment, use, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import {
+  Banknote2,
+  BillList,
   Chart,
   DoubleAltArrowLeft,
   DoubleAltArrowRight,
   GraphNew,
   Scale,
+  TagPrice,
+  TicketSale,
+  Wallet,
 } from "solar-icon-set";
 
 export default function SubTabChiSoTaiChinh() {
@@ -69,6 +74,7 @@ const dataConfig = [
   {
     key: "tangtruongketquakinhdoanh",
     name: "Tăng trưởng kết quả kinh doanh",
+    icon: <BillList size={24} iconStyle="Bold" />,
     children: [
       {
         key: "revenue",
@@ -89,37 +95,36 @@ const dataConfig = [
         key: "yearRevenueGrowth",
         name: "Tăng trưởng Doanh thu YoY",
         type: "line",
-        formatLabel: (value: any) =>
-          value ? `${formatNumber(value * 100, 2)}%` : "-",
+        getData: (item: any) => item["yearRevenueGrowth"] * 100,
+        formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
       },
       {
         key: "yearShareHolderIncomeGrowth",
         name: "Tăng trưởng LNST YoY",
         type: "line",
-        formatLabel: (value: any) =>
-          value ? `${formatNumber(value * 100, 2)}%` : "-",
+        getData: (item: any) => item["yearShareHolderIncomeGrowth"] * 100,
+        formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
       },
       {
         key: "grossProfit/revenue",
         name: "Biên lợi nhuận gộp",
         type: "line",
         getData: (item: any) => (100 * item["grossProfit"]) / item["revenue"],
-        formatLabel: (value: any) =>
-          value ? `${formatNumber(value, 2)}%` : "-",
+        formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
       },
       {
         key: "postTaxProfit/revenue",
         name: "Biên lợi nhuận ròng",
         type: "line",
         getData: (item: any) => (100 * item["postTaxProfit"]) / item["revenue"],
-        formatLabel: (value: any) =>
-          value ? `${formatNumber(value, 2)}%` : "-",
+        formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
       },
     ],
   },
   {
     key: "phantichnguonvon",
     name: "Phân tích nguồn vốn",
+    icon: <TagPrice size={24} iconStyle="Bold" />,
     children: [
       {
         key: "asset",
@@ -174,6 +179,7 @@ const dataConfig = [
   {
     key: "phantichtaisan",
     name: "Phân tích tài sản",
+    icon: <TicketSale size={24} iconStyle="Bold" />,
     children: [
       {
         key: "asset",
@@ -235,29 +241,112 @@ const dataConfig = [
       },
     ],
   },
-];
-
-const statsGroup = [
   {
-    title: "Định giá và sinh lời",
-    children: ["P/E", "P/B", "ROE", "CASA", "VỐN HÓA"],
-  },
-  {
-    title: "Tăng trưởng",
+    key: "chisodinhgia",
+    name: "Chỉ số định giá",
+    icon: <Banknote2 size={24} iconStyle="Bold" />,
     children: [
-      "Tăng trưởng TN lãi thuần",
-      "Tăng trưởng LNST",
-      "Tăng trưởng tín dụng",
-      "Tăng trưởng tổng tài sản",
+      {
+        key: "earningPerShare",
+        name: "Lợi nhuận trên mỗi cổ phiếu 4Q gần nhất (EPS TTM)",
+        type: "bar",
+        stack: "a",
+      },
+      {
+        key: "epsChange",
+        name: "Tăng trưởng EPS TTM",
+        type: "line",
+        getData: (item: any) => item["epsChange"] * 100,
+        formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
+      },
+      {
+        key: "roe",
+        name: "Lợi nhuận trên vốn chủ sở hữu (ROE)",
+        type: "line",
+        getData: (item: any) => item["roe"] * 100,
+        formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
+      },
+      {
+        key: "roa",
+        name: "Lợi nhuận trên tổng tài sản (ROA)",
+        type: "line",
+        getData: (item: any) => item["roa"] * 100,
+        formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
+      },
+      {
+        key: "priceToEarning",
+        name: "P/E",
+        type: "line",
+        getData: (item: any) => item["priceToEarning"],
+        formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
+      },
+      {
+        key: "priceToBook",
+        name: "P/B",
+        type: "line",
+        getData: (item: any) => item["priceToBook"],
+        formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
+      },
     ],
   },
   {
-    title: "Hiệu quả hoạt động",
-    children: ["COF - Chi phí vốn", "NIM", "YOEA"],
-  },
-  {
-    title: "An toàn vốn",
-    children: ["Tỷ lệ nợ xấu (%)", "Tỷ lệ bao phủ nợ xấu (%)"],
+    key: "khanangthanhtoan",
+    name: "Khả năng thanh toán",
+    icon: <Wallet size={24} iconStyle="Bold" />,
+    children: [
+      {
+        key: "cashOnEquity",
+        name: "Tiền mặt/Vốn chủ",
+        type: "line",
+        getData: (item: any) => item["cashOnEquity"] * 100,
+        formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
+      },
+      {
+        key: "cashOnCapitalize",
+        name: "Tiền mặt/Vốn hoá",
+        type: "line",
+        getData: (item: any) => item["cashOnCapitalize"] * 100,
+        formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
+      },
+      {
+        key: "cashOnEquity/debtOnEquity",
+        name: "Tiền mặt/Nợ Vay",
+        type: "line",
+        getData: (item: any) =>
+          item["debtOnEquity"]
+            ? (item["cashOnEquity"] * 100) / item["debtOnEquity"]
+            : null,
+        formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
+      },
+      {
+        key: "currentPayment",
+        name: "Khả năng thanh toán hiện hành",
+        type: "line",
+        getData: (item: any) => item["currentPayment"],
+        formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
+      },
+      {
+        key: "quickPayment",
+        name: "Khả năng thanh toán nhanh",
+        type: "line",
+        getData: (item: any) => item["quickPayment"],
+        formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
+      },
+      {
+        key: "debtOnEquity",
+        name: "Tỷ lệ Nợ vay trên Vốn chủ sở hữu (D/E)",
+        type: "line",
+        getData: (item: any) => item["debtOnEquity"] * 100,
+        formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
+      },
+      {
+        key: "debtOnAsset",
+        name: "Tỷ lệ Nợ trên Tổng tài sản",
+        type: "line",
+        getData: (item: any) => item["debtOnAsset"] * 100,
+        formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
+      },
+    ],
   },
 ];
 
@@ -395,30 +484,60 @@ function SubTabData({ selectedTime }: { selectedTime: string }) {
 }
 
 function SubTabChart({ selectedTime }: { selectedTime: string }) {
-  const [selectedChart, setSelectedChart] = useState<Set<string>>(
-    new Set(["tangtruongketquakinhdoanh"]),
+  const [selectedChart, setSelectedChart] = useState<string>(
+    "tangtruongketquakinhdoanh",
+  );
+
+  const chartConfig = useMemo(
+    () => dataConfig.find((item) => item.key === selectedChart),
+    [selectedChart],
   );
 
   return (
     <div className="flex h-full gap-3">
       <div className="flex flex-1 flex-col gap-2 rounded-[8px] border border-neutral-800 p-2">
-        <div className="flex items-center justify-between">
+        {/* <div className="flex items-center justify-between">
           <div className="text-caption">Kết quả so sánh</div>
           <div className="flex items-center gap-2 text-muted">
             <Scale size={24} />
           </div>
-        </div>
+        </div> */}
         <div className="flex flex-1">
           <PhanTichTaiChinhBarChart
             yearly={selectedTime !== "hangquy"}
-            selectedChart={Array.from(selectedChart)[0]}
+            chartConfig={chartConfig}
           />
         </div>
       </div>
       <div className="no-scrollbar flex max-w-[320px] flex-1 flex-col gap-2 overflow-auto rounded-[8px] border border-neutral-800 p-2">
         <div className="text-caption">Chỉ số tài chính</div>
-        <div className="px-2 py-5">
-          <Accordion
+        <div className="flex flex-col gap-2 px-2 py-5">
+          {dataConfig.map((item) => (
+            <div
+              key={item.key}
+              onClick={() => {
+                setSelectedChart(item.key);
+              }}
+              className={cn(
+                "relative flex cursor-pointer items-center gap-3 rounded-[8px] p-3 text-md",
+                selectedChart === item.key
+                  ? "bg-background"
+                  : "border-transparent hover:bg-content1/80",
+              )}
+            >
+              <div
+                className={cn(
+                  "absolute left-0 top-0 h-full w-[15px] rounded-[8px] border-l-2 bg-transparent transition-all",
+                  selectedChart === item.key
+                    ? "border-[#67E1C0]"
+                    : "border-transparent",
+                )}
+              ></div>
+              {item.icon || <GraphNew iconStyle="Bold" size={24} />}
+              {item.name}
+            </div>
+          ))}
+          {/* <Accordion
             className="!px-0"
             showDivider={false}
             itemClasses={{
@@ -458,7 +577,7 @@ function SubTabChart({ selectedTime }: { selectedTime: string }) {
                 </div>
               </AccordionItem>
             ))}
-          </Accordion>
+          </Accordion> */}
         </div>
       </div>
     </div>

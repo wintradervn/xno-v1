@@ -23,6 +23,13 @@ export default function useCompanyProfile(symbol?: string) {
       const data = await res.json();
       return data.data;
     },
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      refreshWhenOffline: false,
+      refreshWhenHidden: false,
+      refreshInterval: 0,
+    },
   );
   return { data, isLoading };
 }

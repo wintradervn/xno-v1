@@ -3,7 +3,7 @@ import DefaultLoader from "@/components/ui/DefaultLoader";
 import BarChart from "@/icons/BarChart";
 import PhaiSinhIcon from "@/icons/PhaiSinhIcon";
 import { cn } from "@/lib/utils";
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useCallback, useState } from "react";
 import { Layers, WalletMoney } from "solar-icon-set";
 
 const TabThiTruong = lazy(() => import("./TabThiTruong"));
@@ -39,6 +39,9 @@ const mainTabs = [
 
 export default function ThiTruong() {
   const [selectedTab, setSelectedTab] = useState("thitruong");
+  const handleLabelClick = useCallback(() => {
+    setSelectedTab("nganhnoibat");
+  }, []);
   return (
     <div className="-mx-2 -my-2 flex h-full flex-col items-stretch justify-center p-2">
       <div className="flex gap-1">
@@ -72,7 +75,7 @@ export default function ThiTruong() {
               selectedTab === "thitruong" && "rounded-tl-none",
             )}
           >
-            <TabThiTruong />
+            <TabThiTruong onLabelClick={handleLabelClick} />
           </div>
         )}
         {selectedTab === "nganhnoibat" && (

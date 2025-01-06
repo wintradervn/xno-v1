@@ -63,7 +63,7 @@ function TradingViewChart({ symbol }: { symbol?: string }) {
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: symbol || "VCB",
       datafeed,
-      interval: "1D" as ResolutionString,
+      interval: "1H" as ResolutionString,
       container: ref,
       library_path: "/charting_library/",
       locale: "vi" as LanguageCode,

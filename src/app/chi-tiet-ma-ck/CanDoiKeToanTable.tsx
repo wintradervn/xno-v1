@@ -380,7 +380,7 @@ export default function CanDoiKeToanTable({
     <div className="no-scrollbar h-full w-full overflow-auto">
       <div className="flex h-fit w-full justify-between gap-2">
         <div className="flex h-fit w-[360px] flex-shrink-0 flex-col">
-          <div className="mb-4 mr-2 flex justify-end">Xu hướng</div>
+          <div className="mb-4 mr-2 flex h-6 justify-end"></div>
           {finalOrder.map((item) => renderTitleCell(item))}
         </div>
         <div className="flex flex-1 justify-center gap-2">

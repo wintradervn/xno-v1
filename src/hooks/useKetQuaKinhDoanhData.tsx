@@ -39,11 +39,31 @@ export default function useKetQuaKinhDoanhData(
         `${ROOT_API_URL}/incomestatement?symbol=${symbol}&yearly=${yearly ? "1" : "0"}`,
       );
       const data = await res.json();
-      return (
+
+      const result =
         data.data.sort((a: IKetQuaKinhDoanhItem, b: IKetQuaKinhDoanhItem) =>
           a.year !== b.year ? a.year - b.year : a.quarter - b.quarter,
-        ) || []
-      );
+        ) || [];
+
+      return result.map((item: IKetQuaKinhDoanhItem) => {
+        if (item.yearShareHolderIncomeGrowth === null) {
+          const previousYearItem = result.find(
+            (i: IKetQuaKinhDoanhItem) =>
+              i.year === item.year - 1 && i.quarter === item.quarter,
+          );
+          if (
+            previousYearItem &&
+            item.postTaxProfit &&
+            previousYearItem.postTaxProfit
+          ) {
+            item.yearShareHolderIncomeGrowth =
+              item.postTaxProfit / previousYearItem.postTaxProfit - 1;
+          } else {
+            item.yearShareHolderIncomeGrowth = 0;
+          }
+        }
+        return item;
+      });
     },
     {
       revalidateOnFocus: false,
@@ -53,5 +73,6 @@ export default function useKetQuaKinhDoanhData(
       refreshInterval: 0,
     },
   );
+
   return { data, isLoading };
 }

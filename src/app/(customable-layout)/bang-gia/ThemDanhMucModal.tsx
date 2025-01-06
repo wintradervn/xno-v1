@@ -89,6 +89,11 @@ export default function ThemDanhMucModal({
             classNames={{
               inputWrapper: "bg-background",
             }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleThemDanhMuc();
+              }
+            }}
           />
         </ModalBody>
         <ModalFooter>

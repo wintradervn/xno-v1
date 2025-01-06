@@ -508,7 +508,7 @@ function BaoCaoTaiChinhSankeyChart({ yearly }: { yearly: boolean }) {
             emphasis: {
               focus: "adjacency",
             },
-            nodeGap: 100,
+            nodeGap: 40,
             left: "180px",
             top: "40px",
             right: "180px",

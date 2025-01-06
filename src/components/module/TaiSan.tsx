@@ -96,7 +96,7 @@ function TabCoPhieu() {
     const result = { laiLo: 0, tongVon: 0, lailoPercent: 0 };
     if (!data) return result;
     data.forEach((item) => {
-      if (item.status !== "OPEN") return;
+      if (item.status !== "OPEN" && item.status !== "ODD_LOT") return;
       result.laiLo +=
         item.unrealizedProfit -
         item.estimateRemainTaxAndFee -

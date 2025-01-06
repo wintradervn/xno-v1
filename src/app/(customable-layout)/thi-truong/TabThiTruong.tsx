@@ -34,7 +34,11 @@ const tabs = [
   },
   { id: "dongtienndt", title: "Dòng tiền NĐT" },
 ];
-export default function TabThiTruong() {
+export default function TabThiTruong({
+  onLabelClick,
+}: {
+  onLabelClick: () => void;
+}) {
   const [selectedTab, setSelectedTab] = useState("biendong");
   const [selectedExchange, setSelectedExchange] = useState("HOSE");
 
@@ -96,7 +100,7 @@ export default function TabThiTruong() {
       <div className="min-h-0 flex-1">
         <Suspense fallback={<DefaultLoader />}>
           {selectedTab === "biendong" && (
-            <BienDong exchange={selectedExchange} />
+            <BienDong exchange={selectedExchange} onLabelClick={onLabelClick} />
           )}
           {selectedTab === "nuocngoai" && (
             <NuocNgoai exchange={selectedExchange} />

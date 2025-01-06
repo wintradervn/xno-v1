@@ -12,7 +12,7 @@ import KetQuaLoc from "./components/KetQuaLoc";
 export default function LocCoPhieu() {
   return (
     <div className="flex h-full w-full flex-1 gap-1">
-      <div className="card flex w-[280px] flex-col gap-1 p-0">
+      <div className="card flex w-[280px] flex-col gap-1 rounded-[8px] p-0">
         <BoLocCaNhan />
         <BoLocGoiY />
       </div>

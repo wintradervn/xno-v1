@@ -77,12 +77,7 @@ export default function SubTabPhaiSinh() {
   const vn30OverviewData = useMemo(() => {
     const netValue = data
       ?.filter((item) => DanhSachMaPhaiSinh.includes(item.MA))
-      .reduce(
-        (acc, item) =>
-          acc +
-          (item.THANHKHOAN * parseFloat(item.THAYDOI.split("%")[0])) / 100,
-        0,
-      );
+      .reduce((acc, item) => acc + item.THANHKHOAN * item.THAYDOI, 0);
     const indexChange = VN30IndexData?.dayChange;
     const indexPerValue = Math.abs((indexChange || 0) / (netValue || 1));
 
@@ -137,22 +132,6 @@ export default function SubTabPhaiSinh() {
       </div>
     );
   }, [vn30OverviewData]);
-
-  // const giaHopLy = useMemo(() => {
-  //   if (!vn30OverviewData || !overviewDataMap || !VN30FData) return 0;
-  //   const a = vn30OverviewData.reduce((acc, item) => {
-  //     const marketCap =
-  //       overviewDataMap?.find((j) => j.code === item.MA)?.marketCap || 0;
-  //     return acc + item.AIPredict20d * marketCap;
-  //   }, 0);
-  //   const b =
-  //     vn30OverviewData.reduce((acc, item) => {
-  //       const marketCap =
-  //         overviewDataMap?.find((j) => j.code === item.MA)?.marketCap || 0;
-  //       return acc + item.GIA * marketCap;
-  //     }, 0) || 1;
-  //   return (a / b) * (VN30FData.price || 0);
-  // }, [vn30OverviewData]);
 
   const columns = useMemo(() => {
     return [

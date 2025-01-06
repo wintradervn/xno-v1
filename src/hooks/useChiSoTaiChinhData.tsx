@@ -74,7 +74,11 @@ export default function useChiSoTaiChinhData(
     async (url: string) => {
       const res = await fetch(url);
       const data = await res.json();
-      return data.data;
+      return (
+        data.data.sort((a: IChiSoTaiChinh, b: IChiSoTaiChinh) =>
+          a.year !== b.year ? a.year - b.year : a.quarter - b.quarter,
+        ) || []
+      );
     },
   );
 

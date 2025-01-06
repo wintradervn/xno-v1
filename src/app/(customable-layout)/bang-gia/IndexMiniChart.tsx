@@ -19,35 +19,20 @@ export default function IndexMiniChart({
   );
   const symbolTangGiamData = useMemo(() => {
     if (!marketOverviewData || !indexData) return null;
-    const filteredData = marketOverviewData?.filter((item) =>
-      item.indexes?.includes(indexData.oldCode),
+    const filteredData = marketOverviewData?.filter(
+      (item) =>
+        item.indexes?.includes(indexData.oldCode) && item.secType === "S",
     );
 
     return {
       tang:
-        filteredData?.filter(
-          (item) =>
-            item.dayChange &&
-            item.dayChange > 0 &&
-            item.dayVolume &&
-            item.dayVolume > 0,
-        ).length || 0,
+        filteredData?.filter((item) => item.dayChange && item.dayChange > 0)
+          .length || 0,
       giam:
-        filteredData?.filter(
-          (item) =>
-            item.dayChange &&
-            item.dayChange < 0 &&
-            item.dayVolume &&
-            item.dayVolume > 0,
-        ).length || 0,
+        filteredData?.filter((item) => item.dayChange && item.dayChange < 0)
+          .length || 0,
       khongdoi:
-        filteredData?.filter(
-          (item) =>
-            item.dayChange !== null &&
-            item.dayChange === 0 &&
-            item.dayVolume &&
-            item.dayVolume > 0,
-        ).length || 0,
+        filteredData?.filter((item) => item.dayChange === 0).length || 0,
     };
   }, [marketOverviewData, indexData]);
 

@@ -1,11 +1,12 @@
 "use client";
+import useBoLocCaNhan from "@/hooks/useBoLocCanhan";
 import useLocCoPhieuState from "@/hooks/useLocCoPhieuState";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
 const defaultFilters = [
   {
-    id: "1",
+    id: "bolocgoiy1",
     name: "Cổ phiếu tăng trưởng",
     state: {
       PE: {
@@ -29,7 +30,7 @@ const defaultFilters = [
     },
   },
   {
-    id: "2",
+    id: "bolocgoiy2",
     name: "Cổ phiếu giá trị",
     state: {
       PE: {
@@ -50,7 +51,7 @@ const defaultFilters = [
     },
   },
   {
-    id: "3",
+    id: "bolocgoiy3",
     name: "Cổ phiếu xu hướng mạnh",
     state: {
       RS: {
@@ -74,7 +75,7 @@ const defaultFilters = [
     },
   },
   {
-    id: "4",
+    id: "bolocgoiy4",
     name: "Cổ phiếu phục hồi",
     state: {
       pattern: ["Tăng giá"],
@@ -99,8 +100,9 @@ const defaultFilters = [
 ];
 
 export default function BoLocGoiY() {
-  const [selectedFilter, setSelectedFilter] = useState("1");
   const { setFilter } = useLocCoPhieuState();
+  const { selectedBoLocId, setSelectedBoLocId } = useBoLocCaNhan();
+
   return (
     <div className="flex flex-col">
       <div className="px-3 py-4 text-md font-semibold">Bộ lọc gợi ý</div>
@@ -109,12 +111,12 @@ export default function BoLocGoiY() {
           <div
             className={cn(
               "relative flex h-10 w-full cursor-pointer select-none items-center rounded-[8px] border-1 p-2 px-3 text-sm font-semibold transition-all",
-              selectedFilter === filter.id
+              selectedBoLocId === filter.id
                 ? "bg-neutral-800"
                 : "border-neutral-800",
             )}
             onClick={() => {
-              setSelectedFilter(filter.id);
+              setSelectedBoLocId(filter.id);
               setFilter(filter.state);
             }}
             key={filter.id}
@@ -122,7 +124,7 @@ export default function BoLocGoiY() {
             <div
               className={cn(
                 "absolute left-0 top-0 h-full w-[15px] rounded-[8px] border-l-2 bg-transparent transition-all",
-                selectedFilter === filter.id
+                selectedBoLocId === filter.id
                   ? "border-[#67E1C0]"
                   : "border-transparent",
               )}

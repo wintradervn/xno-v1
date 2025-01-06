@@ -5,9 +5,11 @@ import useCompiledOverviewData from "@/hooks/useCompiledOverviewData";
 import useFavorites from "@/hooks/useFavorites";
 import DoubleArrow from "@/icons/DoubleArrow";
 import { cn, formatPriceWithType, getPriceColor } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 
 export default function MucYeuThich() {
+  const pathname = usePathname();
   const { favorites } = useFavorites();
   const { setChiTietMaCK } = useChiTietMaCK();
   const { data, isLoading } = useCompiledOverviewData();
@@ -57,6 +59,10 @@ export default function MucYeuThich() {
       wrapperRef.current && resizeObserver.unobserve(wrapperRef.current);
     };
   }, [favoriteData, isInfiniteScroll]);
+
+  if (pathname.startsWith("/bang-gia")) {
+    return null;
+  }
 
   return (
     <div className="card flex gap-2 overflow-hidden px-5 py-1">

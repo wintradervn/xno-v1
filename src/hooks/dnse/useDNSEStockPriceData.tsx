@@ -14,7 +14,7 @@ export default function useDNSEStockPriceData(symbol?: string) {
     symbol ? ["dnse-vnindex-price-ohlc", symbol] : null,
     async ([, s]) => {
       const res = await fetch(
-        `https://services.entrade.com.vn/chart-api/v2/ohlcs/stock?from=1704042000&to=1735578000&symbol=${s}&resolution=30`,
+        `https://services.entrade.com.vn/chart-api/v2/ohlcs/stock?from=1577836800&to=1735578000&symbol=${s}&resolution=1W`,
       );
       const data = await res.json();
       return data;

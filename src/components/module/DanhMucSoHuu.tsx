@@ -25,8 +25,7 @@ const filterData = [
 export default function DanhMucSoHuu() {
   const [filter, setFilter] = useState<string[]>([]);
   const [symbolSearch, setSymbolSearch] = useState("");
-  const [onlyBuy, setOnlyBuy] = useState(false);
-  const [onlySell, setOnlySell] = useState(false);
+
   const { setCurrentSymbol } = useCurrentSymbol();
   const { data: deals } = useDNSEDeals();
   const { data: marketOverview } = useMarketOverviewData();
@@ -38,13 +37,10 @@ export default function DanhMucSoHuu() {
           item.symbol
             .toLocaleLowerCase()
             .includes(symbolSearch.toLocaleLowerCase()) &&
-          ((onlyBuy && item.side === "NB") ||
-            (onlySell && item.side === "NS") ||
-            (!onlyBuy && !onlySell)) &&
           (!filter.length || filter.some((f) => f.includes(item.status))),
       ) || []
     );
-  }, [deals, symbolSearch, onlySell, onlyBuy, filter]);
+  }, [deals, symbolSearch, filter]);
 
   const columns = useMemo(
     () => [
@@ -226,20 +222,6 @@ export default function DanhMucSoHuu() {
               ))}
             </PopoverContent>
           </Popover>{" "}
-          <Checkbox
-            classNames={{ label: "text-sm text-green w-[50px]" }}
-            checked={onlyBuy}
-            onValueChange={setOnlyBuy}
-          >
-            Mua
-          </Checkbox>
-          <Checkbox
-            classNames={{ label: "text-sm text-red w-[50px]" }}
-            checked={onlySell}
-            onValueChange={setOnlySell}
-          >
-            Bán
-          </Checkbox>
         </div>
       </div>
 

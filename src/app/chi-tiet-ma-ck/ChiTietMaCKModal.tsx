@@ -38,6 +38,7 @@ export default function ChiTietMaCKModal() {
   const [debouncedSymbol, setDebouncedSymbol] = useState("");
   const { setChiTietMaCK, symbol, isOpen } = useChiTietMaCK();
   const { data: symbolInfo, isLoading } = useSymbolInfo(symbol || "");
+  console.log("🚀 ~ ChiTietMaCKModal ~ symbolInfo:", symbolInfo);
   const [selectedTab, setSelectedTab] = useState("tongquan");
 
   // Prefetch

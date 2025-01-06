@@ -1,4 +1,6 @@
 import DinhGiaLineChart from "@/components/charts/DinhGiaLineChart";
+import DefaultNodata from "@/components/ui/DefaultNodata";
+import UnfinishedFeature from "@/components/ui/UnfinishedFeature";
 import useChiSoTaiChinhData from "@/hooks/useChiSoTaiChinhData";
 import useCurrentSymbol from "@/hooks/useCurrentSymbol";
 import { useMemo } from "react";
@@ -32,22 +34,28 @@ export default function SubTabDinhGia() {
     return "Giá cổ phiếu đang quá cao so với giá hợp lý";
   }, [EPSTTM, EPSAvg5years]);
 
+  if (EPSTTM <= 0 || EPSAvg5years <= 0) {
+    return <DefaultNodata text={"Không đủ dữ liệu để phân tích"} />;
+  }
+
   return (
     <div className="flex flex-1 flex-col">
-      <div className="flex gap-8 text-sm">
-        <div className="flex items-center gap-2">
-          <div className="h-3 w-3 rounded-full bg-black"></div>
-          Giá hợp lý (VNĐ)
+      <UnfinishedFeature>
+        <div className="flex gap-8 text-sm">
+          <div className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-black"></div>
+            Giá hợp lý (VNĐ)
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-[#7B61FF]"></div>
+            Giá thị trường (VNĐ)
+          </div>
+          <div className="bg-linearpurple rounded-full px-3 py-1 text-sm font-semibold text-black">
+            {nhanDinhText}
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="h-3 w-3 rounded-full bg-[#7B61FF]"></div>
-          Giá thị trường (VNĐ)
-        </div>
-        <div className="bg-linearpurple rounded-full px-3 py-1 text-sm font-semibold text-black">
-          {nhanDinhText}
-        </div>
-      </div>
-      <DinhGiaLineChart symbol={currentSymbol} />
+        <DinhGiaLineChart symbol={currentSymbol} />
+      </UnfinishedFeature>
     </div>
   );
 }

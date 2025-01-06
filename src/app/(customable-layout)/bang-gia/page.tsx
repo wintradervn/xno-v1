@@ -1,5 +1,4 @@
 "use client";
-import Input from "@/components/ui/Input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import useMarketOverviewData from "@/hooks/useMarketOverview";
 import DoubleArrow from "@/icons/DoubleArrow";
@@ -7,13 +6,12 @@ import { cn } from "@/lib/utils";
 import { Tooltip } from "@nextui-org/react";
 import { AnimatePresence, Reorder, useDragControls } from "framer-motion";
 import React, { useMemo, useRef, useState } from "react";
-import { InfoCircle, RoundedMagnifer } from "solar-icon-set";
+import { InfoCircle } from "solar-icon-set";
 import MucQuanTam from "./MucQuanTam";
 import BangGiaItem from "./BangGiaItem";
 import useBangGiaColumnsOrder from "@/hooks/useBangGiaColumnsOrder";
 import DefaultLoader from "@/components/ui/DefaultLoader";
 import ChevronUpDown from "@/icons/ChevronUpDown";
-import IndexLineChart from "@/components/charts/IndexLineChart";
 import IndexMiniChart from "./IndexMiniChart";
 
 const labelMap: { [key: string]: string } = {
@@ -126,7 +124,7 @@ const DragItem = React.memo(function DragItem({ item }: { item: any }) {
             "%"
           : "-"}
       </div>
-      <div className="grid cursor-pointer grid-cols-4 px-2 text-sm text-muted">
+      <div className="grid cursor-pointer grid-cols-4 px-2 pb-1 text-xs text-muted">
         <div>Mã</div>
         <div className="text-center">Giá</div>
         <div
@@ -243,7 +241,7 @@ export default function BangGia() {
   if (!columnsOrder) return <DefaultLoader />;
   return (
     <>
-      <div className="mb-1 flex h-[156px] w-full gap-1">
+      <div className="mb-1 flex h-[176px] w-full gap-1">
         <IndexMiniChart />
         <IndexMiniChart symbol="VN30" />
         <IndexMiniChart symbol="HNX" />

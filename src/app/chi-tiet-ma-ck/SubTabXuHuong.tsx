@@ -5,12 +5,12 @@ import useFilterProData from "@/hooks/useFilterProData";
 import BulkStar from "@/icons/BulkStar";
 import { useState } from "react";
 
-const ChiBaoMABadge = ({ value }: { value?: string }) => {
+const ChiBaoMABadge = ({ value }: { value?: string | number }) => {
   let title = "Giảm mạnh";
   let color = "#FF135B";
   if (!value) return null;
 
-  const numberValue = value ? +value.replaceAll("%", "") : 0;
+  const numberValue = value ? +value.toString().replaceAll("%", "") : 0;
   if (numberValue > -3) {
     title = "Giảm nhẹ";
     color = "#FF9783";
@@ -36,7 +36,7 @@ const ChiBaoMABadge = ({ value }: { value?: string }) => {
     </div>
   );
 };
-const ChiBaoXuHuongBadge = ({ value }: { value?: string }) => {
+const ChiBaoXuHuongBadge = ({ value }: { value?: string | number }) => {
   let color = "#FF135B";
   if (value === "Giảm mạnh") {
     color = "#FF135B";

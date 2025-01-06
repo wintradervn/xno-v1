@@ -127,7 +127,7 @@ echarts.use([
 export default function DinhGiaLineChart({ symbol }: { symbol?: string }) {
   const { data } = useDNSEStockPriceData(symbol);
   const { data: data2 } = useChiSoTaiChinhData(symbol, false);
-  const { data: data3 } = useChiSoTaiChinhData(symbol, true);
+  // const { data: data3 } = useChiSoTaiChinhData(symbol, true);
 
   const timeData = useMemo(() => {
     return data?.t?.map((time: number, index: number) => time * 1000);
@@ -141,48 +141,64 @@ export default function DinhGiaLineChart({ symbol }: { symbol?: string }) {
     }));
   }, [data]);
 
-  const EPSTTMData: Record<string, number | undefined> = useMemo(() => {
-    if (!data2) return {};
-    return {
-      "0": data2.find((item) => item.year === 2023 && item.quarter === 4)
-        ?.earningPerShare,
-      "1": data2.find((item) => item.year === 2023 && item.quarter === 4)
-        ?.earningPerShare,
-      "2": data2.find((item) => item.year === 2023 && item.quarter === 4)
-        ?.earningPerShare,
-      "3": data2.find((item) => item.year === 2024 && item.quarter === 1)
-        ?.earningPerShare,
-      "4": data2.find((item) => item.year === 2024 && item.quarter === 1)
-        ?.earningPerShare,
-      "5": data2.find((item) => item.year === 2024 && item.quarter === 1)
-        ?.earningPerShare,
-      "6": data2.find((item) => item.year === 2024 && item.quarter === 2)
-        ?.earningPerShare,
-      "7": data2.find((item) => item.year === 2024 && item.quarter === 2)
-        ?.earningPerShare,
-      "8": data2.find((item) => item.year === 2024 && item.quarter === 2)
-        ?.earningPerShare,
-      "9": data2.find((item) => item.year === 2024 && item.quarter === 3)
-        ?.earningPerShare,
-      "10": data2.find((item) => item.year === 2024 && item.quarter === 3)
-        ?.earningPerShare,
-      "11": data2.find((item) => item.year === 2024 && item.quarter === 3)
-        ?.earningPerShare,
-    };
-  }, [data2]);
+  // const EPSTTMData: Record<string, number | undefined> = useMemo(() => {
+  //   if (!data2) return {};
+  //   return {
+  //     "0": data2.find((item) => item.year === 2023 && item.quarter === 4)
+  //       ?.earningPerShare,
+  //     "1": data2.find((item) => item.year === 2023 && item.quarter === 4)
+  //       ?.earningPerShare,
+  //     "2": data2.find((item) => item.year === 2023 && item.quarter === 4)
+  //       ?.earningPerShare,
+  //     "3": data2.find((item) => item.year === 2024 && item.quarter === 1)
+  //       ?.earningPerShare,
+  //     "4": data2.find((item) => item.year === 2024 && item.quarter === 1)
+  //       ?.earningPerShare,
+  //     "5": data2.find((item) => item.year === 2024 && item.quarter === 1)
+  //       ?.earningPerShare,
+  //     "6": data2.find((item) => item.year === 2024 && item.quarter === 2)
+  //       ?.earningPerShare,
+  //     "7": data2.find((item) => item.year === 2024 && item.quarter === 2)
+  //       ?.earningPerShare,
+  //     "8": data2.find((item) => item.year === 2024 && item.quarter === 2)
+  //       ?.earningPerShare,
+  //     "9": data2.find((item) => item.year === 2024 && item.quarter === 3)
+  //       ?.earningPerShare,
+  //     "10": data2.find((item) => item.year === 2024 && item.quarter === 3)
+  //       ?.earningPerShare,
+  //     "11": data2.find((item) => item.year === 2024 && item.quarter === 3)
+  //       ?.earningPerShare,
+  //   };
+  // }, [data2]);
 
-  const EPSAvg5years = useMemo(() => {
-    if (!data3) return 0;
+  // const EPSAvg5years = useMemo(() => {
+  //   if (!data3) return 0;
 
-    return (
-      data3.slice(0, 5).reduce((acc, item) => item.earningPerShare + acc, 0) / 5
-    );
-  }, [data3]);
+  //   return (
+  //     data3.slice(0, 5).reduce((acc, item) => item.earningPerShare + acc, 0) / 5
+  //   );
+  // }, [data3]);
 
   const giaHopLyData = useMemo(() => {
-    if (!data || !EPSTTMData || !EPSAvg5years) return [];
+    if (!data || !data2) return [];
     return data?.t?.map((time: number, index: number) => {
-      const EPSTTM = EPSTTMData[new Date(time * 1000).getMonth().toString()];
+      const date = new Date(time * 1000);
+      let quarter = Math.floor(date.getMonth() / 3 + 1) - 1;
+      let year = date.getFullYear();
+      if (quarter === 0) {
+        quarter = 4;
+        year -= 1;
+      }
+      const lastQuaterIndex = data2.findIndex(
+        (item) => item.year === year && item.quarter === quarter,
+      );
+
+      const EPSTTM = data2[lastQuaterIndex]?.earningPerShare;
+
+      const EPSAvg5years =
+        data2
+          .slice(lastQuaterIndex, lastQuaterIndex + 5)
+          .reduce((acc, item) => item.earningPerShare + acc, 0) / 5;
 
       if (!EPSTTM) return { name: time, value: null };
       return {
@@ -190,7 +206,8 @@ export default function DinhGiaLineChart({ symbol }: { symbol?: string }) {
         value: (data.c[index] * EPSTTM) / EPSAvg5years,
       };
     });
-  }, [data, EPSTTMData, EPSAvg5years]);
+  }, [data, data2]);
+
   const giaHopLyData10 = useMemo(() => {
     return giaHopLyData?.map((item) => ({
       ...item,

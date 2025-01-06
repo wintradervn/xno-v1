@@ -7,12 +7,12 @@ import {
   GridComponent,
 } from "echarts/components";
 import * as echarts from "echarts/core";
-import { text } from "stream/consumers";
 import useChiTietMaCK from "@/hooks/useChiTietMaCK";
 import useKetQuaKinhDoanhData from "@/hooks/useKetQuaKinhDoanhData";
 import { useMemo } from "react";
 import { formatNumber } from "@/lib/utils";
 import useCanDoiKeToanData from "@/hooks/useCanDoiKeToanData";
+import useChiSoTaiChinhData from "@/hooks/useChiSoTaiChinhData";
 echarts.use([
   CanvasRenderer,
   BarChart,
@@ -21,186 +21,37 @@ echarts.use([
   GridComponent,
 ]);
 
-const tangtruongketquakinhdoanh = [
-  {
-    key: "revenue",
-    name: "Doanh thu thuần",
-    type: "bar",
-  },
-  {
-    key: "grossProfit",
-    name: "Lợi nhuận gộp",
-    type: "bar",
-  },
-  {
-    key: "postTaxProfit",
-    name: "LNST",
-    type: "bar",
-  },
-  {
-    key: "yearRevenueGrowth",
-    name: "Tăng trưởng Doanh thu YoY",
-    type: "line",
-    formatLabel: (value: any) => `${formatNumber(value * 100, 2)}%`,
-  },
-  {
-    key: "yearShareHolderIncomeGrowth",
-    name: "Tăng trưởng LNST YoY",
-    type: "line",
-    formatLabel: (value: any) => `${formatNumber(value * 100, 2)}%`,
-  },
-  {
-    key: "grossProfit/revenue",
-    name: "Biên lợi nhuận gộp",
-    type: "line",
-    getData: (item: any) => (100 * item["grossProfit"]) / item["revenue"],
-    formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
-  },
-  {
-    key: "postTaxProfit/revenue",
-    name: "Biên lợi nhuận ròng",
-    type: "line",
-    getData: (item: any) => (100 * item["postTaxProfit"]) / item["revenue"],
-    formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
-  },
-];
-
-const phantichnguonvon = [
-  {
-    key: "asset",
-    name: "Tổng nguồn vốn",
-    type: "bar",
-    stack: "a",
-  },
-  {
-    key: "shortDebt+longDebt",
-    name: "Nợ vay",
-    type: "bar",
-    stack: "a",
-    getData: (item: any) => item["shortDebt"] + item["longDebt"],
-  },
-  {
-    key: "capital",
-    name: "Vốn góp",
-    type: "bar",
-    stack: "a",
-  },
-  {
-    key: "unDistributedIncome",
-    name: "LN chưa phân phối",
-    type: "bar",
-    stack: "a",
-  },
-  {
-    key: "debt-shortDebt-longDebt",
-    name: "Nợ chiếm dụng",
-    type: "bar",
-    stack: "a",
-    getData: (item: any) => item["debt"] - item["shortDebt"] - item["longDebt"],
-  },
-  {
-    key: "minorShareHolderProfit",
-    name: "LN cổ đông không kiểm soát",
-    type: "bar",
-    stack: "a",
-  },
-  {
-    key: "shortDebt+longDebt/asset",
-    name: "Nợ vay/Tổng nguồn vốn (%)",
-    type: "line",
-    getData: (item: any) =>
-      ((item["shortDebt"] + item["longDebt"]) * 100) / item["asset"],
-    formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
-  },
-];
-
-const phantichtaisan = [
-  {
-    key: "asset",
-    name: "Tổng nguồn vốn",
-    type: "bar",
-    stack: "a",
-  },
-  {
-    key: "cash+longDebt",
-    name: "Tiền + Gửi bank",
-    type: "bar",
-    stack: "a",
-    getData: (item: any) => item["cash"] + item["shortInvest"],
-  },
-  {
-    key: "shortRecaivable",
-    name: "Phải thu ngắn hạn",
-    type: "bar",
-    stack: "a",
-  },
-  {
-    key: "inventory",
-    name: "Tồn kho",
-    type: "bar",
-    stack: "a",
-  },
-  {
-    key: "fixedAsset",
-    name: "Tài sản cố định",
-    type: "bar",
-    stack: "a",
-  },
-  {
-    key: "longAsset",
-    name: "Tài sản dài hạn",
-    type: "bar",
-    stack: "a",
-  },
-  {
-    key: "stockInvest",
-    name: "Đầu tư chứng khoán",
-    type: "bar",
-    stack: "a",
-  },
-  {
-    key: "otherAsset",
-    name: "Tài sản khác",
-    type: "bar",
-    stack: "a",
-  },
-  {
-    key: "cash+shortInvest/asset",
-    name: "Tiền/Tổng tài sản",
-    type: "line",
-    getData: (item: any) =>
-      ((item["cash"] + item["shortInvest"]) * 100) / item["asset"],
-    formatLabel: (value: any) => `${formatNumber(value, 2)}%`,
-  },
-];
-
 export default function ChiSoTaiChinhComplexChart({
   yearly,
-  selectedChart,
+  chartConfig,
 }: {
   yearly: boolean;
-  selectedChart: string;
+  chartConfig: any;
 }) {
   const { symbol } = useChiTietMaCK();
   const { data } = useKetQuaKinhDoanhData(symbol, yearly);
   const { data: data2 } = useCanDoiKeToanData(symbol, yearly);
-  const selectedData =
-    selectedChart === "tangtruongketquakinhdoanh"
-      ? data?.slice(yearly ? -10 : -16)
-      : data2?.slice(yearly ? -10 : -16);
+  const { data: data3 } = useChiSoTaiChinhData(symbol, yearly);
+
+  const selectedData = useMemo(() => {
+    let selectedData: any = data;
+    if (["phantichnguonvon", "phantichtaisan"].includes(chartConfig.key)) {
+      selectedData = data2;
+    }
+    if (["chisodinhgia", "khanangthanhtoan"].includes(chartConfig.key)) {
+      selectedData = data3;
+    }
+
+    return selectedData?.slice(yearly ? -10 : -16);
+  }, [data, data2, data3, chartConfig]);
 
   const series = useMemo(() => {
     if (!selectedData) return [];
 
-    const config: any =
-      selectedChart === "tangtruongketquakinhdoanh"
-        ? tangtruongketquakinhdoanh
-        : selectedChart === "phantichtaisan"
-          ? phantichtaisan
-          : phantichnguonvon;
+    const config: any = chartConfig.children;
 
     const sortedData = selectedData
-      .sort((a, b) =>
+      .sort((a: any, b: any) =>
         a.year !== b.year ? a.year - b.year : a.quarter - b.quarter,
       )
       .slice(yearly ? -10 : -16);
@@ -224,7 +75,7 @@ export default function ChiSoTaiChinhComplexChart({
         },
       };
     });
-  }, [selectedData, selectedChart]);
+  }, [selectedData, chartConfig]);
 
   return (
     <div className="flex-1">
@@ -250,7 +101,7 @@ export default function ChiSoTaiChinhComplexChart({
             // },
           },
           legend: {
-            width: 530,
+            width: 630,
             align: "auto",
             itemWidth: 18,
             itemHeight: 12,
@@ -278,9 +129,9 @@ export default function ChiSoTaiChinhComplexChart({
             axisTick: { show: false },
             splitLine: { show: false },
             data: yearly
-              ? selectedData?.map((item) => item.year).slice(-10)
+              ? selectedData?.map((item: any) => item.year).slice(-10)
               : selectedData
-                  ?.map((item) => `Q${item.quarter}/${item.year}`)
+                  ?.map((item: any) => `Q${item.quarter}/${item.year}`)
                   .slice(-16),
           },
           yAxis: [
