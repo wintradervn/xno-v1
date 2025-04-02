@@ -19,13 +19,25 @@ import useSelectedBotName from "../useSelectedBotName";
 import useBotPhaiSinhAddFollow from "../bot-api/useBotPhaiSinhAddFollow";
 import { toast } from "react-toastify";
 
-const CheckBoxWrapper = ({ children }: { children: React.ReactNode }) => {
-  const [isChecked, setIsChecked] = useState(true);
+const CheckBoxWrapper = ({
+  isDisabled,
+  children,
+  defaultChecked = true,
+}: {
+  children: React.ReactNode;
+  isDisabled?: boolean;
+  defaultChecked?: boolean;
+}) => {
+  const [isChecked, setIsChecked] = useState(defaultChecked);
   return (
     <Checkbox
-      className="border-border hover:bg-background m-0 cursor-pointer items-center rounded-[4px] border-1 px-2 py-1"
+      className={cn(
+        "border-border hover:bg-background m-0 cursor-pointer items-center rounded-[4px] border-1 px-2 py-1",
+        isDisabled && "brightness-75",
+      )}
       isSelected={isChecked}
       onChange={() => setIsChecked(!isChecked)}
+      isDisabled={isDisabled}
     >
       {children}
     </Checkbox>
@@ -71,10 +83,12 @@ function XacNhanNhanThongBaoTinHieuModal({
             <div>Nơi hiện tín hiệu</div>
             <div className="mb-3 flex gap-2">
               <CheckBoxWrapper>Hiển thị popup</CheckBoxWrapper>
-              <CheckBoxWrapper>
+              <CheckBoxWrapper defaultChecked={false} isDisabled>
                 Thông báo qua điện thoại di động
               </CheckBoxWrapper>
-              <CheckBoxWrapper>Email</CheckBoxWrapper>
+              <CheckBoxWrapper defaultChecked={false} isDisabled>
+                Email
+              </CheckBoxWrapper>
             </div>
             <div className="flex items-center gap-2">
               <BoldWarning />
