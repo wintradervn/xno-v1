@@ -63,7 +63,7 @@ function TradingViewChart({ symbol }: { symbol?: string }) {
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: symbol || "VCB",
       datafeed,
-      interval: "1H" as ResolutionString,
+      interval: "1D" as ResolutionString,
       container: ref,
       library_path: "/charting_library/",
       locale: "vi" as LanguageCode,
@@ -84,7 +84,7 @@ function TradingViewChart({ symbol }: { symbol?: string }) {
       studies_overrides: {},
       theme: isLightMode ? "Light" : "Dark",
       custom_css_url: "/charting_library/style.css",
-      timeframe: "2w",
+      timeframe: "6m",
       time_frames: [
         {
           text: "6m",

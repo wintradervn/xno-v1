@@ -83,7 +83,7 @@ const getohlcv = async (
   to: number,
   countback: number,
 ) => {
-  const baseUrl = `/api/tradingview`;
+  const baseUrl = `https://api.xno.vn/v2/datafeed/history`;
   const s = symbol.startsWith("VN30F") ? "VN30F1M" : symbol;
   const params = new URLSearchParams({
     symbol: s,
