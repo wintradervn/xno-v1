@@ -1,0 +1,28 @@
+export const colors = {
+  dark: {
+    tooltipBackground: "#0A0E14",
+    backgroundColor: "#0A0E14",
+    legendTextColor: "white",
+    mutedTextColor: "#ddd",
+    splitLineColor: "#1D2939",
+    axisLabelColor: "#98A2B3",
+    red: "#FF135B",
+    green: "#1DF81F",
+    yellow: "#F1C617",
+    purple: "#DC6BDE",
+    cyan: "#0FDEE6",
+  },
+  light: {
+    tooltipBackground: "#ffffff",
+    backgroundColor: "#E3EDF7",
+    legendTextColor: "black",
+    mutedTextColor: "#333",
+    splitLineColor: "#E3EDF7",
+    axisLabelColor: "#98A2B3",
+    red: "#FF135B",
+    green: "#10B969",
+    yellow: "#d5b52f",
+    purple: "#DC6BDE",
+    cyan: "#0FDEE6",
+  },
+};
