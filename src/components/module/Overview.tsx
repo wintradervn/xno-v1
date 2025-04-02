@@ -3,7 +3,6 @@ import BienDongTreeChart from "../charts/BienDongTreeChart";
 import Tabs from "@/components/ui/Tabs";
 import { Tab } from "@heroui/react";
 import NNMuaRong10PhienBarChart from "../charts/NNMuaRong10PhienBarChart";
-import NNMuaRongHomNayLineChart from "../charts/NNMuaRongHomNayLineChart";
 import { useMemo, useState } from "react";
 import PhanBoDongTienBarChart from "../charts/PhanBoDongTienBarChart";
 import ThanhKhoanLineChart from "../charts/ThanhKhoanLineChart";
@@ -15,9 +14,7 @@ import NNYTDIndexBarChart from "../charts/NNYTDIndexBarChart";
 import TuDoanhTreeChart from "../charts/TuDoanhTreeChart";
 import TuDoanhMuaRong10PhienBarChart from "../charts/TuDoanhMuaRong10PhienBarChart";
 import TuDoanhYTDBarChart from "../charts/TuDoanhYTDBarChart";
-import { ScrollArea } from "../ui/scroll-area";
 import TacDongToiIndexBarChart from "../charts/TacDongToiIndexBarChart";
-import SubTabDongTienNDT from "@/app/(main-layout)/(customable-layout)/thi-truong/SubTabDongTienNDT";
 
 export default function Overview() {
   const { data: marketOverviewData } = useMarketOverviewData();

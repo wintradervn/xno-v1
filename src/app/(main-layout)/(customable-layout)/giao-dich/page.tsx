@@ -51,12 +51,12 @@ export default function GiaoDich() {
             onSelectionChange={(key) => setSelectedTab(key as string)}
           >
             <Tab key="bieudo" title="Biểu đồ"></Tab>
-            {isIndex && (
+            {/* {isIndex && (
               <>
                 <Tab key="dinhgiathitruong" title="Định giá thị trường"></Tab>
                 <Tab key="tamlythitruong" title="Tâm lý thị trường"></Tab>
               </>
-            )}
+            )} */}
             {!isIndex && (
               <>
                 <Tab key="solenh" title="Sổ lệnh"></Tab>
@@ -64,7 +64,7 @@ export default function GiaoDich() {
                 <Tab key="tongquan" title="Tổng quan"></Tab>
                 <Tab key="taichinh" title="Tài chính"></Tab>
                 <Tab key="phantichkythuat" title="Phân tích kỹ thuật"></Tab>
-                <Tab key="baocaophantich" title="Báo cáo phân tích"></Tab>
+                {/* <Tab key="baocaophantich" title="Báo cáo phân tích"></Tab> */}
                 <Tab key="hoso" title="Hồ sơ"></Tab>
               </>
             )}
@@ -78,11 +78,11 @@ export default function GiaoDich() {
                 tongquan: <TabTongQuan />,
                 taichinh: <TabPhanTichTaiChinh />,
                 phantichkythuat: <TabPhanTichKyThuat />,
-                baocaophantich: (
-                  <UnfinishedFeature>
-                    <TabBaoCaoPhanTich />
-                  </UnfinishedFeature>
-                ),
+                // baocaophantich: (
+                //   <UnfinishedFeature>
+                //     <TabBaoCaoPhanTich />
+                //   </UnfinishedFeature>
+                // ),
                 hoso: <TabThongTinDoanhNghiep />,
                 tintucsukien: <TabTinTucSuKien />,
               }[selectedTab]

@@ -196,7 +196,7 @@ export default function ChiTietMaCKModal() {
               <Tab key="tongquan" title="Tổng quan"></Tab>
               <Tab key="phantichtaichinh" title="Tài chính"></Tab>
               <Tab key="phantichkythuat" title="Phân tích kỹ thuật"></Tab>
-              <Tab key="baocaophantich" title="Báo cáo phân tích"></Tab>
+              {/* <Tab key="baocaophantich" title="Báo cáo phân tích"></Tab> */}
               <Tab key="thongtindoanhnghiep" title="Hồ sơ"></Tab>
               {/* <Tab key="tintucsukien" title="Tin tức & Sự kiện"></Tab> */}
             </Tabs>
@@ -206,11 +206,11 @@ export default function ChiTietMaCKModal() {
               {selectedTab === "tongquan" && <TabTongQuan />}
               {selectedTab === "phantichtaichinh" && <TabPhanTichTaiChinh />}
               {selectedTab === "phantichkythuat" && <TabPhanTichKyThuat />}
-              {selectedTab === "baocaophantich" && (
+              {/* {selectedTab === "baocaophantich" && (
                 <UnfinishedFeature>
                   <TabBaoCaoPhanTich />
                 </UnfinishedFeature>
-              )}
+              )} */}
               {selectedTab === "thongtindoanhnghiep" && (
                 <TabThongTinDoanhNghiep />
               )}

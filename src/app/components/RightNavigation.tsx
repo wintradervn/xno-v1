@@ -50,12 +50,12 @@ const links = [
     icon: StarFallMinimalistic2,
     iconActive: TinHieuActive,
   },
-  {
-    id: "tintuc",
-    title: "Tin tức",
-    icon: GraphNewUp,
-    iconActive: TinTucActive,
-  },
+  // {
+  //   id: "tintuc",
+  //   title: "Tin tức",
+  //   icon: GraphNewUp,
+  //   iconActive: TinTucActive,
+  // },
 ];
 
 export default function RightNavigation() {

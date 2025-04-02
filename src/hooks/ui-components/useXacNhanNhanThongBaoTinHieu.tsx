@@ -69,19 +69,20 @@ function XacNhanNhanThongBaoTinHieuModal({
           backdrop: "bg-neutral-800/30",
           body: "p-5",
         }}
+        placement="center"
       >
         <ModalContent>
           <ModalHeader className="gap-2 px-4 py-5">
             <MedalChat /> Xác nhận nhận thông báo tín hiệu
           </ModalHeader>
-          <ModalBody className="flex flex-col gap-4 pt-2 text-sm font-medium">
+          <ModalBody className="flex flex-col gap-4 px-2.5 pt-2 text-sm sm:px-4 sm:font-medium">
             <div>
               Bạn đã đăng ký nhận tín hiệu giao dịch từ Bot XNO TOP 1. Hệ thống
               sẽ gửi cảnh báo Long/Short theo thời gian thực, giúp bạn không bỏ
               lỡ cơ hội đầu tư.
             </div>
             <div>Nơi hiện tín hiệu</div>
-            <div className="mb-3 flex gap-2">
+            <div className="flex flex-col gap-2 sm:mb-3 sm:flex-row">
               <CheckBoxWrapper>Hiển thị popup</CheckBoxWrapper>
               <CheckBoxWrapper defaultChecked={false} isDisabled>
                 Thông báo qua điện thoại di động
@@ -91,7 +92,9 @@ function XacNhanNhanThongBaoTinHieuModal({
               </CheckBoxWrapper>
             </div>
             <div className="flex items-center gap-2">
-              <BoldWarning />
+              <div className="shrink-0">
+                <BoldWarning />
+              </div>
               Hãy đảm bảo thông báo trình duyệt được bật để nhận tín hiệu kịp
               thời!
             </div>
@@ -99,15 +102,18 @@ function XacNhanNhanThongBaoTinHieuModal({
               <Checkbox
                 checked={isConfirmed}
                 onChange={() => setIsConfirmed((prev) => !prev)}
+                className="shrink-0"
               />{" "}
-              Tôi xác nhận mình đã đọc và xác nhận{" "}
-              <span
-                className="text-lineargreen cursor-pointer font-bold hover:brightness-125"
-                onClick={() => setIsOpenDieuKhoanModal(true)}
-              >
-                &quot;Điều khoản sử dụng và miễn trừ trách nhiệm BOT tín hiệu
-                XNO&quot;
-              </span>
+              <div>
+                Tôi xác nhận mình đã đọc và xác nhận{" "}
+                <span
+                  className="text-lineargreen cursor-pointer font-bold hover:brightness-125"
+                  onClick={() => setIsOpenDieuKhoanModal(true)}
+                >
+                  &quot;Điều khoản sử dụng và miễn trừ trách nhiệm BOT tín hiệu
+                  XNO&quot;
+                </span>
+              </div>
             </div>
           </ModalBody>
           <ModalFooter className="pt-2">

@@ -26,8 +26,8 @@ import DoubleArrow from "@/icons/DoubleArrow";
 import Divider from "../ui/Divider";
 import { DANH_SACH_MA_PHAI_SINH } from "@/lib/constant";
 import useFilterProData, { IFilterProData } from "@/hooks/useFilterProData";
-import TabNganhNoiBat from "@/app/(main-layout)/(customable-layout)/thi-truong/TabNganhNoiBat";
 import ViThePhaiSinhRongBarChart from "../charts/ViThePhaiSinhRongBarChart";
+import TabNganhNoiBat from "./TabNganhNoiBat";
 
 // const filterMarketData: any = [
 //   { key: "mucyeuthich", name: "Mục yêu thích" },
@@ -263,7 +263,7 @@ function TabMarket() {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex shrink-0 justify-stretch gap-2 text-nowrap select-none">
+      {/* <div className="flex shrink-0 justify-stretch gap-2 text-nowrap select-none">
         {chiSo.map((item: any) => (
           <Fragment key={item.key}>
             {selectedChiSo === item.key ? (
@@ -286,7 +286,7 @@ function TabMarket() {
             )}
           </Fragment>
         ))}
-      </div>
+      </div> */}
       {/* {renderContent()} */}
       <SummaryTable data={filteredData} isLoading={isLoading} />
     </div>
@@ -600,7 +600,7 @@ function TabPhaiSinh() {
   return (
     <>
       <div className="flex h-full w-full flex-col flex-wrap items-center justify-center gap-2 py-1">
-        <Tabs
+        {/* <Tabs
           color="secondary"
           variant="solid"
           classNames={{
@@ -613,7 +613,7 @@ function TabPhaiSinh() {
         >
           <Tab key="phaisinh" title="Phái sinh"></Tab>
           <Tab key="vithendt" title="Vị thế NĐT"></Tab>
-        </Tabs>
+        </Tabs> */}
         <div className="flex h-full w-full flex-1 flex-col gap-2">
           {selectedTab === "phaisinh" && (
             <>
@@ -703,11 +703,11 @@ function TabPhaiSinh() {
               ></Table>
             </>
           )}
-          {selectedTab === "vithendt" && (
+          {/* {selectedTab === "vithendt" && (
             <>
               <ViThePhaiSinhRongBarChart />
             </>
-          )}
+          )} */}
         </div>
       </div>
     </>

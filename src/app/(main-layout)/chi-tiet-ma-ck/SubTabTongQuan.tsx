@@ -103,7 +103,7 @@ export default function SubTabTongQuan() {
             </div>
           </div>
           <div className="flex justify-between">
-            <div className="text-muted">
+            <div className="text-muted flex items-center gap-2">
               Tỷ lệ cổ phiếu cô đặc{" "}
               <Tooltip
                 content={

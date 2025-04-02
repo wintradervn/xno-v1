@@ -22,6 +22,10 @@ const topBienDong = [
 
 export default function TopCoPhieuTable({ type = 1 }: { type?: number }) {
   const { data, isLoading } = useMarketOverviewData();
+  console.log(
+    "🚀 ~ TopCoPhieuTable ~ data:",
+    data?.find((i) => i.code === "VEF"),
+  );
 
   const [selectedTab, setSelectedTab] = useState("bungnokl");
   const [selectedTime, setSelectedTime] = useState("1d");
@@ -64,7 +68,9 @@ export default function TopCoPhieuTable({ type = 1 }: { type?: number }) {
             ? b.dayChangePercent - a.dayChangePercent
             : 0,
         )
-        .filter((item) => item.avgDay5Value && item.avgDay5Value >= 5000000000);
+        .filter(
+          (item) => item.avgDay5Value && item.avgDay5Value >= 1000_000_000,
+        );
     }
     if (selectedTab === "bungnokl") {
       return newData
@@ -76,7 +82,9 @@ export default function TopCoPhieuTable({ type = 1 }: { type?: number }) {
           (item) =>
             item.avgDay20Vol &&
             item.avgDay20Vol > 1000 &&
-            item.volPercentChangeVsLast20Days > bungNoKlThreshold,
+            item.volPercentChangeVsLast20Days > bungNoKlThreshold &&
+            item.avgDay5Value &&
+            item.avgDay5Value >= 1000_000_000,
         );
     }
     if (selectedTab === "cancung") {
@@ -89,7 +97,9 @@ export default function TopCoPhieuTable({ type = 1 }: { type?: number }) {
           (item) =>
             item.avgDay20Vol &&
             item.volPercentChangeVsLast20Days > 0 &&
-            item.volPercentChangeVsLast20Days < cancungKLThreshold,
+            item.volPercentChangeVsLast20Days < cancungKLThreshold &&
+            item.avgDay5Value &&
+            item.avgDay5Value >= 1000_000_000,
         );
     }
     if (selectedTab === "phaday") {

@@ -65,18 +65,18 @@ export default function SymbolInfo() {
         onSelectionChange={(key) => setSelectedTab(key as string)}
       >
         <Tab key="bieudo" title="Biểu đồ"></Tab>
-        {isIndex && (
+        {/* {isIndex && (
           <>
             <Tab key="dinhgiathitruong" title="Định giá thị trường"></Tab>
             <Tab key="tamlythitruong" title="Tâm lý thị trường"></Tab>
           </>
-        )}
+        )} */}
         {!isIndex && (
           <>
             <Tab key="tongquan" title="Tổng quan"></Tab>
             <Tab key="taichinh" title="Tài chính"></Tab>
             <Tab key="phantichkythuat" title="Phân tích kỹ thuật"></Tab>
-            <Tab key="baocaophantich" title="Báo cáo phân tích"></Tab>
+            {/* <Tab key="baocaophantich" title="Báo cáo phân tích"></Tab> */}
             <Tab key="hoso" title="Hồ sơ"></Tab>
             {/* <Tab key="tintucsukien" title="Tin tức & sự kiện"></Tab> */}
           </>
@@ -115,7 +115,7 @@ export default function SymbolInfo() {
           {selectedTab === "tongquan" && <TabTongQuan />}
           {selectedTab === "taichinh" && <TabPhanTichTaiChinh />}
           {selectedTab === "phantichkythuat" && <TabPhanTichKyThuat />}
-          {selectedTab === "baocaophantich" && <TabBaoCaoPhanTich />}
+          {/* {selectedTab === "baocaophantich" && <TabBaoCaoPhanTich />} */}
           {selectedTab === "hoso" && <TabThongTinDoanhNghiep />}
           {selectedTab === "tintucsukien" && <TabTinTucSuKien />}
         </Suspense>

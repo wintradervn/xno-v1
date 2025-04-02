@@ -66,24 +66,21 @@ export default function BotModal() {
         backdrop="blur"
         scrollBehavior="inside"
         classNames={{
-          base: "w-[90%] max-w-[90vw] max-w-[1100px] max-h-[min(90vh)] bg-card rounded-[8px] shadow-lg",
+          base: "w-[90%] max-w-[90vw] max-w-[1100px] max-h-[calc(96vh-60px)] bg-card rounded-[8px] shadow-lg mt-4",
           closeButton: "hover:bg-background active:bg-background",
           backdrop: "bg-neutral-800/30",
         }}
+        placement="top-center"
       >
         <ModalContent>
-          <ModalHeader className="shrink-0 px-5 pt-7 pb-2">
+          <ModalHeader className="shrink-0 px-5 pt-7 pb-3">
             <div className="flex w-full items-end justify-between">
               <div className="flex gap-2">
-                <Image
-                  src="/image/bot-image.png"
-                  width={60}
-                  height={60}
-                  alt="bot image"
-                  className="rounded-full"
-                />
+                <div className="relative h-[48px] w-[48px] shrink-0 overflow-hidden rounded-full sm:h-[60px] sm:w-[60px]">
+                  <Image src="/image/bot-image.png" fill alt="bot image" />
+                </div>
                 <div className="flex flex-col justify-between">
-                  <div className="text-linearpurple text-xl font-semibold">
+                  <div className="text-linearpurple text-md truncate font-semibold sm:text-xl">
                     Bot{" "}
                     {botInfo
                       ? isPhaiSinh
@@ -92,7 +89,7 @@ export default function BotModal() {
                       : ""}
                   </div>
                   {botInfo && (
-                    <div>
+                    <div className="text-md">
                       {botInfo.total_followers}{" "}
                       <span className="text-muted text-sm font-normal">
                         Người theo dõi
@@ -107,18 +104,18 @@ export default function BotModal() {
                 </div>
               ) : (
                 <div
-                  className="text-refine-bg hover:text-refine-bg group relative z-1 block h-[44px] cursor-pointer appearance-none transition-all duration-100 hover:no-underline focus:outline-hidden active:scale-[0.96]"
+                  className="text-refine-bg hover:text-refine-bg group relative z-1 block h-[34px] cursor-pointer appearance-none transition-all duration-100 hover:no-underline focus:outline-hidden active:scale-[0.96] sm:h-[44px]"
                   onClick={() => openModalXacNhan()}
                 >
                   <div className="blur-0 absolute -top-[1px] -right-[1px] -bottom-[1px] -left-[1px] z-[-1] overflow-hidden rounded-full">
-                    <div className="bg-landing-rainbow animate-spin-slow animate-pause group-hover:animate-running absolute top-[-44px] left-[-12.5%] aspect-square h-auto w-[125%]"></div>
+                    <div className="bg-landing-rainbow animate-spin-slow animate-pause group-hover:animate-running absolute top-[-24px] left-[-12.5%] aspect-square h-auto w-[125%] sm:top-[-44px]"></div>
                   </div>
                   <div className="absolute -top-1 -right-1 -bottom-1 -left-1 z-[-1] overflow-hidden rounded-full opacity-0 blur-[1px] transition-all duration-300 group-hover:opacity-70 group-hover:blur-[4px]">
-                    <div className="bg-landing-rainbow animate-spin-slow animate-pause group-hover:animate-running absolute top-[-44px] left-[-12.5%] aspect-square h-auto w-[125%]"></div>
+                    <div className="bg-landing-rainbow animate-spin-slow animate-pause group-hover:animate-running absolute top-[-24px] left-[-12.5%] aspect-square h-auto w-[125%] sm:top-[-44px]"></div>
                   </div>
                   <div className="bg-card rounded-full group-hover:bg-white group-hover:dark:bg-black">
                     <div className="flex items-center justify-center gap-2 transition-transform duration-100 ease-in-out">
-                      <div className="animate-pause group-hover:animate-running text-foreground text-md h-[44px]! rounded-full px-4 py-3 font-semibold text-nowrap transition-colors select-none">
+                      <div className="animate-pause group-hover:animate-running text-foreground sm:text-md h-[34px]! rounded-full px-3 py-2 text-sm font-semibold text-nowrap transition-colors select-none sm:h-[44px]! sm:px-4 sm:py-3">
                         Nhận tín hiệu
                       </div>
                     </div>
@@ -127,10 +124,14 @@ export default function BotModal() {
               )}
             </div>
           </ModalHeader>
-          <ModalBody className="relative mb-4 flex h-full flex-col gap-5 px-5">
+          <ModalBody className="relative mb-4 flex h-full flex-col gap-2 px-5 sm:gap-5">
             <Tabs
               color="primary"
-              classNames={{ tabList: "", base: "shrink-0" }}
+              classNames={{
+                tabList: "w-full sm:w-fit",
+                tab: "flex-1 sm:flex-none",
+                base: "shrink-0",
+              }}
               selectedKey={selectedTab}
               onSelectionChange={(key) => setSelectedTab(key as string)}
             >
@@ -142,8 +143,9 @@ export default function BotModal() {
                 <Tabs
                   color="primary"
                   classNames={{
-                    tabList: "",
-                    base: "shrink-0 absolute right-5",
+                    tabList: "w-full sm:w-fit",
+                    tab: "flex-1 sm:flex-none",
+                    base: "shrink-0 sm:absolute right-5",
                   }}
                   selectedKey={selectedTime}
                   onSelectionChange={(key) => setSelectedTime(key as string)}
@@ -181,29 +183,39 @@ function TabHieuSuat({
 
   return (
     <>
-      <div className="border-border shrink-0 rounded-[8px] border p-3">
+      <div className="border-border shrink-0 rounded-[8px] border p-1 sm:p-3">
         <HieuSuatBotLineChart timeFrame={timeFrame} />
       </div>
-      <div className="flex justify-center gap-6">
+      <div className="flex shrink-0 flex-wrap justify-center gap-2 gap-x-4 px-4 sm:gap-6">
         <div className="flex items-center gap-2 text-sm">
-          <div className="h-[6px] w-[15px] rounded-[2px] bg-[#FF80B6]"> </div>
+          <div className="h-[6px] w-[15px] shrink-0 rounded-[2px] bg-[#FF80B6]">
+            {" "}
+          </div>
           {isPhaiSinh ? "Chỉ số VN30F1M" : botInfo?.symbol}
         </div>
         <div className="flex items-center gap-2 text-sm">
-          <div className="h-[6px] w-[15px] rounded-[2px] bg-[#7B61FF]"> </div>
+          <div className="h-[6px] w-[15px] shrink-0 rounded-[2px] bg-[#7B61FF]">
+            {" "}
+          </div>
           BotXNO
         </div>
         <div className="flex items-center gap-2 text-sm">
-          <div className="bg-green h-[6px] w-[15px] rounded-[2px]"> </div>
+          <div className="bg-green h-[6px] w-[15px] shrink-0 rounded-[2px]">
+            {" "}
+          </div>
           {isPhaiSinh ? "Long" : "Buy"}
         </div>
         <div className="flex items-center gap-2 text-sm">
-          <div className="bg-red h-[6px] w-[15px] rounded-[2px]"> </div>
+          <div className="bg-red h-[6px] w-[15px] shrink-0 rounded-[2px]">
+            {" "}
+          </div>
           {isPhaiSinh ? "Short" : "Sell"}
         </div>
         {isPhaiSinh && (
           <div className="flex items-center gap-2 text-sm">
-            <div className="bg-yellow h-[6px] w-[15px] rounded-[2px]"> </div>
+            <div className="bg-yellow h-[6px] w-[15px] shrink-0 rounded-[2px]">
+              {" "}
+            </div>
             Cover
           </div>
         )}
@@ -212,7 +224,7 @@ function TabHieuSuat({
         <div className="text-caption mb-2 flex items-center gap-2">
           Hiệu suất giao dịch <TrendingUp />
         </div>
-        <div className="flex justify-between gap-10">
+        <div className="flex flex-col justify-between gap-2 sm:flex-row sm:gap-10">
           <div className="flex flex-1 flex-col gap-2">
             <div className="flex items-center justify-between">
               <div className="text-muted text-sm font-normal">

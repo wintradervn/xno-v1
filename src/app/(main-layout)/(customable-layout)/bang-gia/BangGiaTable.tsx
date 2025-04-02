@@ -121,7 +121,7 @@ export default function BangGiaTable() {
     <>
       <div className="flex shrink-0 justify-between">
         <div className="text-muted flex items-center gap-5 text-sm">
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <div>Chế độ hiển thị:</div>
             <div>
               <Select
@@ -157,7 +157,7 @@ export default function BangGiaTable() {
                 </SelectItem>
               </Select>
             </div>
-          </div>
+          </div> */}
           <div className="flex items-center gap-2">
             <div>Ngành hiển thị:</div>
             <div>

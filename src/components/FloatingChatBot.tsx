@@ -17,6 +17,14 @@ export function FloatingChatBot() {
   const prevHeight = useRef(0);
   const prevWidth = useRef(0);
 
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return null;
+
   // useEffect(() => {
   //   if (!isResizingHeight && !isResizingWidth) return;
   //   const handleMouseMove = (e: any) => {
@@ -50,7 +58,7 @@ export function FloatingChatBot() {
   return (
     <>
       {createPortal(
-        <div className="fixed right-2 bottom-20 z-[100] flex min-w-0 flex-col items-end rounded-full sm:right-18 sm:bottom-6">
+        <div className="fixed right-2 bottom-20 z-[50] flex min-w-0 flex-col items-end rounded-full sm:right-18 sm:bottom-6">
           <AnimatePresence>
             {isOpen && (
               <motion.div
@@ -113,8 +121,8 @@ export function FloatingChatBot() {
                             y2="10.7176"
                             gradientUnits="userSpaceOnUse"
                           >
-                            <stop stop-color="#8B85FF" />
-                            <stop offset="0.99" stop-color="#49DFBA" />
+                            <stop stopColor="#8B85FF" />
+                            <stop offset="0.99" stopColor="#49DFBA" />
                           </linearGradient>
                           <clipPath id="clip0_33110_436788">
                             <rect width="32" height="32" fill="white" />
